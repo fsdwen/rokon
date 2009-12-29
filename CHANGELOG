@@ -1,3 +1,13 @@
+1.1.1
+	Overview
+	
+	New Features
+	
+	Changes
+	
+	Bug Fixes
+		* NullPointerException check on sensorManager 
+
 1.1.0 - 29/12/2009
 	Overview
 		* An overhaul of the way textures are handled, see the Texture tutorial for help on updating your code http://stickycoding.com/rokon/rokon-tutorials/managing-textures

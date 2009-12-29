@@ -79,7 +79,7 @@ public class Accelerometer {
 	public static void stopListening() {
 		_running = false;
 		try {
-			if(_sensorEventListener != null)
+			if(sensorManager != null && _sensorEventListener != null)
 				sensorManager.unregisterListener(_sensorEventListener);
 		} catch (Exception e) { }
 	}

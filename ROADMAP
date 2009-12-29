@@ -1,0 +1,20 @@
+This is a very simple roadmap, I have laid out the features I would like the engine to have in the order I would like to get them done. Because of my situation, I can in no way put a deadline or times to these, or even promise the order will be kept to. But hopefully this will help us steer ourselves in the right direction.
+
+ * Multiple ways of handling different screen resolutions
+ * An advanced menu system, for in and out-of-game menu's - including many View-like objects (lists, option boxes)
+ * Tiled game engine
+ * Advanced Particle Engine
+ * Polygon-based collision detection
+ * Post processing & z-order effects
+ * Integrated physics, potentially through NDK
+ 
+Below are some features that are not necessarily features of the engine in the state it's at now, but things that I want to get done.
+ * Complete examples for all important features of the engine
+ * Tutorials for important features
+ * Regularly updated and comprehensive wiki
+ * Extended game frameworks/templates (rather than a graphics engine) for various genres
+ * Lobby-based multiplayer framework
+ * Advanced online highscore tracker
+ * Remote error logging
+ 
+It is also my goal to release several (very basic) open source games based on Rokon, that should help people along their way. 

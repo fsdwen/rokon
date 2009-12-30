@@ -2,6 +2,8 @@
 	Overview
 	
 	New Features
+		* Polygon-based collision detection
+		* Shape class allows geometric shapes to be drawn and manipulated as DynamicObjects, based on Polygons
 	
 	Changes
 	

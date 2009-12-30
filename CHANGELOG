@@ -6,6 +6,7 @@
 		* Shape class allows geometric shapes to be drawn and manipulated as DynamicObjects, based on Polygons
 	
 	Changes
+		
 	
 	Bug Fixes
 		* NullPointerException check on sensorManager 

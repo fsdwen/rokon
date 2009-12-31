@@ -63,6 +63,7 @@ public class Layer {
 			Debug.print("TOO MANY SPRITES");
 			return;
 		}
+		sprite.revive();
 		spriteArr[k] = sprite;
 	}
 	

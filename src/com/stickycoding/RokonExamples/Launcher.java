@@ -31,7 +31,8 @@ public class Launcher extends ListActivity {
 			"Basic Particle System",
 			"Custom Sprite Animation",
 			"Post Processing",
-			"Parallax Background"
+			"Parallax Background",
+			"Polygon Collision"
 		};
 		setListAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, examples));
 	}
@@ -115,6 +116,10 @@ public class Launcher extends ListActivity {
 				break;
 			case 18: // Post Processing
 				intent = new Intent(this, Example19.class);
+				startActivity(intent);
+				break;
+			case 19: // Polygon Collision
+				intent = new Intent(this, Example20.class);
 				startActivity(intent);
 				break;
 		}

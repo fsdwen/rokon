@@ -401,7 +401,7 @@ public class Sprite extends DynamicObject {
 			}
 		}
 
-		gl.glColor4f(_red, _blue, _green, _alpha);
+		gl.glColor4f(_red, _green, _blue, _alpha);
 		if(hasTexture)
 			gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, _texBuffer);	
 
@@ -715,5 +715,12 @@ public class Sprite extends DynamicObject {
 		stopAnimation();
 		if(resetTexture)
 			setTileIndex(1);
+	}
+	
+	/**
+	 * Revives the Sprite, so that it can be used again.
+	 */
+	public void revive() {
+		_killMe = false;
 	}
 }

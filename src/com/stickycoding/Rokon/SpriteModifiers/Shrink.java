@@ -47,8 +47,8 @@ public class Shrink extends SpriteModifier {
 		sprite.setScale(scale, scale);
 		width = sprite.getWidth();
 		height = sprite.getHeight();
-		offsetX = (width / 4f) - (scale * (width / 4f));
-		offsetY = (height / 4f)- (scale * (height / 4f));
+		offsetX = (width / 2f) - (scale * (width / 2f));
+		offsetY = (height / 2f)- (scale * (height / 2f));
 		sprite.setOffset(offsetX, offsetY);
 	}
 

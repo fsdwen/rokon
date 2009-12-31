@@ -41,7 +41,7 @@ public class Grow extends SpriteModifier {
 	public void onUpdate(Sprite sprite) {
 		timeDiff = Rokon.getTime() - _startTime;
 		scale = _startScale + ((float)timeDiff / (float)_time);
-		if(scale <= 0) {
+		if(timeDiff > _time) {
 			setExpired(true);
 			if(_handler != null)
 				_handler.onFinished();
@@ -49,8 +49,8 @@ public class Grow extends SpriteModifier {
 		sprite.setScale(scale, scale);
 		width = sprite.getWidth();
 		height = sprite.getHeight();
-		offsetX = (width / 4f) - (scale * (width / 4f));
-		offsetY = (height / 4f)- (scale * (height / 4f));
+		offsetX = (width / 2f) - (scale * (width / 2f));
+		offsetY = (height / 2f)- (scale * (height / 2f));
 		sprite.setOffset(offsetX, offsetY);
 	}
 

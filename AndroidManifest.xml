@@ -31,8 +31,8 @@
         <activity android:name=".Example17" android:screenOrientation="landscape"/>
         <activity android:name=".Example18" android:screenOrientation="landscape"/>
         <activity android:name=".Example19" android:screenOrientation="landscape"/>
-
-    <activity android:screenOrientation="landscape" android:name=".Example16"></activity>
+        <activity android:name=".Example20" android:screenOrientation="landscape"/>
+        
 </application>
     <uses-sdk android:minSdkVersion="4" />
 

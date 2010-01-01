@@ -29,6 +29,8 @@ public class RokonMusic {
 			_mediaPlayer.release();
 		try {
 			_mediaPlayer = new MediaPlayer();
+			if(continuous)
+				setContinuous(true);
 			AssetFileDescriptor afd = Rokon.getRokon().getActivity().getAssets().openFd(filename);
 			_mediaPlayer.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
 			_mediaPlayer.setAudioStreamType(AudioManager.STREAM_ALARM);

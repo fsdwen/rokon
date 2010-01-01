@@ -4,12 +4,12 @@ import javax.microedition.khronos.opengles.GL10;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.view.KeyEvent;
-import android.view.MotionEvent;
 
 import com.stickycoding.Rokon.Handlers.AccelerometerHandler;
 import com.stickycoding.Rokon.Handlers.InputHandler;
@@ -351,4 +351,12 @@ public class RokonActivity extends Activity {
     public void stopAccelerometer() {
     	Accelerometer.stopListening();
     }
+    
+    /* (non-Javadoc)
+     * @see android.app.Activity#onConfigurationChanged(android.content.res.Configuration)
+     */
+    @Override 
+    public void onConfigurationChanged(Configuration newConfig) { 
+    	super.onConfigurationChanged(newConfig); 
+    } 
 }

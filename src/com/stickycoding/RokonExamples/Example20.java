@@ -1,11 +1,12 @@
 //	Polygon Collision
 package com.stickycoding.RokonExamples;
 
-import com.stickycoding.Rokon.Rokon;
+import com.stickycoding.Rokon.Collider;
+import com.stickycoding.Rokon.Polygon;
 import com.stickycoding.Rokon.RokonActivity;
+import com.stickycoding.Rokon.Shape;
 import com.stickycoding.Rokon.Texture;
 import com.stickycoding.Rokon.TextureAtlas;
-import com.stickycoding.Rokon.TextureManager;
 import com.stickycoding.Rokon.Backgrounds.ParallaxBackground;
 
 /**
@@ -34,19 +35,25 @@ public class Example20 extends RokonActivity {
 
 	@Override
 	public void onLoadComplete() {
+		Polygon polygon = new Polygon(4);
+		polygon.put(0.5f, 0);
+		polygon.put(1, 0.5f);
+		polygon.put(0.5f, 1);
+		polygon.put(0, 0.5f);
+		Shape shape = new Shape(polygon, 50, 50, 50, 50);
 
+		Polygon polygon2 = new Polygon(3);
+		polygon2.put(0, 0);
+		polygon2.put(1, 0);
+		polygon2.put(0, 1);
+		Shape shape2 = new Shape(polygon2, 110, 50, 50, 50);
+		
+		Collider.check(shape, shape2);
 	}
 
 	@Override
 	public void onGameLoop() {
-		if(lastUpdate == 0)
-			lastUpdate = Rokon.time;
-		else {
-			timeDiff = Rokon.time - lastUpdate;
-			modifier = timeDiff * rate / 1000;
-			background.setScroll(background.getScroll() + modifier);
-			lastUpdate = Rokon.time;
-		}
+
 	}
 	
 	@Override

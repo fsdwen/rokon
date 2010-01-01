@@ -883,6 +883,7 @@ public class Rokon {
     	                 }
                  }
                  getInputHandler().onTouchEvent(_newTouchX, _newTouchY, hit);
+                 getInputHandler().onTouchEvent(_newTouchX, _newTouchY, event.getAction(), hit);
                  return;
              }
              
@@ -892,17 +893,20 @@ public class Rokon {
 	                	 if(_newTouchX >= hotspotArr[i].sprite.getX() && _newTouchX <= hotspotArr[i].sprite.getX() + hotspotArr[i].sprite.getWidth() && _newTouchY >= hotspotArr[i].sprite.getY() && _newTouchY <= hotspotArr[i].sprite.getY() + hotspotArr[i].sprite.getHeight()) {
 	                         Rokon.getRokon().getInputHandler().onHotspotTouched(hotspotArr[i]);
 	                         Rokon.getRokon().getInputHandler().onHotspotTouched(hotspotArr[i], _newTouchX, _newTouchY);
+		                     Rokon.getRokon().getInputHandler().onHotspotTouched(hotspotArr[i], _newTouchX, _newTouchY, event.getAction());
 	                         hit = true;
 		                     break;
                          } 
 	                 } else if(_newTouchX >= hotspotArr[i].x && _newTouchX <= hotspotArr[i].x + hotspotArr[i].width && _newTouchY >= hotspotArr[i].y && _newTouchY <= hotspotArr[i].y + hotspotArr[i].height) {
 	                	 Rokon.getRokon().getInputHandler().onHotspotTouched(hotspotArr[i]);
 	                     Rokon.getRokon().getInputHandler().onHotspotTouched(hotspotArr[i], _newTouchX, _newTouchY);
+	                     Rokon.getRokon().getInputHandler().onHotspotTouched(hotspotArr[i], _newTouchX, _newTouchY, event.getAction());
 	                     hit = true;
 	                     break;
 	                 }
              }
              getInputHandler().onTouchEvent(_newTouchX, _newTouchY, hit);
+             getInputHandler().onTouchEvent(_newTouchX, _newTouchY, event.getAction(), hit);
 		 }
 	}
 	

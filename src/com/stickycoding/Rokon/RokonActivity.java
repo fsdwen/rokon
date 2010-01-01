@@ -10,6 +10,7 @@ import android.os.PowerManager;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 
 import com.stickycoding.Rokon.Handlers.AccelerometerHandler;
 import com.stickycoding.Rokon.Handlers.InputHandler;
@@ -33,7 +34,6 @@ public class RokonActivity extends Activity {
 	public static RokonActivity singleton;
 	
 	private boolean _touchDown = false;
-	private long _lastTouchTime = 0;
 	private int _touchX, _touchY;
 	private Hotspot _lastHotspot;
 	
@@ -230,18 +230,7 @@ public class RokonActivity extends Activity {
 	}
 	
 	private RenderHook _renderHook = new RenderHook() {
-		public void onGameLoop() {
-			if(_touchDown && Rokon.realTime >= _lastTouchTime + TOUCH_THRESHOLD) {
-				if(_lastHotspot != null) {
-					_touchDown = false;
-					onHotspotTouchUp(_lastHotspot);
-					onTouchUp(_touchX, _touchY, true);
-					_lastHotspot = null;
-				} else {
-					_touchDown = false;
-					onTouchUp(_touchX, _touchY, false);
-				}
-			}
+		public void onGameLoop() {			
 			singleton.onGameLoop();
 		}
 		
@@ -259,36 +248,49 @@ public class RokonActivity extends Activity {
 	};
     
     private InputHandler touchHandler = new InputHandler() {
-    	public void onTouchEvent(int x, int y, boolean hotspot) {
-    		_lastTouchTime = Rokon.realTime;
-    		if(!hotspot) {
-	    		if(!_touchDown) {
+    	public void onTouchEvent(int x, int y, int action, boolean hotspot) {
+    		switch(action) {
+	    		case MotionEvent.ACTION_DOWN:
+	    			onTouchDown(x, y, hotspot);
 	    			_touchDown = true;
-	        		onTouchDown(x, y, hotspot);
-	    		}
+	    			break;
+	    		case MotionEvent.ACTION_MOVE:
+	    			onTouch(x, y, hotspot);
+	    			break;
+	    		case MotionEvent.ACTION_UP:
+	    			onTouchUp(x, y, hotspot);
+					_lastHotspot = null;
+					_touchDown = false;
+	    			break;
     		}
-    		onTouch(x, y, hotspot);
     	}
     	
     	private int i;
-    	public void onHotspotTouched(Hotspot hotspot) {
-    		_lastTouchTime = Rokon.realTime;
+    	public void onHotspotTouched(Hotspot hotspot, int x, int y, int action) {
     		if(!_touchDown) {
     			_lastHotspot = hotspot;
-    			if(!_touchDown) {
-    				_touchDown = true;
-    				if(rokon.getActiveMenu() != null)
-    					for(i = 0; i < Menu.MAX_OBJECTS; i++)
-    						if(rokon.getActiveMenu().getMenuObject(i) != null)
-    							if(rokon.getActiveMenu().getMenuObject(i).getHotspot() != null)
-        							if(rokon.getActiveMenu().getMenuObject(i).getHotspot().equals(hotspot)) {
-        								rokon.getActiveMenu().onMenuObjectTouchDown(rokon.getActiveMenu().getMenuObject(i));
-        								rokon.getActiveMenu().onMenuObjectTouch(rokon.getActiveMenu().getMenuObject(i));
-        								break;
-        							}
-	        		onHotspotTouchDown(hotspot);
-    			}
-    			onHotspotTouch(hotspot);
+				if(rokon.getActiveMenu() != null)
+					for(i = 0; i < Menu.MAX_OBJECTS; i++)
+						if(rokon.getActiveMenu().getMenuObject(i) != null)
+							if(rokon.getActiveMenu().getMenuObject(i).getHotspot() != null)
+    							if(rokon.getActiveMenu().getMenuObject(i).getHotspot().equals(hotspot)) {
+    								if(action == MotionEvent.ACTION_DOWN)
+    									rokon.getActiveMenu().onMenuObjectTouchDown(rokon.getActiveMenu().getMenuObject(i));
+    								if(action == MotionEvent.ACTION_MOVE)
+    									rokon.getActiveMenu().onMenuObjectTouch(rokon.getActiveMenu().getMenuObject(i));
+    								if(action == MotionEvent.ACTION_UP)
+    									rokon.getActiveMenu().onMenuObjectTouchUp(rokon.getActiveMenu().getMenuObject(i));
+    								break;
+    							}
+				if(action == MotionEvent.ACTION_DOWN)
+					onHotspotTouchDown(hotspot);
+				if(action == MotionEvent.ACTION_MOVE)
+					onHotspotTouch(hotspot);
+				if(action == MotionEvent.ACTION_UP) {
+					onHotspotTouchUp(hotspot);
+					_lastHotspot = null;
+					_touchDown = false;
+				}
     		}
     	}
     };

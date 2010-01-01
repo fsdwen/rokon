@@ -39,6 +39,16 @@ public class Vector {
 	 * @param x X coordinate
 	 * @param y Y coordinate
 	 */
+	public void set(double x, double y) {
+		setX((float)x);
+		setY((float)y);
+	}
+	
+	/**
+	 * Sets both coordinates of the Vector
+	 * @param x X coordinate
+	 * @param y Y coordinate
+	 */
 	public void set(float x, float y) {
 		setX(x);
 		setY(y);

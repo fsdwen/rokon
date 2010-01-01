@@ -1,4 +1,6 @@
  Please report any bugs through the website http://code.google.com/p/rokon/issues/list
  All other feedback & suggestions through the forums at http://rokonandroid.com/community/
  
- * Solve the music/sound effects lag when used together
+ * DynamicObject hotspot, disable
+ * onTouchUp Coordinates
+ * onTouchUp TIMER

@@ -44,5 +44,25 @@ public class Shape extends DynamicObject {
 	public void setPolygon(Polygon polygon) {
 		_polygon = polygon;
 	}
+	
+	/**
+	 * Returns the real X coordinate of a specific vertex
+	 * @param vertex the vertex index
+	 * @return X coordinate of the Polygon when applied to the Shape dimensions and position
+	 */
+	public float getRealX(int vertex) {
+		//TODO consider rotation
+		return getX() + (getWidth() * _polygon.get(vertex).getX());
+	}
+	
+	/**
+	 * Returns the real Y coordinate of a specific vertex
+	 * @param vertex the vertex index
+	 * @return Y coordinate of the Polygon when applied to the Shape dimensions and position
+	 */
+	public float getRealY(int vertex) {
+		//TODO consider rotation
+		return getY() + (getHeight() * _polygon.get(vertex).getY());
+	}
 
 }

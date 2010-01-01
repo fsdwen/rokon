@@ -18,6 +18,7 @@ import android.opengl.GLUtils;
 
 import com.stickycoding.Rokon.Debug;
 import com.stickycoding.Rokon.Rokon;
+import com.stickycoding.Rokon.RokonActivity;
 import com.stickycoding.Rokon.TextureManager;
 
 public class RokonRenderer implements GLSurfaceView.Renderer {
@@ -81,8 +82,19 @@ public class RokonRenderer implements GLSurfaceView.Renderer {
 		gl.glVertexPointer(2, GL11.GL_FLOAT, 0, vertexBuffer);		
 	}
 	
+	private boolean _hasLoaded = false;
 	public void onDrawFrame(GL10 gl) {
 		if(Rokon.getRokon().isLoading()) {
+			if(_hasLoaded) {
+		    	gl.glClear(GL10.GL_COLOR_BUFFER_BIT);    	
+		    	gl.glMatrixMode(GL10.GL_MODELVIEW);
+		    	
+				gl.glLoadIdentity();
+				gl.glScalef(Rokon.getRokon().getWidth(), Rokon.getRokon().getHeight(), 0);
+				gl.glColor4f(1, 1, 1, 1);
+				gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
+				return;
+			}
     		Bitmap tbmp = null;
     		try {
     			tbmp = BitmapFactory.decodeStream(Rokon.getRokon().getActivity().getAssets().open(Rokon.getRokon().getLoadingImage()));
@@ -151,21 +163,23 @@ public class RokonRenderer implements GLSurfaceView.Renderer {
 			texBuffer.position(0);
 			
 			gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, texBuffer);
-    		while(Rokon.getRokon().isLoading()) {
 
-    	    	gl.glClear(GL10.GL_COLOR_BUFFER_BIT);    	
-    	    	gl.glMatrixMode(GL10.GL_MODELVIEW);
-    	    	
-    			gl.glLoadIdentity();
-    			gl.glScalef(Rokon.getRokon().getWidth(), Rokon.getRokon().getHeight(), 0);
-    			gl.glColor4f(1, 1, 1, 1);
-    			gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
-                
-                if(Rokon.getRokon().isLoadingScreen()) {
-                	Rokon.getRokon().setIsLoadingScreen(false);
-                }
-                
-    		}
+	    	gl.glClear(GL10.GL_COLOR_BUFFER_BIT);    	
+	    	gl.glMatrixMode(GL10.GL_MODELVIEW);
+	    	
+			gl.glLoadIdentity();
+			gl.glScalef(Rokon.getRokon().getWidth(), Rokon.getRokon().getHeight(), 0);
+			gl.glColor4f(1, 1, 1, 1);
+			gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
+            
+            new Thread(new Runnable() {
+            	public void run() {
+                    ((RokonActivity)Rokon.getRokon().getActivity()).doLoading();
+            	}
+            }).start();            
+            _hasLoaded = true;
+			bmp.recycle();
+			bmp = null;
 			System.gc();
     	} else {
         	TextureManager.updateTextures(gl);

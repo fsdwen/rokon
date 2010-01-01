@@ -205,39 +205,28 @@ public class RokonActivity extends Activity {
 			rokon = Rokon.createEngine(this, loadingScreen, width, height);
 		_hasLoadingScreen = (loadingScreen != null);
 		rokon.setFullscreen();
+		if(landscape) 
+			rokon.fixLandscape();
+		else
+			rokon.fixPortrait();
 		rokon.init();
 
-		
-		if(_hasLoadingScreen) {
-			new Thread(new Runnable() {
-	    		public void run() {
-	    			if(landscape) 
-	    				rokon.fixLandscape();
-	    			else
-	    				rokon.fixPortrait();
-	    			while(rokon.isLoadingScreen()) { }
-	    	    	rokon.setBackgroundColor(0.5f, 0.2f, 0.2f);
-	    	    	rokon.setInputHandler(touchHandler);
-	    	    	rokon.setRenderHook(_renderHook);
-	    	    	onLoad();
-	                System.gc();
-	    			rokon.setLoading(false);
-	    			rokon.updateTime();
-	    			onLoadComplete();
-	    		}
-	    	}).start();
-		} else {
-			if(landscape) 
-				rokon.fixLandscape();
-			else
-				rokon.fixPortrait();
-	    	rokon.setBackgroundColor(0.5f, 0.2f, 0.2f);
-	    	rokon.setInputHandler(touchHandler);
-	    	rokon.setRenderHook(_renderHook);
-	    	onLoad();
-            System.gc();
-			onLoadComplete();
-		}
+		if(!_hasLoadingScreen)
+			doLoading();
+	}
+	
+	/**
+	 * Runs the RokonActivity loading procedure
+	 */
+	public void doLoading() {
+    	rokon.setBackgroundColor(0.5f, 0.2f, 0.2f);
+    	rokon.setInputHandler(touchHandler);
+    	rokon.setRenderHook(_renderHook);
+    	onLoad();
+        System.gc();
+		rokon.setLoading(false);
+		rokon.updateTime();
+		onLoadComplete();
 	}
 	
 	private RenderHook _renderHook = new RenderHook() {

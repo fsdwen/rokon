@@ -874,8 +874,8 @@ public class Rokon {
              if(_menu != null) {
                  for(i = 0; i < Rokon.MAX_HOTSPOTS; i++) {
     		         if(hotspotArr[i] != null)
-    	                 if(hotspotArr[i].sprite != null) {
-    	                	 if(_newTouchX >= hotspotArr[i].sprite.getX() && _newTouchX <= hotspotArr[i].sprite.getX() + hotspotArr[i].sprite.getWidth() && _newTouchY >= hotspotArr[i].sprite.getY() && _newTouchY <= hotspotArr[i].sprite.getY() + hotspotArr[i].sprite.getHeight()) {
+    	                 if(hotspotArr[i].getObject() != null) {
+    	                	 if(_newTouchX >= hotspotArr[i].getObject().getX() && _newTouchX <= hotspotArr[i].getObject().getX() + hotspotArr[i].getObject().getWidth() && _newTouchY >= hotspotArr[i].getObject().getY() && _newTouchY <= hotspotArr[i].getObject().getY() + hotspotArr[i].getObject().getHeight()) {
 	    	                     _menu.onHotspot(hotspotArr[i]);
 	    	                	 hit = true;
 	    	                	 break;
@@ -889,8 +889,8 @@ public class Rokon {
              
              for(i = 0; i < Rokon.MAX_HOTSPOTS; i++) {
 		         if(hotspotArr[i] != null)
-	                 if(hotspotArr[i].sprite != null) {
-	                	 if(_newTouchX >= hotspotArr[i].sprite.getX() && _newTouchX <= hotspotArr[i].sprite.getX() + hotspotArr[i].sprite.getWidth() && _newTouchY >= hotspotArr[i].sprite.getY() && _newTouchY <= hotspotArr[i].sprite.getY() + hotspotArr[i].sprite.getHeight()) {
+	                 if(hotspotArr[i].getObject() != null) {
+	                	 if(_newTouchX >= hotspotArr[i].getObject().getX() && _newTouchX <= hotspotArr[i].getObject().getX() + hotspotArr[i].getObject().getWidth() && _newTouchY >= hotspotArr[i].getObject().getY() && _newTouchY <= hotspotArr[i].getObject().getY() + hotspotArr[i].getObject().getHeight()) {
 	                         Rokon.getRokon().getInputHandler().onHotspotTouched(hotspotArr[i]);
 	                         Rokon.getRokon().getInputHandler().onHotspotTouched(hotspotArr[i], _newTouchX, _newTouchY);
 		                     Rokon.getRokon().getInputHandler().onHotspotTouched(hotspotArr[i], _newTouchX, _newTouchY, event.getAction());

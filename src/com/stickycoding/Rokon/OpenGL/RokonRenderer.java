@@ -15,6 +15,7 @@ import android.graphics.Paint;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLU;
 import android.opengl.GLUtils;
+import android.os.Build;
 
 import com.stickycoding.Rokon.Debug;
 import com.stickycoding.Rokon.Rokon;
@@ -41,7 +42,10 @@ public class RokonRenderer implements GLSurfaceView.Renderer {
 		GLU.gluOrtho2D(gl, 0, Rokon.getRokon().getWidth(), Rokon.getRokon().getHeight(), 0);
 		
 		if(Rokon.getRokon().isLandscape()) {
-			backgroundVertex = ByteBuffer.allocateDirect(8*4);
+			if(Build.VERSION.SDK_INT == 3)
+				backgroundVertex = ByteBuffer.allocate(8*4);
+			else
+				backgroundVertex = ByteBuffer.allocateDirect(8*4);
 			backgroundVertex.order(ByteOrder.nativeOrder());
 			backgroundVertex.position(0);
 			backgroundVertex.putInt(0); backgroundVertex.putInt(0);
@@ -50,7 +54,10 @@ public class RokonRenderer implements GLSurfaceView.Renderer {
 			backgroundVertex.putInt(Rokon.getRokon().getWidth()); backgroundVertex.putInt(Rokon.getRokon().getHeight());
 			backgroundVertex.position(0);
 		} else {
-			backgroundVertex = ByteBuffer.allocateDirect(8*4);
+			if(Build.VERSION.SDK_INT == 3)
+				backgroundVertex = ByteBuffer.allocate(8*4);
+			else
+				backgroundVertex = ByteBuffer.allocateDirect(8*4);
 			backgroundVertex.order(ByteOrder.nativeOrder());
 			backgroundVertex.position(0);
 			backgroundVertex.putInt(0); backgroundVertex.putInt(0);
@@ -60,7 +67,10 @@ public class RokonRenderer implements GLSurfaceView.Renderer {
 			backgroundVertex.position(0);
 		}
 
-		vertexBuffer = ByteBuffer.allocateDirect(8*4);
+		if(Build.VERSION.SDK_INT == 3)
+			backgroundVertex = ByteBuffer.allocate(8*4);
+		else
+			vertexBuffer = ByteBuffer.allocateDirect(8*4);
 		vertexBuffer.order(ByteOrder.nativeOrder());
 		vertexBuffer.position(0);
 		vertexBuffer.putFloat(0); vertexBuffer.putFloat(0);
@@ -133,7 +143,11 @@ public class RokonRenderer implements GLSurfaceView.Renderer {
 			gl.glClearColor(0.6f, 0.6f, 1, 1);
 			gl.glVertexPointer(2, GL11.GL_FLOAT, 0, vertexBuffer);
 
-			ByteBuffer texBuffer = ByteBuffer.allocateDirect(8*4);
+			ByteBuffer texBuffer;
+			if(Build.VERSION.SDK_INT == 3)
+				texBuffer = ByteBuffer.allocate(8*4);
+			else
+				texBuffer = ByteBuffer.allocateDirect(8*4);
 			texBuffer.order(ByteOrder.nativeOrder());
 			
 			texBuffer.position(0);

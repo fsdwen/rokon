@@ -13,7 +13,7 @@ public class Hotspot {
 	public float height;
 	private int _id;
 	
-	public Sprite sprite;
+	private DynamicObject _dynamicObject;
 	
 	/**
 	 * Creates a Hotspot based on coodinates, with no ID
@@ -28,7 +28,7 @@ public class Hotspot {
 		this.width = width;
 		this.height = height;
 		_id = -1;
-		sprite = null;
+		_dynamicObject = null;
 	}
 	
 	/**
@@ -46,10 +46,10 @@ public class Hotspot {
 	
 	/**
 	 * Defines a hotspot by a sprite, with no ID number
-	 * @param sprite
+	 * @param _dynamicObject
 	 */
-	public Hotspot(Sprite _sprite) {
-		sprite = _sprite;
+	public Hotspot(DynamicObject dynamicObject) {
+		_dynamicObject = dynamicObject;
 	}
 	
 	/**
@@ -57,8 +57,8 @@ public class Hotspot {
 	 * @param _sprite
 	 * @param id
 	 */
-	public Hotspot(Sprite _sprite, int id) {
-		this(_sprite);
+	public Hotspot(DynamicObject dynamicObject, int id) {
+		this(dynamicObject);
 		_id = id;
 	}
 	
@@ -88,13 +88,21 @@ public class Hotspot {
 		this.y = y;
 		this.width = width;
 		this.height = height;
-		sprite = null;
+		_dynamicObject = null;
 	}
 	
 	/**
-	 * @param sprite
+	 * @param _dynamicObject
 	 */
-	public void update(Sprite _sprite) {
-		sprite = _sprite;
+	public void update(DynamicObject dynamicObject) {
+		_dynamicObject = dynamicObject;
+	}
+	
+	/**
+	 * Returns the DynamicObject to which the Hotspot is bound
+	 * @return NULL if not set
+	 */
+	public DynamicObject getObject() {
+		return _dynamicObject;
 	}
 }

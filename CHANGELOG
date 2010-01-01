@@ -6,7 +6,7 @@
 		* Shape class allows geometric shapes to be drawn and manipulated as DynamicObjects, based on Polygons
 	
 	Changes
-		
+		* Hotspot is now bound to DynamicObject rather than Sprite
 	
 	Bug Fixes
 		* NullPointerException check on sensorManager 

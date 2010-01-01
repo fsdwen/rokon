@@ -3,6 +3,8 @@ package com.stickycoding.Rokon;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
+import android.os.Build;
+
 import com.stickycoding.Rokon.Handlers.DynamicsHandler;
 
 /**
@@ -47,7 +49,10 @@ public class DynamicObject {
 		_offsetY = 0;
 		_rotationPivotX = (_width / 2);
 		_rotationPivotY = (_height / 2);		
-		_vertexBuffer = ByteBuffer.allocateDirect(8*4);
+		if(Build.VERSION.SDK_INT == 3)
+			_vertexBuffer = ByteBuffer.allocate(8*4);
+		else
+			_vertexBuffer = ByteBuffer.allocateDirect(8*4);
 		_vertexBuffer.order(ByteOrder.nativeOrder());
 	}
 	

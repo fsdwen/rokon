@@ -3,6 +3,8 @@ package com.stickycoding.Rokon;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
+import android.os.Build;
+
 /**
  * An easier way of managing a ByteBuffer for vertices
  * @author Richard
@@ -19,7 +21,10 @@ public class VertexBuffer {
 	 * @param y2 Bottom Right Y
 	 */
 	public VertexBuffer(int x1, int y1, int x2, int y2) {
-		buffer = ByteBuffer.allocateDirect(8*4);
+		if(Build.VERSION.SDK_INT == 3)
+			buffer = ByteBuffer.allocate(8*4);
+		else
+			buffer = ByteBuffer.allocateDirect(8*4);
 		buffer.order(ByteOrder.nativeOrder());
 		update(x1, y1, x2, y2);
 	}

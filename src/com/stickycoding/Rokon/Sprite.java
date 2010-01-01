@@ -6,6 +6,8 @@ import java.nio.ByteOrder;
 import javax.microedition.khronos.opengles.GL10;
 import javax.microedition.khronos.opengles.GL11;
 
+import android.os.Build;
+
 import com.stickycoding.Rokon.Handlers.AnimationHandler;
 import com.stickycoding.Rokon.Handlers.CollisionHandler;
 
@@ -67,8 +69,11 @@ public class Sprite extends DynamicObject {
 		_alpha = 1;
 		_visible = true;
 		_killMe = false;
-		
-		_texBuffer = ByteBuffer.allocateDirect(8*4);
+
+		if(Build.VERSION.SDK_INT == 3)
+			_texBuffer = ByteBuffer.allocate(8*4);
+		else
+			_texBuffer = ByteBuffer.allocateDirect(8*4);
 		_texBuffer.order(ByteOrder.nativeOrder());
 		
 		if(texture != null)

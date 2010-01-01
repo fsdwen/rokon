@@ -3,6 +3,8 @@ package com.stickycoding.Rokon;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
+import android.os.Build;
+
 /**
  * A holder for the a Texture buffer, easier way of handling the ByteBuffer
  * @author Richard
@@ -15,7 +17,10 @@ public class TextureBuffer {
 	 
 	public TextureBuffer(Texture texture) {
 		_texture = texture;
-		_buffer = ByteBuffer.allocateDirect(8*4);
+		if(Build.VERSION.SDK_INT == 3)
+			_buffer = ByteBuffer.allocate(8*4);
+		else
+			_buffer = ByteBuffer.allocateDirect(8*4);
 		_buffer.order(ByteOrder.nativeOrder());
 		update();
 	}

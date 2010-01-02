@@ -18,6 +18,8 @@ public class Particle extends DynamicObject {
 	public float blue;
 	private long _spawnTime;
 	
+	private int _tileIndex;
+	
 	private int i;
 	private int[] _propertyId;
 	private Object[] _propertyValue;
@@ -42,6 +44,23 @@ public class Particle extends DynamicObject {
 		_spawnTime = Rokon.time;
 		_propertyId = new int[MAX_PROPERTIES];
 		_propertyValue = new Object[MAX_PROPERTIES];
+		_tileIndex = 1;
+	}
+	
+	/**
+	 * Returns the current tile index of the Particle
+	 * @return tile index, default 1
+	 */
+	public int getTileIndex() {
+		return _tileIndex;
+	}
+	
+	/**
+	 * Sets the current texture tile index
+	 * @param tileIndex
+	 */
+	public void setTileIndex(int tileIndex) {
+		_tileIndex = tileIndex;
 	}
 	
 	/**

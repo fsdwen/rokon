@@ -21,9 +21,13 @@ public class SoundFile {
 	}
 	
 	public void playFast() {
+		playFast(1);
+	}
+	
+	public void playFast(float rate) {
 		if(RokonAudio.mute)
 			return;
-		RokonAudio.singleton.getSoundPool().play(_id, RokonAudio.singleton.getMasterVolume(), RokonAudio.singleton.getMasterVolume(), 1, 0, 1f);
+		RokonAudio.singleton.getSoundPool().play(_id, RokonAudio.singleton.getMasterVolume(), RokonAudio.singleton.getMasterVolume(), 1, 0, rate);
 	}
 	
 	/**

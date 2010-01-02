@@ -18,7 +18,11 @@ public class BounceParticle extends ParticleModifier {
 
 	public void onUpdate(Particle particle) {
 		if(particle.getVelocityY() > 0)
-			if(particle.getY() >= _floor)
+			if(particle.getY() + particle.getHeight() > _floor) {
+				if(particle.getVelocityY() < 5)
+					particle.setVelocityY(0);
 				particle.setVelocityY(-1 * particle.getVelocityY() * _bounceFactor);
+				particle.setVelocityX(particle.getVelocityX() * _bounceFactor);
+			}
 	}
 }

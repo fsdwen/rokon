@@ -20,7 +20,7 @@ public class Emitter extends DynamicObject {
 	private float _minRate, _maxRate, _nextRate;
 	private Texture _texture;
 	private int i, j, k, w, x;
-	private TextureBuffer _texBuffer;
+	private TextureBuffer[] _texBuffer;
 	private ParticleModifier[] _particleModifier;
 	
 	private BlendFunction _blendFunction = null;
@@ -79,7 +79,10 @@ public class Emitter extends DynamicObject {
 		_maxRate = (1 / maxRate) * 1000;
 		_nextRate = (float)(Math.random() * (_maxRate - _minRate)) + _minRate;
 		_texture = texture;
-		_texBuffer = new TextureBuffer(texture);
+		_texBuffer = new TextureBuffer[texture.getTileColumnCount() * texture.getTileRowCount()];
+		for(int i = 0; i < _texBuffer.length; i++) {
+			_texBuffer[i] = new TextureBuffer(texture, i + 1);
+		}
 		_particleModifier = new ParticleModifier[MAX_PARTICLE_MODIFIERS];
 		setLastUpdate();
 	}
@@ -180,7 +183,8 @@ public class Emitter extends DynamicObject {
 			_updateSpawns();
 		if(_blendFunction != null)
 			gl.glBlendFunc(_blendFunction.getSrc(), _blendFunction.getDst());
-		gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, _texBuffer.getBuffer());
+		if(_texBuffer.length == 1)
+			gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, _texBuffer[0].getBuffer());
 		gl.glVertexPointer(2, GL11.GL_FLOAT, 0, RokonRenderer.vertexBuffer);
 		_texture.select(gl);
 		
@@ -193,6 +197,8 @@ public class Emitter extends DynamicObject {
 				} else {
 					if(particleArr[i].getX() + particleArr[i].getWidth() < 0 || particleArr[i].getX() > Rokon.getRokon().getWidth() || particleArr[i].getY() + particleArr[i].getHeight() < 0 || particleArr[i].getY() > Rokon.getRokon().getHeight()) {
 						if(Rokon.getRokon().isForceOffscreenRender()) {
+							if(_texBuffer.length > 1)
+								gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, _texBuffer[particleArr[i].getTileIndex()].getBuffer());
 							gl.glLoadIdentity();
 							gl.glTranslatef(particleArr[i].getX(), particleArr[i].getY(), 0);
 							gl.glScalef(particleArr[i].getWidth(), particleArr[i].getHeight(), 0);
@@ -200,6 +206,8 @@ public class Emitter extends DynamicObject {
 							gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
 						}
 					} else {
+						if(_texBuffer.length > 1)
+							gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, _texBuffer[particleArr[i].getTileIndex()].getBuffer());
 						gl.glLoadIdentity();
 						gl.glTranslatef(particleArr[i].getX(), particleArr[i].getY(), 0);
 						gl.glScalef(particleArr[i].getWidth(), particleArr[i].getHeight(), 0);

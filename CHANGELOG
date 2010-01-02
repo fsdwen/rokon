@@ -4,7 +4,8 @@
 	New Features
 	
 	Changes
-	
+		* Addition play methods added to SoundFile
+		
 	Bug Fixes
 		* Fixed onExit() bug not being called in Menu
 

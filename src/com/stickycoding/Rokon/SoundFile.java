@@ -20,6 +20,12 @@ public class SoundFile {
 		return _id;
 	}
 	
+	public void playFast() {
+		if(RokonAudio.mute)
+			return;
+		RokonAudio.singleton.getSoundPool().play(_id, RokonAudio.singleton.getMasterVolume(), RokonAudio.singleton.getMasterVolume(), 1, 0, 1f);
+	}
+	
 	/**
 	 * @return the AudioStream through which the sound is playing
 	 */
@@ -29,6 +35,19 @@ public class SoundFile {
 		result = RokonAudio.singleton.getSoundPool().play(_id, RokonAudio.singleton.getMasterVolume(), RokonAudio.singleton.getMasterVolume(), 1, 0, 1f);
 		if(result != 0) {
 			audioStream = new AudioStream(result, false, RokonAudio.singleton.getMasterVolume());
+			return audioStream;
+		} else
+			return null;
+	}
+	
+	public AudioStream play(float rate, float volume) {
+		if(RokonAudio.mute)
+			return null;
+		result = RokonAudio.singleton.getSoundPool().play(_id, RokonAudio.singleton.getMasterVolume(), RokonAudio.singleton.getMasterVolume(), 1, 0, 1f);
+		if(result != 0) {
+			audioStream = new AudioStream(result, false, RokonAudio.singleton.getMasterVolume());
+			audioStream.setRate(rate);
+			audioStream.setVolume(volume);
 			return audioStream;
 		} else
 			return null;

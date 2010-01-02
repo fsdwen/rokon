@@ -31,7 +31,7 @@ public class SpriteModifier {
 	 * This is called on every SpriteModifier before the frame is drawn. Extend this to take control.
 	 * @param sprite
 	 */
-	public void onUpdate(Sprite sprite) {
+	public void onUpdate(DynamicObject sprite) {
 		
 	}
 	
@@ -40,7 +40,7 @@ public class SpriteModifier {
 	 * @param sprite
 	 * @param gl
 	 */
-	public void onDraw(Sprite sprite, GL10 gl) {
+	public void onDraw(DynamicObject sprite, GL10 gl) {
 		
 	}
 

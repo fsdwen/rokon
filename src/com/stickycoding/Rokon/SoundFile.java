@@ -30,24 +30,15 @@ public class SoundFile {
 	 * @return the AudioStream through which the sound is playing
 	 */
 	public AudioStream play() {
-		if(RokonAudio.mute)
-			return null;
-		result = RokonAudio.singleton.getSoundPool().play(_id, RokonAudio.singleton.getMasterVolume(), RokonAudio.singleton.getMasterVolume(), 1, 0, 1f);
-		if(result != 0) {
-			audioStream = new AudioStream(result, false, RokonAudio.singleton.getMasterVolume());
-			return audioStream;
-		} else
-			return null;
+		return play(1);
 	}
 	
-	public AudioStream play(float rate, float volume) {
+	public AudioStream play(float rate) {
 		if(RokonAudio.mute)
 			return null;
-		result = RokonAudio.singleton.getSoundPool().play(_id, RokonAudio.singleton.getMasterVolume(), RokonAudio.singleton.getMasterVolume(), 1, 0, 1f);
+		result = RokonAudio.singleton.getSoundPool().play(_id, RokonAudio.singleton.getMasterVolume(), RokonAudio.singleton.getMasterVolume(), 1, 0, rate);
 		if(result != 0) {
 			audioStream = new AudioStream(result, false, RokonAudio.singleton.getMasterVolume());
-			audioStream.setRate(rate);
-			audioStream.setVolume(volume);
 			return audioStream;
 		} else
 			return null;

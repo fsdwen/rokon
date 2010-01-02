@@ -1,3 +1,13 @@
+1.1.2
+	Overview
+	
+	New Features
+	
+	Changes
+	
+	Bug Fixes
+		* Fixed onExit() bug not being called in Menu
+
 1.1.1 - 2/1/2010
 	Overview
 		* Far better touch recognition, no more stupid timed usage

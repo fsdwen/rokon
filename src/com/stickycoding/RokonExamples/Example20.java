@@ -2,6 +2,7 @@
 package com.stickycoding.RokonExamples;
 
 import com.stickycoding.Rokon.Collider;
+import com.stickycoding.Rokon.Debug;
 import com.stickycoding.Rokon.Polygon;
 import com.stickycoding.Rokon.RokonActivity;
 import com.stickycoding.Rokon.Shape;
@@ -26,6 +27,7 @@ public class Example20 extends RokonActivity {
 	
     public void onCreate() {
     	createEngine("graphics/loading.png", 480, 320, true);
+    	Debug.warning("THIS EXAMPLE IS NOT COMPLETE - COLLISION DETECTION IS NOT READY");
     }
 
 	@Override

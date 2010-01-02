@@ -23,6 +23,8 @@ public class Emitter extends DynamicObject {
 	private TextureBuffer _texBuffer;
 	private ParticleModifier[] _particleModifier;
 	
+	private BlendFunction _blendFunction = null;
+	
 	private boolean _spawning = false;
 
 	/**
@@ -176,7 +178,8 @@ public class Emitter extends DynamicObject {
 	public void drawFrame(GL10 gl) {
 		if(_spawning)
 			_updateSpawns();
-		gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_DST_ALPHA);
+		if(_blendFunction != null)
+			gl.glBlendFunc(_blendFunction.getSrc(), _blendFunction.getDst());
 		gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, _texBuffer.getBuffer());
 		gl.glVertexPointer(2, GL11.GL_FLOAT, 0, RokonRenderer.vertexBuffer);
 		_texture.select(gl);
@@ -207,7 +210,9 @@ public class Emitter extends DynamicObject {
 			}
 		}
 		
-		gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+		if(_blendFunction != null)
+			gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);		
+		
 	}
 	
 	/**
@@ -308,5 +313,21 @@ public class Emitter extends DynamicObject {
 	 */
 	public boolean isSpawning() {
 		return _spawning;
+	}
+	
+	/**
+	 * Sets the current blend function parameters
+	 * @param blendFunction BlendFunction object, NULL to set to default 
+	 */
+	public void setBlendFunction(BlendFunction blendFunction) {
+		_blendFunction = blendFunction;
+	}
+	
+	/**
+	 * Returns the current blend function parameters
+	 * @return NULL if none set (will run as default)
+	 */
+	public BlendFunction getBlendFunction() {
+		return _blendFunction;
 	}
 }

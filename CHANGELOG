@@ -1,9 +1,10 @@
 1.1.1
 	Overview
+		* Far better touch recognition, no more stupid timed usage
 	
 	New Features
-		* Polygon-based collision detection
 		* Shape class allows geometric shapes to be drawn and manipulated as DynamicObjects, based on Polygons
+		* Particle systems are now ready for us, see Example16
 	
 	Changes
 		* Hotspot is now bound to DynamicObject rather than Sprite

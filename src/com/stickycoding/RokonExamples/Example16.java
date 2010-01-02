@@ -2,6 +2,7 @@ package com.stickycoding.RokonExamples;
 
 import com.stickycoding.Rokon.Emitter;
 import com.stickycoding.Rokon.RokonActivity;
+import com.stickycoding.Rokon.Sprite;
 import com.stickycoding.Rokon.Texture;
 import com.stickycoding.Rokon.TextureAtlas;
 import com.stickycoding.Rokon.TextureManager;

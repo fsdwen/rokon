@@ -84,6 +84,7 @@ public class Menu {
 					_rokon.freeze();
 					_rokon.showMenu(_closingMenuNext);
 				}
+				onExit();
 			}
 			return;
 		}

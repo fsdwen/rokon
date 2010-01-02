@@ -1,5 +1,6 @@
 package com.stickycoding.Rokon.ParticleModifiers;
 
+import com.stickycoding.Rokon.Debug;
 import com.stickycoding.Rokon.Particle;
 import com.stickycoding.Rokon.ParticleModifier;
 

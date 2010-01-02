@@ -7,7 +7,7 @@ import com.stickycoding.Rokon.TextureAtlas;
 import com.stickycoding.Rokon.TextureManager;
 import com.stickycoding.Rokon.Backgrounds.FixedBackground;
 import com.stickycoding.Rokon.ParticleModifiers.AccelerateParticle;
-import com.stickycoding.Rokon.ParticleModifiers.Expire;
+import com.stickycoding.Rokon.ParticleModifiers.ExpireParticle;
 import com.stickycoding.Rokon.ParticleModifiers.ParticleDimensions;
 
 /**
@@ -35,16 +35,17 @@ public class Example16 extends RokonActivity {
 		TextureManager.load(atlas);
 		
 		background = new FixedBackground(backgroundTexture);
-		carEmitter = new Emitter(150, 150, 1, carTexture);
-		carEmitter.addParticleModifier(new ParticleDimensions(50, 50, 50, 50));
-		carEmitter.addParticleModifier(new Expire(600, 1200));
-		carEmitter.addParticleModifier(new AccelerateParticle(0, 0, -100, -200));
+		carEmitter = new Emitter(-10, 10, -10, 10, 4, 8, carTexture);
+		carEmitter.addParticleModifier(new ParticleDimensions(50, 90, 50, 90));
+		carEmitter.addParticleModifier(new ExpireParticle(2700, 3500));
+		carEmitter.addParticleModifier(new AccelerateParticle(100, 200, 50, 100));
 	}
 
 	@Override
 	public void onLoadComplete() {
 		rokon.setBackground(background);
 		rokon.addEmitter(carEmitter);
+		carEmitter.startSpawning();
 	}
 
 	@Override

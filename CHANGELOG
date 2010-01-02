@@ -12,6 +12,7 @@
 		* NullPointerException check on sensorManager 
 		* Continuous playback in RokonMusic is fixed
 		* Fixed loading screen problems
+		* DynamicObject acceleration bug
 
 1.1.0 - 29/12/2009
 	Overview

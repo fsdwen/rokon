@@ -17,22 +17,23 @@ public class Emitter extends DynamicObject {
 	private Particle[] particleArr = new Particle[MAX_PARTICLES];
 	
 	private boolean _dead = false;
-	private float _rate;
+	private float _minRate, _maxRate, _nextRate;
 	private Texture _texture;
 	private int i, j, k, w, x;
 	private TextureBuffer _texBuffer;
-	
 	private ParticleModifier[] _particleModifier;
+	
+	private boolean _spawning = false;
 
 	/**
-	 * Create's a point-emitter
+	 * Creates a point-emitter
 	 * @param x
 	 * @param y
 	 * @param rate number of particles created per second
 	 * @param texture texture of each particle
 	 */
 	public Emitter(float x, float y, float rate, Texture texture) {
-		this(x, x, y, y, rate, texture);
+		this(x, x, y, y, rate, rate, texture);
 	}
 	
 	/**
@@ -45,8 +46,36 @@ public class Emitter extends DynamicObject {
 	 * @param texture texture of each particle
 	 */
 	public Emitter(float x1, float x2, float y1, float y2, float rate, Texture texture) {
+		this(x1, x2, y1, y2, rate, rate, texture);
+	}
+	
+	/**
+	 * Creates a point-emitter
+	 * @param x
+	 * @param y
+	 * @param minRate minimum number of particles created per second
+	 * @param maxRate maximum number of particles created per second
+	 * @param texture texture of each particle
+	 */
+	public Emitter(float x, float y, float minRate, float maxRate, Texture texture) {
+		this(x, x, y, y, minRate, maxRate, texture);
+	}
+	
+	/**
+	 * Creates an emitter as a rectange
+	 * @param x1 Top left of spawn rect
+	 * @param x2 Bottom right of spawn rect
+	 * @param y1 Top left of spawn rect
+	 * @param y2 Bottom right of spawn rect
+	 * @param minRate minimum number of particles created per second
+	 * @param maxRate maximum number of particles created per second
+	 * @param texture texture of each particle
+	 */
+	public Emitter(float x1, float x2, float y1, float y2, float minRate, float maxRate, Texture texture) {
 		super(x1, y1, x2 - x1, y2 - y1);
-		_rate = (1 / rate) * 1000;
+		_minRate = (1 / minRate) * 1000;
+		_maxRate = (1 / maxRate) * 1000;
+		_nextRate = (float)(Math.random() * (_maxRate - _minRate)) + _minRate;
 		_texture = texture;
 		_texBuffer = new TextureBuffer(texture);
 		_particleModifier = new ParticleModifier[MAX_PARTICLE_MODIFIERS];
@@ -54,10 +83,17 @@ public class Emitter extends DynamicObject {
 	}
 	
 	/**
-	 * @return the number of particles emitted per second
+	 * @return the minimum number of particles emitted per second
 	 */
-	public float getRate() {
-		return _rate;
+	public float getMinRate() {
+		return _minRate;
+	}
+	
+	/**
+	 * @return the maximum number of particles emitter per second
+	 */
+	public float getMaxRate() {
+		return _maxRate;
 	}
 	
 	/**
@@ -65,7 +101,24 @@ public class Emitter extends DynamicObject {
 	 * @param rate Particle's per second
 	 */
 	public void setRate(float rate) {
-		_rate = rate;
+		setMinRate(rate);
+		setMaxRate(rate);
+	}
+	
+	/**
+	 * SEts the minimum spawn rate
+	 * @param minRate particles spawned per second
+	 */
+	public void setMinRate(float minRate) {
+		_minRate = minRate;
+	}
+	
+	/**
+	 * Sets the maximum spawn rate 
+	 * @param maxRate particles spawned per second
+	 */
+	public void setMaxRate(float maxRate) {
+		_maxRate = maxRate;
 	}
 	
 	/**
@@ -93,24 +146,27 @@ public class Emitter extends DynamicObject {
 	public void spawnParticle(Particle particle) {
 		j = -1;
 		for(i = 0; i < MAX_PARTICLES; i++)
-			if(particleArr[i] == null)
+			if(particleArr[i] == null) {
 				j = i;
+				break;
+			}
 		if(j == -1) {
 			Debug.print("TOO MANY PARTICLES");
 			return;
 		}
 		particleArr[j] = particle;
 		for(w = 0; w < _particleModifier.length; w++)
-			_particleModifier[w].onCreate(particle);
+			if(_particleModifier[w] != null)
+				_particleModifier[w].onCreate(particle);
 	}
 	
 	private long _timeDiff;
 	private int _count;
 	private void _updateSpawns() {
 		_timeDiff = Rokon.time - getLastUpdate();
-		_count = Math.round(_timeDiff / _rate);
+		_count = Math.round(_timeDiff / _nextRate);
 		if(_count > 0) {
-			Debug.print("Spawning " + _count + " after " + _timeDiff);
+			_nextRate = (float)(Math.random() * (_maxRate - _minRate)) + _minRate;
 			for(i = 0; i < _count; i++)
 				_spawn();
 			setLastUpdate();
@@ -118,20 +174,20 @@ public class Emitter extends DynamicObject {
 	}
 	
 	public void drawFrame(GL10 gl) {
-		_updateSpawns();
+		if(_spawning)
+			_updateSpawns();
 		gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_DST_ALPHA);
 		gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, _texBuffer.getBuffer());
 		gl.glVertexPointer(2, GL11.GL_FLOAT, 0, RokonRenderer.vertexBuffer);
-
 		_texture.select(gl);
 		
 		for(i = 0; i < MAX_PARTICLES; i++) {
 			if(particleArr[i] != null) {
 				updateParticle(particleArr[i]);
 				particleArr[i].updateMovement();
-				if(particleArr[i].dead)
+				if(particleArr[i].dead) {
 					particleArr[i] = null;
-				else {
+				} else {
 					if(particleArr[i].getX() + particleArr[i].getWidth() < 0 || particleArr[i].getX() > Rokon.getRokon().getWidth() || particleArr[i].getY() + particleArr[i].getHeight() < 0 || particleArr[i].getY() > Rokon.getRokon().getHeight()) {
 						if(Rokon.getRokon().isForceOffscreenRender()) {
 							gl.glLoadIdentity();
@@ -192,8 +248,12 @@ public class Emitter extends DynamicObject {
 	 * @param particle
 	 */
 	public void updateParticle(Particle particle) {
-		for(w = 0; w < _particleModifier.length; w++)
-			_particleModifier[w].onUpdate(particle);
+		if(particle.getDeathTime() > 0 && particle.getDeathTime() <= Rokon.getTime())
+			particle.kill();
+		else
+			for(w = 0; w < _particleModifier.length; w++)
+				if(_particleModifier[w] != null)
+					_particleModifier[w].onUpdate(particle);
 	}
 	
 	/**
@@ -226,5 +286,27 @@ public class Emitter extends DynamicObject {
 	 */
 	public void setParticleModifiers(ParticleModifier[] particleModifier) {
 		_particleModifier = particleModifier;
+	}
+	
+	/**
+	 * Begins spawning particles
+	 */
+	public void startSpawning() {
+		_spawning = true;
+	}
+	
+	/**
+	 * Stops spawning particles
+	 */
+	public void stopSpawning() {
+		_spawning = false;
+	}
+	
+	/**
+	 * Checks whether the Emitter is currently spawning particles
+	 * @return TRUE if spawning, FALSE if not
+	 */
+	public boolean isSpawning() {
+		return _spawning;
 	}
 }

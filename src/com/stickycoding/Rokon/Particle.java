@@ -22,6 +22,8 @@ public class Particle extends DynamicObject {
 	private int[] _propertyId;
 	private Object[] _propertyValue;
 	
+	private long _deathTime;
+	
 	/**
 	 * Creates a particle with basic coordinates
 	 * @param emitter
@@ -106,6 +108,14 @@ public class Particle extends DynamicObject {
 	 */
 	public void kill() {
 		dead = true;
+	}
+	
+	public long getDeathTime() {
+		return _deathTime;
+	}
+	
+	public void setDeathTime(long deathTime) {
+		_deathTime = deathTime;
 	}
 	
 }

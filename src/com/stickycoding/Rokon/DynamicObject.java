@@ -54,6 +54,7 @@ public class DynamicObject {
 		else
 			_vertexBuffer = ByteBuffer.allocateDirect(8*4);
 		_vertexBuffer.order(ByteOrder.nativeOrder());
+		setLastUpdate();
 	}
 	
 	/**
@@ -412,7 +413,6 @@ public class DynamicObject {
 			_y += _velocityY * _timeDiffModifier;
 			updateVertexBuffer();
 		}
-		
 		setLastUpdate();
 	}
 
@@ -462,7 +462,7 @@ public class DynamicObject {
 		_accelerationY += accelerationY;
 		_triggeredReachTerminalVelocityX = false;
 		_triggeredReachTerminalVelocityY = false;
-		_lastUpdate = 0;
+		setLastUpdate();
 	}
 	
 	/**
@@ -474,7 +474,7 @@ public class DynamicObject {
 		_stopAtTerminalVelocity = false;
 		_accelerationX += accelerationX;
 		_accelerationY += accelerationY;
-		_lastUpdate = 0;
+		setLastUpdate();
 	}
 	
 	/**

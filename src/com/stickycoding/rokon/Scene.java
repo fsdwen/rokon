@@ -25,6 +25,7 @@ public class Scene {
 	protected int layerCount;
 	protected Window window = null;
 	protected Texture[] textures;
+	protected boolean useInvoke;
 
 	public void onTouchDown(DrawableObject object, float x, float y, MotionEvent event) { }
 	public void onTouchUp(DrawableObject object, float x, float y, MotionEvent event) { }
@@ -34,6 +35,21 @@ public class Scene {
 	public void onTouchMove(float x, float y, MotionEvent event) { }
 	public void onTouch(float x, float y, MotionEvent event) { }
 	public void onTouchUp(float x, float y, MotionEvent event) { }
+	
+	/**
+	 * Triggers the Scene to begin invoking methods on certain events, this is not set by default.
+	 * If the methods that are to be invoked don't exist, no exceptions will be raised.
+	 */
+	public void useInvoke() {
+		useInvoke = true;
+	}
+	
+	/**
+	 * Stops the Scene from invoking methods on events, this is the default state
+	 */
+	public void stopInvoke() {
+		useInvoke = false;
+	}
 	
 	/**
 	 * Invokes a method inside the Scene class, defined by given parameters.
@@ -161,15 +177,27 @@ public class Scene {
 				if(object != null && object.isTouchable) {
 					if(MathHelper.pointInRect(event.getX(), event.getY(), object.x, object.y, object.width, object.height)) {
 						onTouch(object, event.getX(), event.getY(), event);
+						if(object.getName() != null) {
+							invoke(object.getName() + "_onTouch", new Class[] { float.class, float.class, MotionEvent.class }, new Object[] { event.getX(), event.getY(), event });
+						}
 						switch(event.getAction()) {
 							case MotionEvent.ACTION_DOWN:
 								onTouchDown(object, event.getX(), event.getY(), event);
+								if(object.getName() != null) {
+									invoke(object.getName() + "_onTouchDown", new Class[] { float.class, float.class, MotionEvent.class }, new Object[] { event.getX(), event.getY(), event });
+								}
 								break;
 							case MotionEvent.ACTION_UP:
 								onTouchUp(object, event.getX(), event.getY(), event);
+								if(object.getName() != null) {
+									invoke(object.getName() + "_onTouchUp", new Class[] { float.class, float.class, MotionEvent.class }, new Object[] { event.getX(), event.getY(), event });
+								}
 								break;
 							case MotionEvent.ACTION_MOVE:
 								onTouch(object, event.getX(), event.getY(), event);
+								if(object.getName() != null) {
+									invoke(object.getName() + "_onTouchMove", new Class[] { float.class, float.class, MotionEvent.class }, new Object[] { event.getX(), event.getY(), event });
+								}
 								break;
 						}
 					}

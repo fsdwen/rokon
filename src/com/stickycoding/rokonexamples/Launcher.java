@@ -31,9 +31,7 @@ public class Launcher extends RokonActivity {
 		Debug.print("Loading is complete");
 
 		Texture texture = new Texture("face.png");
-		
-		//myScene.useTexture(texture);
-		
+
 		sprite = new Sprite(50, 50, 100, 100);
 		sprite.setTexture(texture);
 		sprite.setName("sprite");

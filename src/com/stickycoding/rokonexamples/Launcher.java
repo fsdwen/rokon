@@ -1,5 +1,9 @@
 package com.stickycoding.rokonexamples;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Arrays;
+
 import android.view.MotionEvent;
 
 import com.stickycoding.rokon.Debug;
@@ -7,14 +11,12 @@ import com.stickycoding.rokon.DrawPriority;
 import com.stickycoding.rokon.DrawableObject;
 import com.stickycoding.rokon.RokonActivity;
 import com.stickycoding.rokon.Scene;
+import com.stickycoding.rokon.Sprite;
 import com.stickycoding.rokon.Texture;
-import com.stickycoding.rokon.TileEngine.HexagonalLayer;
-import com.stickycoding.rokon.TileEngine.TiledSprite;
 
 public class Launcher extends RokonActivity {
 	
-	public TiledSprite sprite;
-	public HexagonalLayer layer;
+	public Sprite sprite;
 
 	public void onCreate() {
 		forceFullscreen();
@@ -28,36 +30,101 @@ public class Launcher extends RokonActivity {
 	public void onLoadComplete() {
 		Debug.print("Loading is complete");
 
-		Texture texture = new Texture("hex.png");
-		layer = new HexagonalLayer(myScene, 64, 100, 73);
-		myScene.setLayer(0, layer);
+		Texture texture = new Texture("face.png");
 		
 		myScene.useTexture(texture);
 		
-		for(int i = 0; i < 6; i++) {
-			for(int j = 0; j < 10; j++) {
-				sprite = new TiledSprite(layer, 0, 0, 100, 100);
-				sprite.setTexture(texture);
-				sprite.setTile(i, j);
-				myScene.add(sprite);
-			}
-		}
+		sprite = new Sprite(50, 50, 100, 100);
+		sprite.setTexture(texture);
+		sprite.setName("sprite");
+		sprite.setTouchable();
+		myScene.add(sprite);
 		
+		 
 		setScene(myScene);
 		
 	}
 	
 	public Scene myScene = new Scene(1, 128) {
 		
+		public void sprite_onTouch(float x, float y, MotionEvent event) {
+			Debug.print("TOok " + (System.currentTimeMillis() - startTime));
+			Debug.print("@YESSS! x=" + x + " y=" + y);
+		}
+		
+		long startTime;
+		
+		public void sprite_onTouch() {
+			Debug.print("NOOOOOOOO");
+		}
+		
+		public void sprite_onTouch(int a) {
+			Debug.print("NOOOOOOOO!");
+		}
+		
+		public void invoke(String methodName, Class[] params, Object[] paramValues) {
+			startTime = System.currentTimeMillis();
+			for(Method m : this.getClass().getDeclaredMethods()) {
+				if(m.getName().equals(methodName)) {
+					if(Arrays.equals(params, m.getParameterTypes())) {
+						try {
+							m.invoke(this, paramValues);
+						} catch (IllegalArgumentException e) {
+							Debug.error("Invoking, IllegalArgument");
+							e.printStackTrace();
+						} catch (IllegalAccessException e) {
+							Debug.error("Invoking, IllegalAccess");
+							e.printStackTrace();
+						} catch (InvocationTargetException e) {
+							Debug.error("Invoking, IllegalTarget");
+							e.printStackTrace();
+						}
+					}
+				}
+				
+			}
+		}
+		
 		@Override
 		public void onTouchDown(DrawableObject object, float x, float y, MotionEvent event) {
-			//sprite.setTileX(sprite.getTileX() + 1);
+			invoke("sprite_onTouch", new Class[] { float.class, float.class, MotionEvent.class }, new Object[] { x, y, event} );
+			/*Debug.print("TOUCH " + object.getName());
+			if(object.getName() != null) {
+				Class<?> c = this.getClass();
+				Object t = this;
+				
+				Method[] allMethods = c.getDeclaredMethods();
+				for(Method m : allMethods) {
+					if(m.getName().equals(object.getName() + "_onTouch")) {
+						Debug.print("Method = " + m.getName());
+						Class[] params = m.getParameterTypes();
+						for(Class p : params) {
+							Debug.print("Param = " + p.getName());
+							if(p == float.class) { 
+								Debug.print(" isfloat");
+							}
+							if(p == MotionEvent.class) {
+								Debug.print(" isMotionEvent");
+							}
+						}
+						for(int i = 0; i < )
+						if(params == new Class[] { float.class, float.class, MotionEvent.class }) {
+							Debug.print("  @@@Aaaaa");
+							try {
+								m.invoke(this, null);
+							} catch (Exception e) {
+								Debug.error("eh?");
+								e.printStackTrace();
+							}
+						}
+					}
+				}
+			}*/
 		}
 		
 		@Override
 		public void onTouch(float x, float y, MotionEvent event) {
-			HexagonalLayer layer = (HexagonalLayer)getLayer(0);
-			sprite.setTile(layer.getTileX(x, y), layer.getTileY(x, y));
+
 		}
 	};
 	

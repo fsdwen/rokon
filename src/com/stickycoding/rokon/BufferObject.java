@@ -31,6 +31,14 @@ public class BufferObject {
 		byteBuffer = null;
 	}
 	
+	public void updateRaw(float[] floats) {
+		byteBuffer.position(0);
+		for(int i = 0; i < floats.length; i++) {
+			byteBuffer.putFloat(floats[i]);
+		}
+		byteBuffer.position(0);
+	}
+	
 	public void update(float x, float y, float width, float height) {
 		byteBuffer.position(0);
 		byteBuffer.putFloat(x);

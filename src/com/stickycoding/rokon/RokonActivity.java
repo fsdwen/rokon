@@ -8,6 +8,10 @@ import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.WindowManager;
 
+import com.stickycoding.rokon.VBO.ArrayVBO;
+import com.stickycoding.rokon.VBO.ElementVBO;
+import com.stickycoding.rokon.VBO.VBO;
+
 /**
  * RokonActivity.java
  * The base Activity for the graphics engine to work from
@@ -30,7 +34,6 @@ public class RokonActivity extends Activity {
 	public void onCreate(Bundle savedState) {
 		super.onCreate(savedState);
 		Debug.print("Engine Activity created");
-		createStatics();
 		onCreate();
 		if(!engineCreated) {
 			Debug.error("The engine was not created");
@@ -40,9 +43,14 @@ public class RokonActivity extends Activity {
 	}
 	
 	private void createStatics() {
+		Device.determine(this);
 		Rokon.blendFunction = new BlendFunction(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 		Rokon.defaultVertexBuffer = new BufferObject();
 		Rokon.defaultVertexBuffer.update(0, 0, 1, 1);
+		Rokon.elementVBO = new ElementVBO(VBO.STATIC);
+		Rokon.elementVBO.getBufferObject().updateRaw(new float[] { 0, 1, 1, 0, 1, 1 });
+		Rokon.arrayVBO = new ArrayVBO(VBO.STATIC);
+		Rokon.arrayVBO.update(0, 0, 1, 1);
 	}
 	
 	@Override
@@ -203,6 +211,7 @@ public class RokonActivity extends Activity {
 	 * Note that some functions may only be called before createEngine
 	 */
 	public void createEngine() {
+		createStatics();
 		if(engineCreated) {
 			Debug.warning("RokonActivity.createEngine", "Attempted to call createEngine for a second time");
 			return;
@@ -218,7 +227,6 @@ public class RokonActivity extends Activity {
 		if(forcePortrait) {
 			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		}
-		Device.determine(this);
 		surfaceView = new RokonSurfaceView(this);
 		setContentView(surfaceView);
 		engineCreated = true;

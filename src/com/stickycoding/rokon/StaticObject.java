@@ -11,6 +11,7 @@ package com.stickycoding.rokon;
 public class StaticObject {
 	
 	protected int id = -1, state = -1;
+	protected String name = null;
 	protected float x, y, width, height, rotation, rotationPivotX, rotationPivotY;
 	protected boolean rotateAboutPoint;
 	
@@ -23,6 +24,14 @@ public class StaticObject {
 		this.y = y;
 		this.width = width;
 		this.height = height;
+	}
+	
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	public String getName() {
+		return name;
 	}
 	
 	protected void onChange() {

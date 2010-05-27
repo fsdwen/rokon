@@ -24,20 +24,33 @@ public class RokonRenderer implements GLSurfaceView.Renderer {
 	
 	public void onDrawFrame(GL10 gl) {
 		Time.update();
-		if(!rokonActivity.engineLoaded) {
-			rokonActivity.engineLoaded = true;
+		if(!RokonActivity.engineLoaded) {
+			RokonActivity.engineLoaded = true;
 			System.gc();
 			rokonActivity.onLoadComplete();
 			return;
 		}
 		GLHelper.setGL(gl);
 		FPSCounter.onFrame();
-		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-		if(rokonActivity.currentScene != null) {
-			if(!rokonActivity.currentScene.loadedTextures) {
-				rokonActivity.currentScene.onLoadTextures(gl);
+		//TODO Fix VBO
+		/*if(Device.supportsVBO) {
+			if(Rokon.elementVBO == null) {
+				return;
 			}
-			rokonActivity.currentScene.onDraw(gl);			
+			if(!Rokon.elementVBO.isLoaded()) {
+				Rokon.elementVBO.load(gl);
+			}
+			if(!Rokon.arrayVBO.isLoaded()) {
+				Rokon.arrayVBO.load(gl);
+			}
+		}*/
+		
+		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		if(RokonActivity.currentScene != null) {
+			if(!RokonActivity.currentScene.loadedTextures) {
+				RokonActivity.currentScene.onLoadTextures(gl);
+			}
+			RokonActivity.currentScene.onDraw(gl);			
 		}
 	}
 
@@ -58,6 +71,7 @@ public class RokonRenderer implements GLSurfaceView.Renderer {
 		gl.glDisable(GL10.GL_DEPTH_TEST);
 		gl.glEnable(GL10.GL_TEXTURE_2D);
 		gl.glEnable(GL10.GL_BLEND);
+		gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 		gl.glDisable(GL10.GL_DITHER);
 		gl.glDisable(GL10.GL_LIGHTING);
 

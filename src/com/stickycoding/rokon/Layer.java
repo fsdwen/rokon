@@ -66,7 +66,7 @@ public class Layer {
 			return;
 		}
 		drawableObjects.add(drawableObject);
-		drawableObject.onAdd();
+		drawableObject.onAdd(this);
 	}
 	
 	protected void onDraw(GL10 gl) {

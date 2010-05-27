@@ -1,6 +1,11 @@
 package com.stickycoding.rokon;
 
 import javax.microedition.khronos.opengles.GL10;
+import javax.microedition.khronos.opengles.GL11;
+import javax.microedition.khronos.opengles.GL11Ext;
+
+import com.stickycoding.rokon.VBO.ArrayVBO;
+import com.stickycoding.rokon.VBO.VBO;
 
 /**
  * DrawableObject.java
@@ -19,10 +24,9 @@ public class DrawableObject extends DynamicObject {
 	protected boolean isOnScene = false;
 	protected boolean killNextUpdate = false;
 	protected float red, green, blue, alpha;
-	protected boolean useAlternativeVertex = false;
-	protected boolean useCoordinatesInVertices = false;
 	protected BufferObject buffer;
 	protected Texture texture;
+	protected ArrayVBO arrayVBO;
 	
 	public DrawableObject(float x, float y, float width, float height) {
 		super(x, y, width, height);
@@ -91,63 +95,45 @@ public class DrawableObject extends DynamicObject {
 		alpha = 1f;
 		isOnScene = false;
 		killNextUpdate = false;
-		useAlternativeVertex = false;
+		if(forceDrawType == DrawPriority.VBO || DrawPriority.drawPriority == DrawPriority.PRIORITY_VBO_DRAWTEX_NORMAL || DrawPriority.drawPriority == DrawPriority.PRIORITY_VBO_NORMAL) {
+			prepareVBO();
+		}
 	}
 	
-	/**
-	 * Use its own vertex buffer, rather than scaling the default quad
-	 * This will increase rendering speed, by sacrificing memory space
-	 * This shouldn't be used if dimensions of the DrawableObject are changed regularly
-	 * This doesn't make any changes in drawTex mode
-	 * The default mode should be fine in most situations, but you can try this to see
-	 * 
-	 * If this is a mostly static object, it may help to set useCoordinates TRUE
-	 * This will give Buffer control of the translational motion too, cutting glTranslate
-	 * This speeds up the rendering routine, but needs more processing time when changing
-	 * the objects position. Work out what works best for you.
-	 * 
-	 * @param useCoordinates TRUE  
-	 */
-	public void useAlternativeVertex(boolean useCoordinates) {
-		useAlternativeVertex = true;
-		this.useCoordinatesInVertices = true;
-		//TODO Sort buffers
+	private void prepareVBO() {
+		arrayVBO = new ArrayVBO(VBO.STATIC);
+		arrayVBO.update(x, y, width, height);
 	}
-	
-	/**
-	 * Uses the default buffer, scaling to the required size
-	 * This means an extra call to hardware, but saves on memory space
-	 * This is best for DrawableObjects that change dimensions often
-	 * This doesn't make any changes in drawTex mode
-	 */
-	public void useDefaultVertex() {
-		useAlternativeVertex = false;
-		//TODO Remove buffer types
-	}
-	
+
 	public void forceDrawType(int drawType) {
 		forceDrawType = drawType;
 		onDrawType();
 	}
 	
-	protected void onChange() {
-		//TODO Handle change of position and size
-		if(useAlternativeVertex) {
-			if(useCoordinatesInVertices) {
-				//TODO Update, including X & Y
-			} else {
-				//TODO Update dimensions only
+	protected void onDrawType() {
+		if(forceDrawType == DrawPriority.VBO || DrawPriority.drawPriority == DrawPriority.PRIORITY_VBO_DRAWTEX_NORMAL || DrawPriority.drawPriority == DrawPriority.PRIORITY_VBO_NORMAL) {
+			prepareVBO();
+		} else {
+			if(arrayVBO != null) {
+				Debug.print("Destroying VBO, onDrawType change");
+				arrayVBO.destroy();
+				arrayVBO = null;
 			}
 		}
 	}
 	
-	protected void onDrawType() {
-		//TODO Handle change of draw type
-	}
-	
-	protected void onAdd() {
+	protected void onAdd(Layer layer) {
 		killNextUpdate = false;
 		isOnScene = true;
+		
+		//Adds texture if necessary
+		if(texture != null && texture.textureIndex == -1) {
+			if(layer.parentScene != null) {
+				if(layer.parentScene == RokonActivity.currentScene) {
+					layer.parentScene.useTexture(texture);
+				}
+			}
+		}
 	}
 	
 	protected void onRemove() {
@@ -324,7 +310,6 @@ public class DrawableObject extends DynamicObject {
 	}
 	
 	protected void onDrawNormal(GL10 gl) {
-		
 		GLHelper.color4f(red, green, blue, alpha);
 		
 		if(blendFunction != null) {
@@ -336,15 +321,8 @@ public class DrawableObject extends DynamicObject {
 		gl.glPushMatrix();
 		GLHelper.enableVertexArray();
 		
-		if(useAlternativeVertex) {
-			GLHelper.vertexPointer(buffer, GL10.GL_FLOAT);
-			if(!useCoordinatesInVertices) {
-				gl.glTranslatef(x, y, 0);
-			}
-		} else {
-			GLHelper.vertexPointer(Rokon.defaultVertexBuffer, GL10.GL_FLOAT);
-			gl.glTranslatef(x, y, 0);
-		}
+		GLHelper.vertexPointer(Rokon.defaultVertexBuffer, GL10.GL_FLOAT);
+		gl.glTranslatef(x, y, 0);
 		
 		if(rotation != 0) {
 			if(!rotateAboutPoint) {
@@ -376,10 +354,64 @@ public class DrawableObject extends DynamicObject {
 	}
 	
 	protected void onDrawTex(GL10 gl) {
+		if(texture == null) {
+			return;
+		}
+		GLHelper.color4f(red, green, blue, alpha);
+		GLHelper.bindTexture(texture.textureIndex);
+		GLHelper.drawTexCrop(new float[] { 0, 0, texture.width, texture.height} );
+		((GL11Ext)gl).glDrawTexfOES(x, Device.heightPixels - y - height, 0, 100, 100);
 		
 	}
 	
 	protected void onDrawVBO(GL10 gl) {
+		if(!arrayVBO.isLoaded()) {
+			Debug.print("VBO isn't loaded");
+			arrayVBO.load(gl);
+		}		
+
+		GLHelper.color4f(red, green, blue, alpha);
+		
+		if(blendFunction != null) {
+			GLHelper.blendMode(blendFunction);
+		} else {
+			GLHelper.blendMode(Rokon.blendFunction);
+		}
+		
+		gl.glPushMatrix();
+		GLHelper.enableVertexArray();
+		
+		GLHelper.vertexPointer(GL10.GL_FLOAT);
+		gl.glTranslatef(x, y, 0);
+		
+		if(rotation != 0) {
+			if(!rotateAboutPoint) {
+				gl.glTranslatef(width / 2, height / 2, 0);
+				gl.glRotatef(rotation, 0, 0, 1);
+				gl.glTranslatef(-width / 2, -height / 2, 0);
+			} else {
+				gl.glTranslatef(rotationPivotX, rotationPivotY, 0);
+				gl.glRotatef(rotation, 0, 0, 1);
+				gl.glTranslatef(-rotationPivotX, -rotationPivotY, 0);
+			}
+		}
+		
+		gl.glScalef(width, height, 0);
+		
+		if(texture != null) {
+			GLHelper.enableTextures();
+			GLHelper.enableTexCoordArray();
+			GLHelper.bindTexture(texture.textureIndex);
+			GLHelper.texCoordPointer(texture.buffer, GL10.GL_FLOAT);
+		} else {
+			GLHelper.disableTexCoordArray();
+			GLHelper.disableTextures();
+		}
+
+		GLHelper.bindElementBuffer(Rokon.defaultElementVBO().getBufferIndex());
+		((GL11)gl).glDrawElements(GL11.GL_TRIANGLE_STRIP, 4, GL11.GL_FLOAT, 0);
+		
+		gl.glPopMatrix();
 		
 	}
 

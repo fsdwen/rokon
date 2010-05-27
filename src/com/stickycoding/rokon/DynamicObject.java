@@ -500,19 +500,11 @@ public class DynamicObject extends StaticObject {
 	protected long rotateToStartTime;
 	protected int rotateToTime, rotateToType, rotateToDirection;
 	protected ObjectHandler rotateToHandler;
+	protected Callback rotateToCallback;
 	
 	public static final int ROTATE_TO_AUTOMATIC = 0, ROTATE_TO_CLOCKWISE = 1, ROTATE_TO_ANTI_CLOCKWISE = 2;
 	
-	/**
-	 * Rotates to a given angle over a period of time
-	 * 
-	 * @param angle the final angle, in radians
-	 * @param direction automatic, clockwise or anticlockwise - defined by ROTATE_TO_ constants
-	 * @param time in milliseconds
-	 * @param type movement type, through Movement constants
-	 * @param handler ObjectHandler for completion and cancellation callbacks
-	 */
-	public void rotateTo(float angle, int direction, int time, int type, ObjectHandler handler) {
+	public void rotateTo(float angle, int direction, int time, int type) {
 		if(isRotateTo && this.rotateToHandler != null) {
 			if(parentScene.useInvoke) {
 				attemptInvoke("onRotateToCancel");
@@ -534,7 +526,9 @@ public class DynamicObject extends StaticObject {
 		rotateToType = type;
 		rotateToStartTime = Time.ticks;
 		rotateToTime = time;
-		rotateToHandler = handler;
+		
+		rotateToHandler = null;
+		rotateToCallback = null;
 		
 		rotation = rotation % Movement.TWO_PI;
 
@@ -574,6 +568,35 @@ public class DynamicObject extends StaticObject {
 		}
 		Debug.print("Rotating from " + rotation + " to " + angle + " by "+ rotateToDirection);
 	}
+
+	
+	/**
+	 * Rotates to a given angle over a period of time
+	 * 
+	 * @param angle the final angle, in radians
+	 * @param direction automatic, clockwise or anticlockwise - defined by ROTATE_TO_ constants
+	 * @param time in milliseconds
+	 * @param type movement type, through Movement constants
+	 * @param callback Callback object for invoking
+	 */
+	public void rotateTo(float angle, int direction, int time, int type, Callback callback) {
+		rotateTo(angle, direction, time, type);
+		rotateToCallback = callback;
+	}
+	
+	/**
+	 * Rotates to a given angle over a period of time
+	 * 
+	 * @param angle the final angle, in radians
+	 * @param direction automatic, clockwise or anticlockwise - defined by ROTATE_TO_ constants
+	 * @param time in milliseconds
+	 * @param type movement type, through Movement constants
+	 * @param handler ObjectHandler for completion and cancellation callbacks
+	 */
+	public void rotateTo(float angle, int direction, int time, int type, ObjectHandler handler) {
+		rotateTo(angle, direction, time, type);
+		rotateToHandler = handler;
+	}
 	
 	protected void onUpdateRotateTo() {
 		float position = (float)(Time.ticks - rotateToStartTime) / (float)rotateToTime;
@@ -588,6 +611,9 @@ public class DynamicObject extends StaticObject {
 			}
 			if(parentScene.useInvoke) {
 				attemptInvoke("onRotateToComplete");
+			}
+			if(rotateToCallback != null) {
+				attemptInvoke(rotateToCallback);
 			}
 			angularVelocity = 0;
 			angularAcceleration = 0;
@@ -674,6 +700,9 @@ public class DynamicObject extends StaticObject {
 		moveToType = type;
 		moveToStartTime = Time.ticks;
 		moveToTime = time;
+		
+		moveToCallback = null;
+		moveToHandler = null;
 	}
 
 	/**

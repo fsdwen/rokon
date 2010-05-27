@@ -50,7 +50,7 @@ public class Launcher extends RokonActivity {
 	
 	public Scene myScene = new Scene(1, 128) {
 		
-		public void sprite_onTouch(float x, float y, MotionEvent event) {
+		public void sprite_onTouchDown(float x, float y, MotionEvent event) {
 			Debug.print("@YESSS! x=" + x + " y=" + y);
 		}
 		

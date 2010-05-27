@@ -14,6 +14,11 @@ public class StaticObject {
 	protected String name = null;
 	protected float x, y, width, height, rotation, rotationPivotX, rotationPivotY;
 	protected boolean rotateAboutPoint;
+	protected Scene parentScene;
+	
+	public Scene getParentScene() {
+		return parentScene;
+	}
 	
 	public StaticObject(float x, float y, float width, float height) {
 		if(width < 0 || height < 0) {

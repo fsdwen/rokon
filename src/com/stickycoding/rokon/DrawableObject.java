@@ -125,6 +125,7 @@ public class DrawableObject extends DynamicObject {
 	protected void onAdd(Layer layer) {
 		killNextUpdate = false;
 		isOnScene = true;
+		parentScene = layer.parentScene;
 		if(texture != null && texture.textureIndex == -1) {
 			if(layer.parentScene != null) {
 				if(Rokon.verbose) Debug.verbose("DrawableObject.onAdd", "Scene does not already contain the this objects Texture, adding automatically."); 

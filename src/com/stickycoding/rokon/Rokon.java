@@ -6,7 +6,7 @@ import com.stickycoding.rokon.VBO.ElementVBO;
 /**
  * BlendFunction.java
  * Various static methods and fields, used by the engine
- * 
+(
  * @author Richard
  */
 
@@ -17,6 +17,19 @@ public class Rokon {
 	protected static RokonActivity currentActivity;
 	protected static ElementVBO elementVBO;
 	protected static ArrayVBO arrayVBO;
+	protected static boolean verbose = false;
+	
+	public static void verboseMode() {
+		verbose = true;
+	}
+	
+	public static void disableVerboseMode() {
+		verbose = false;
+	}
+	
+	public static boolean isVerboseMode() {
+		return verbose;
+	}
 	
 	/**
 	 * Returns the default element (index array) VBO

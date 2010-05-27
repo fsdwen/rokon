@@ -1,5 +1,9 @@
 package com.stickycoding.rokon;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Arrays;
+
 import javax.microedition.khronos.opengles.GL10;
 
 import android.view.MotionEvent;
@@ -30,6 +34,112 @@ public class Scene {
 	public void onTouchMove(float x, float y, MotionEvent event) { }
 	public void onTouch(float x, float y, MotionEvent event) { }
 	public void onTouchUp(float x, float y, MotionEvent event) { }
+	
+	/**
+	 * Invokes a method inside the Scene class, defined by given parameters.
+	 * If no parameters exist, use the alternative invoke method
+	 * 
+	 * @param methodName String
+	 * @param params Class[]
+	 * @param paramValues Object[]
+	 * 
+	 * @return TRUE if successful, FALSE otherwise
+	 */
+	public boolean invoke(String methodName, Class<?>[] params, Object[] paramValues) {
+		for(Method m : this.getClass().getDeclaredMethods()) {
+			if(m.getName().equals(methodName)) {
+				if(Arrays.equals(params, m.getParameterTypes())) {
+					try {
+						m.invoke(this, paramValues);
+						return true;
+					} catch (IllegalArgumentException e) {
+						Debug.error("Invoking, IllegalArgument");
+						e.printStackTrace();
+						return false;
+					} catch (IllegalAccessException e) {
+						Debug.error("Invoking, IllegalAccess");
+						e.printStackTrace();
+						return false;
+					} catch (InvocationTargetException e) {
+						Debug.error("Invoking, IllegalTarget");
+						e.printStackTrace();
+						return false;
+					}
+				}
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * USE AT YOUR OWN RISK
+	 * Invokes a method inside the Scene class, it selects the first matching method name and tries to pass on given parameters
+	 * An error will be raised if this isn't the correct method. This routine is simply for those too lazy (or wanting to save
+	 * on a little processing time) and are 100% sure there are no name conflicts.
+	 * 
+	 * IllegalArgumentException may be passed to the Debug class, logcat will be notified - but there is no way to test at your end.
+	 * 
+	 * @param methodName String
+	 * @param paramValues Object[]
+	 * 
+	 * @return TRUE if successful, FALSE otherwise
+	 */
+	public boolean invoke(String methodName, Object[] paramValues) {
+		for(Method m : this.getClass().getDeclaredMethods()) {
+			if(m.getName().equals(methodName)) {
+				try {
+					m.invoke(this, paramValues);
+					return true;
+				} catch (IllegalArgumentException e) {
+					Debug.error("Invoking, IllegalArgument");
+					e.printStackTrace();
+					return false;
+				} catch (IllegalAccessException e) {
+					Debug.error("Invoking, IllegalAccess");
+					e.printStackTrace();
+					return false;
+				} catch (InvocationTargetException e) {
+					Debug.error("Invoking, IllegalTarget");
+					e.printStackTrace();
+					return false;
+				}
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * Invokes a method inside the Scene class, assuming there are no parameters to pass
+	 * 
+	 * @param methodName String
+	 * 
+	 * @return TRUE if successful, FALSE otherwise
+	 */
+	public boolean invoke(String methodName) {
+		for(Method m : this.getClass().getDeclaredMethods()) {
+			if(m.getName().equals(methodName)) {
+				if(m.getParameterTypes().length == 0) {
+					try {
+						m.invoke(this);
+						return true;
+					} catch (IllegalArgumentException e) {
+						Debug.error("Invoking, IllegalArgument");
+						e.printStackTrace();
+						return false;
+					} catch (IllegalAccessException e) {
+						Debug.error("Invoking, IllegalAccess");
+						e.printStackTrace();
+						return false;
+					} catch (InvocationTargetException e) {
+						Debug.error("Invoking, IllegalTarget");
+						e.printStackTrace();
+						return false;
+					}
+				}
+			}
+		}
+		return false;
+	}
 	
 	protected void handleTouch(MotionEvent event) {
 		event.setLocation(event.getX() * (Device.widthPixels / RokonActivity.gameWidth), event.getY() * (Device.heightPixels  / RokonActivity.gameHeight));

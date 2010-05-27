@@ -1,5 +1,6 @@
 package com.stickycoding.rokonexamples;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -55,39 +56,16 @@ public class Launcher extends RokonActivity {
 		long startTime;
 		
 		public void sprite_onTouch() {
-			Debug.print("NOOOOOOOO");
+			Debug.print("NOOOOOOOaasdfasdfasdfaO");
 		}
 		
 		public void sprite_onTouch(int a) {
 			Debug.print("NOOOOOOOO!");
 		}
 		
-		public void invoke(String methodName, Class[] params, Object[] paramValues) {
-			startTime = System.currentTimeMillis();
-			for(Method m : this.getClass().getDeclaredMethods()) {
-				if(m.getName().equals(methodName)) {
-					if(Arrays.equals(params, m.getParameterTypes())) {
-						try {
-							m.invoke(this, paramValues);
-						} catch (IllegalArgumentException e) {
-							Debug.error("Invoking, IllegalArgument");
-							e.printStackTrace();
-						} catch (IllegalAccessException e) {
-							Debug.error("Invoking, IllegalAccess");
-							e.printStackTrace();
-						} catch (InvocationTargetException e) {
-							Debug.error("Invoking, IllegalTarget");
-							e.printStackTrace();
-						}
-					}
-				}
-				
-			}
-		}
-		
 		@Override
 		public void onTouchDown(DrawableObject object, float x, float y, MotionEvent event) {
-			invoke("sprite_onTouch", new Class[] { float.class, float.class, MotionEvent.class }, new Object[] { x, y, event} );
+			invoke("sprite_onTouch", new Class[] { int.class }, new Object[] { 1 } );
 			/*Debug.print("TOUCH " + object.getName());
 			if(object.getName() != null) {
 				Class<?> c = this.getClass();

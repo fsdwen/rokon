@@ -7,6 +7,10 @@ import android.util.Log;
  * Functions and helpers to aid debugging and engine reports
  * @author Richard
  */
+/**
+ * @author Richard
+ *
+ */
 public class Debug {
 	
 	private static String tag = "Rokon";
@@ -64,6 +68,25 @@ public class Debug {
 		Log.e(tag, message);
 		Exception e = new Exception(message);
 		e.printStackTrace();
+	}
+	
+	/**
+	 * Prints to the verbose stream of LogCat, with information that comes in when in Rokon.verboseMode
+	 * 
+	 * @param method
+	 * @param message
+	 */
+	public static void verbose(String method, String message) {
+		Log.v(tag, method + " - " + message);
+	}
+	
+	/**
+	 * Prints to the verbose stream of LogCat, with information that comes in when in Rokon.verboseMode
+	 * 
+	 * @param message
+	 */
+	public static void verbose(String message) {
+		Log.v(tag, message);
 	}
 
 }

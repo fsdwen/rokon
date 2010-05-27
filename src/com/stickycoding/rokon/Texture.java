@@ -20,7 +20,7 @@ public class Texture {
 	protected int width, height, columns, rows;
 	protected String path;
 	protected BufferObject buffer;
-	protected int textureIndex;
+	protected int textureIndex = -1;
 	
 	protected void setUnloaded() {
 		textureIndex = -1;

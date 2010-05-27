@@ -88,6 +88,22 @@ public class Scene {
 	}
 	
 	/**
+	 * Invokes a method by parameters inside a Callback object
+	 * 
+	 * @param callback valid Callback object
+	 * @return TRUE if successful, FALSE otherwise
+	 */
+	public boolean invoke(Callback callback) {
+		if(callback.parameters == null) {
+			return invoke(callback.methodName);
+		} 
+		if(callback.parameterTypes == null) {
+			return invoke(callback.methodName, callback.parameters);
+		}
+		return invoke(callback.methodName, callback.parameterTypes, callback.parameters);
+	}
+	
+	/**
 	 * USE AT YOUR OWN RISK
 	 * Invokes a method inside the Scene class, it selects the first matching method name and tries to pass on given parameters
 	 * An error will be raised if this isn't the correct method. This routine is simply for those too lazy (or wanting to save

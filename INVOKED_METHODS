@@ -2,7 +2,17 @@ This is a list of invoked methods, for my own reference.
 
 These are called by the engine, detailed information on how this works will be come along with the first stable release.
 
-[StaticObject.getName()]_onTouch(float x, float y, MotionEvent event)
-[StaticObject.getName()]_onTouchDown(float x, float y, MotionEvent event)
-[StaticObject.getName()]_onTouchUp(float x, float y, MotionEvent event)
-[StaticObject.getName()]_onTouchMove(float x, float y, MotionEvent event)
+[StaticObject.name]_onTouch(float x, float y, MotionEvent event)
+[StaticObject.name]_onTouchDown(float x, float y, MotionEvent event)
+[StaticObject.name]_onTouchUp(float x, float y, MotionEvent event)
+[StaticObject.name]_onTouchMove(float x, float y, MotionEvent event)
+
+[DynamicObject.name]_onMoveToComplete()
+[DynamicObject.name]_onMoveToCancel()
+[DynamicObject.name]_onRotateToComplete()
+[DynamicObject.name]_onRotateToCancel()
+
+[DynamicObject.name]_onReachTerminalSpeedX()
+[DynamicObject.name]_onReachTerminalSpeedY()
+[DynamicObject.name]_onReachTerminalVelocity()
+[DynamicObject.name]_onReachTerminalAngularVelocity()

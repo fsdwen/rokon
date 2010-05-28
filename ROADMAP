@@ -1,0 +1,16 @@
+This is simply a list of future features, for future versions. There can be no times associated to these.
+Rokon 2 is intended to be more of a game engine than a graphics engine (as is the original version)
+
+Efficient audio engine
+Basic collision engine
+Advanced collision/physics engine
+Game windows inside scenes
+Automatic support for VBOs and DrawTex
+Supporting various methods of texture loading (atlases, separate textures)
+Modifying textures at runtime, quickly
+Intuitive 'scripting' and callbacks, rather than handlers
+Tile engine (graphical)
+Tile based movement
+Some basic/generic AI that can be applied to many situations (path finding etc.)
+
+Above all, a good balance between ease/speed of use and high framerates must be maintained

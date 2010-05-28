@@ -1,9 +1,5 @@
 package com.stickycoding.rokon;
 
-import com.stickycoding.rokon.Handler.ObjectHandler;
-import com.stickycoding.rokon.Handler.TerminalAngularVelocityHandler;
-import com.stickycoding.rokon.Handler.TerminalSpeedHandler;
-import com.stickycoding.rokon.Handler.TerminalVelocityHandler;
 
 /**
  * DynamicObject.java
@@ -16,10 +12,6 @@ import com.stickycoding.rokon.Handler.TerminalVelocityHandler;
  */
 
 public class DynamicObject extends StaticObject {
-	
-	protected TerminalAngularVelocityHandler terminalAngularVelocityHandler;
-	protected TerminalSpeedHandler terminalSpeedHandler;
-	protected TerminalVelocityHandler terminalVelocityHandler;
 	
 	protected float accelerationX, accelerationY, speedX, speedY, terminalSpeedX, terminalSpeedY;
 	protected boolean useTerminalSpeedX, useTerminalSpeedY;
@@ -43,37 +35,8 @@ public class DynamicObject extends StaticObject {
 	 * Called when the DynamicObject is removed from a Layer
 	 */
 	protected void onRemove() {
-		terminalAngularVelocityHandler = null;
-		terminalSpeedHandler = null;
-		terminalVelocityHandler = null;
-	}
-
-	
-	/**
-	 * Sets the TerminalAngularVelocityHandler for this DynamicObject
-	 * 
-	 * @param terminalAngularVelocityHandler a valid class interfacing TerminalAngularVelocityHandler, use NULL to remove
-	 */
-	public void setTerminalAngularVelocityHandler(TerminalAngularVelocityHandler terminalAngularVelocityHandler) {
-		this.terminalAngularVelocityHandler = terminalAngularVelocityHandler;
-	}
-	
-	/**
-	 * Sets the TerminalSpeedHandler for this DynamicObject
-	 * 
-	 * @param terminalSpeedHandler a valid class interfacing TerminalSpeedHandler, use NULL to remove
-	 */
-	public void setTerminalSpeedHandler(TerminalSpeedHandler terminalSpeedHandler) {
-		this.terminalSpeedHandler = terminalSpeedHandler;
-	}
-	
-	/**
-	 * Sets the TerminalVelocityHandler for this DynamicObject
-	 * 
-	 * @param terminalVelocityHandler a valid class interfacing TerminalSpeedHandler, use NULL to remove
-	 */
-	public void setTerminalVelocityHandler(TerminalVelocityHandler terminalVelocityHandler) {
-		this.terminalVelocityHandler = terminalVelocityHandler;
+		rotateToCallback = null;
+		moveToCallback = null;
 	}
 	
 	/**
@@ -110,10 +73,7 @@ public class DynamicObject extends StaticObject {
 			if(useTerminalSpeedX && ((accelerationX > 0 && speedX > terminalSpeedX) || (accelerationX < 0 && speedY < terminalSpeedX))) {
 				accelerationX = 0;
 				speedX = terminalSpeedX;
-				if(terminalSpeedHandler != null) {
-					terminalSpeedHandler.onTerminalSpeed(this, TerminalSpeedHandler.X);
-				}
-				attemptInvoke("onReachTerminalSpeedX");
+				if(parentScene.useInvoke) attemptInvoke("onReachTerminalSpeedX");
 			}
 		}
 		if(accelerationY != 0) {
@@ -121,10 +81,7 @@ public class DynamicObject extends StaticObject {
 			if(useTerminalSpeedY && ((accelerationY > 0 && speedY > terminalSpeedY) || (accelerationY < 0 && speedY < terminalSpeedY))) {
 				accelerationY = 0;
 				speedY = terminalSpeedY;
-				if(terminalSpeedHandler != null) {
-					terminalSpeedHandler.onTerminalSpeed(this, TerminalSpeedHandler.Y);
-				}
-				attemptInvoke("onReachTerminalSpeedY");
+				if(parentScene.useInvoke) attemptInvoke("onReachTerminalSpeedY");
 			}
 		}
 		if(speedX != 0) {
@@ -138,10 +95,7 @@ public class DynamicObject extends StaticObject {
 			if(useTerminalVelocity && ((acceleration > 0 && velocity > terminalVelocity) || (acceleration < 0 && velocity < terminalVelocity))) {
 				acceleration = 0;
 				velocity = terminalVelocity;
-				if(terminalVelocityHandler != null) {
-					terminalVelocityHandler.onTerminalVelocity(this);
-				}
-				attemptInvoke("onReachTerminalVelocity");
+				if(parentScene.useInvoke) attemptInvoke("onReachTerminalVelocity");
 			}
 		}
 		if(velocity != 0) {
@@ -153,9 +107,6 @@ public class DynamicObject extends StaticObject {
 			if(useTerminalAngularVelocity && ((angularAcceleration > 0 && angularVelocity > terminalAngularVelocity) || (angularAcceleration < 0 && angularVelocity < terminalAngularVelocity))) {
 				angularAcceleration = 0;
 				angularVelocity = terminalAngularVelocity;
-				if(terminalAngularVelocityHandler != null) {
-					terminalAngularVelocityHandler.onTerminalAngularVelocity(this);
-				}
 				attemptInvoke("onReachTerminalAngularVelocity");
 			}
 		}
@@ -499,20 +450,13 @@ public class DynamicObject extends StaticObject {
 	protected float rotateToAngleStart, rotateToAngle;
 	protected long rotateToStartTime;
 	protected int rotateToTime, rotateToType, rotateToDirection;
-	protected ObjectHandler rotateToHandler;
 	protected Callback rotateToCallback;
 	
 	public static final int ROTATE_TO_AUTOMATIC = 0, ROTATE_TO_CLOCKWISE = 1, ROTATE_TO_ANTI_CLOCKWISE = 2;
 	
 	public void rotateTo(float angle, int direction, int time, int type) {
-		if(isRotateTo && this.rotateToHandler != null) {
-			if(parentScene.useInvoke) {
-				attemptInvoke("onRotateToCancel");
-			}
-			if(this.rotateToHandler != null) {
-				this.rotateToHandler.onCancel(this);
-				this.rotateToHandler.onCancel();
-			}
+		if(isRotateTo) {
+			if(parentScene.useInvoke) attemptInvoke("onRotateToCancel");
 		}
 
 		angularVelocity = 0;
@@ -527,7 +471,6 @@ public class DynamicObject extends StaticObject {
 		rotateToStartTime = Time.ticks;
 		rotateToTime = time;
 		
-		rotateToHandler = null;
 		rotateToCallback = null;
 		
 		rotation = rotation % Movement.TWO_PI;
@@ -584,31 +527,12 @@ public class DynamicObject extends StaticObject {
 		rotateToCallback = callback;
 	}
 	
-	/**
-	 * Rotates to a given angle over a period of time
-	 * 
-	 * @param angle the final angle, in radians
-	 * @param direction automatic, clockwise or anticlockwise - defined by ROTATE_TO_ constants
-	 * @param time in milliseconds
-	 * @param type movement type, through Movement constants
-	 * @param handler ObjectHandler for completion and cancellation callbacks
-	 */
-	public void rotateTo(float angle, int direction, int time, int type, ObjectHandler handler) {
-		rotateTo(angle, direction, time, type);
-		rotateToHandler = handler;
-	}
-	
 	protected void onUpdateRotateTo() {
 		float position = (float)(Time.ticks - rotateToStartTime) / (float)rotateToTime;
 		float movementFactor = Movement.getPosition(position, rotateToType);
 		if(position >= 1) {
 			rotation = rotateToAngle;
 			isRotateTo = false;
-			if(rotateToHandler != null) {
-				rotateToHandler.onComplete(this);
-				rotateToHandler.onComplete();
-				rotateToHandler = null;
-			}
 			if(parentScene.useInvoke) {
 				attemptInvoke("onRotateToComplete");
 			}
@@ -632,26 +556,7 @@ public class DynamicObject extends StaticObject {
 	protected float moveToStartX, moveToStartY, moveToFinalX, moveToFinalY;
 	protected int moveToType;
 	protected long moveToStartTime, moveToTime;
-	protected ObjectHandler moveToHandler;
 	protected Callback moveToCallback;
-	
-	/**
-	 * Moves the DynamicObject to a given spot, in a given time using
-	 * All previous motion is cancelled. It may be possible to apply your own velocity
-	 * and acceleration changes while moveTo is running, though it should be avoided
-	 * A MoveToHandler will be called when complete.
-	 * If the object is already moving, the previous movements onCancel will be triggered if attached to a handler
-	 * 
-	 * @param x final X coordinate
-	 * @param y final Y coordinate
-	 * @param time the time 
-	 * @param type the movement type, from Movement constants
-	 * @param handler a valid MoveToHandler
-	 */
-	public void moveTo(float x, float y, long time, int type, ObjectHandler handler) {
-		moveTo(x, y, time, type);
-		moveToHandler = handler;
-	}
 	
 	public void moveTo(float x, float y, long time, int type, Callback callback) {
 		moveTo(x, y, time, type);
@@ -672,10 +577,6 @@ public class DynamicObject extends StaticObject {
 		if(isMoveTo) {
 			if(parentScene.useInvoke) {
 				attemptInvoke("onMoveToCancel");
-			}
-			if(this.moveToHandler != null) {
-				this.moveToHandler.onCancel(this);
-				this.moveToHandler.onCancel();
 			}
 		}
 
@@ -702,7 +603,6 @@ public class DynamicObject extends StaticObject {
 		moveToTime = time;
 		
 		moveToCallback = null;
-		moveToHandler = null;
 	}
 
 	/**
@@ -726,11 +626,6 @@ public class DynamicObject extends StaticObject {
 			x = moveToFinalX;
 			y = moveToFinalY;
 			isMoveTo = false;
-			if(moveToHandler != null) {
-				moveToHandler.onComplete(this);
-				moveToHandler.onComplete();
-				moveToHandler = null;
-			}
 			if(moveToCallback != null) {
 				attemptInvoke(moveToCallback);
 			}

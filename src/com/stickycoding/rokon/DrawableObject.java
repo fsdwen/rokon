@@ -15,7 +15,7 @@ import com.stickycoding.rokon.VBO.VBO;
  * @author Richard
  */
 
-public class DrawableObject extends DynamicObject {
+public class DrawableObject extends PhysicalObject {
 
 	protected boolean isTouchable = false;
 	protected BlendFunction blendFunction;

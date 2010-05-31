@@ -1,6 +1,7 @@
 package com.stickycoding.rokon;
 
 import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.physics.box2d.World;
 
 /**
  * Physics.java
@@ -13,6 +14,7 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 public class Physics {
 	
 	public static PolygonShape polygonShape = new PolygonShape();
+	public static World world;
 	
 	public static void load() {
 

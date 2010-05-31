@@ -50,6 +50,7 @@ public class Scene {
 	 */
 	public void setWorld(World world) {
 		this.world = world;
+		Physics.world = world;
 		usePhysics = true;
 	}
 	
@@ -81,6 +82,7 @@ public class Scene {
 	 */
 	public void removeWorld() {
 		this.world = null;
+		Physics.world = null;
 		usePhysics = false;
 	}
 	

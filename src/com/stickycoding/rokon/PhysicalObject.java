@@ -24,7 +24,7 @@ public class PhysicalObject extends DynamicObject {
 	}
 	
 	public Body createBody(BodyDef bodyDef, Shape shape) {
-		body = parentScene.world.createBody(bodyDef);
+		body = Physics.world.createBody(bodyDef);
 		body.createFixture(shape, 10);
 		this.bodyDef = bodyDef;
 		usePhysics = true;
@@ -34,24 +34,24 @@ public class PhysicalObject extends DynamicObject {
 	public Body createDynamicBody(Shape shape) {
 		bodyDef = new BodyDef();
 		bodyDef.type = BodyType.DynamicBody;
-		bodyDef.position.x = x;
-		bodyDef.position.y = y;
+		bodyDef.position.x = x + width / 2;
+		bodyDef.position.y = y + height / 2;
 		return createBody(bodyDef, shape);
 	}
 	
 	public Body createStaticBody(Shape shape) {
 		bodyDef = new BodyDef();
 		bodyDef.type = BodyType.StaticBody;
-		bodyDef.position.x = x;
-		bodyDef.position.y = y;
+		bodyDef.position.x = x + width / 2;
+		bodyDef.position.y = y + height / 2;
 		return createBody(bodyDef, shape);
 	}
 	
 	public Body createKinematicBody(Shape shape) {
 		bodyDef = new BodyDef();
 		bodyDef.type = BodyType.KinematicBody;
-		bodyDef.position.x = x;
-		bodyDef.position.y = y;
+		bodyDef.position.x = x + width / 2;
+		bodyDef.position.y = y + height / 2;
 		return createBody(bodyDef, shape);
 	}
 	
@@ -61,9 +61,10 @@ public class PhysicalObject extends DynamicObject {
 		return createDynamicBody(boxPoly);
 	}
 	
+	//TODO Weird bug here? Something isn't right. setAsBox appears differently for Static and Dynamic bodies
 	public Body createStaticBody() {
 		PolygonShape boxPoly = new PolygonShape();
-		boxPoly.setAsBox(width, height);
+		boxPoly.setAsBox(width / 2, height / 2);
 		return createStaticBody(boxPoly);		
 	}
 	
@@ -113,8 +114,8 @@ public class PhysicalObject extends DynamicObject {
 		super.onUpdate();
 		
 		if(usePhysics) {
-			x = body.getPosition().x;
-			y = body.getPosition().y;
+			x = body.getPosition().x - width / 2;
+			y = body.getPosition().y - height / 2;
 			rotation = body.getAngle() * 57.2957795f;
 		}
 	}

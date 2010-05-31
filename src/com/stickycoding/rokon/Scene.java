@@ -8,6 +8,8 @@ import javax.microedition.khronos.opengles.GL10;
 
 import android.view.MotionEvent;
 
+import com.badlogic.gdx.physics.box2d.World;
+
 /**
  * Scene.java
  * A Scene holds and prepares drawable objects or object groups
@@ -26,7 +28,11 @@ public class Scene {
 	protected Window window = null;
 	protected Texture[] textures;
 	protected boolean useInvoke;
+	protected World world;
+	protected boolean usePhysics = false;
 
+	public void onPreDraw(GL10 gl) { }
+	public void onPostDraw(GL10 gl) { }
 	public void onTouchDown(DrawableObject object, float x, float y, MotionEvent event) { }
 	public void onTouchUp(DrawableObject object, float x, float y, MotionEvent event) { }
 	public void onTouchMove(DrawableObject object, float x, float y, MotionEvent event) { }
@@ -35,6 +41,48 @@ public class Scene {
 	public void onTouchMove(float x, float y, MotionEvent event) { }
 	public void onTouch(float x, float y, MotionEvent event) { }
 	public void onTouchUp(float x, float y, MotionEvent event) { }
+	
+	/**
+	 * Sets a World for the physics in this Scene
+	 * Automatically flags usePhysics
+	 * 
+	 * @param world valid World object
+	 */
+	public void setWorld(World world) {
+		this.world = world;
+		usePhysics = true;
+	}
+	
+	/**
+	 * Returns the World associated with this Scene
+	 * 
+	 * @return NULL if no World set
+	 */
+	public World getWorld() {
+		return world;
+	}
+	
+	/**
+	 * Flags to use physics in this Scene
+	 */
+	public void usePhysics() {
+		usePhysics = true;
+	}
+	
+	/**
+	 * Flags to not use physics
+	 */
+	public void noPhysics() {
+		usePhysics = false;
+	}
+	
+	/**
+	 * Removes the World from this Scene
+	 */
+	public void removeWorld() {
+		this.world = null;
+		usePhysics = false;
+	}
 	
 	/**
 	 * Triggers the Scene to begin invoking methods on certain events, this is not set by default.
@@ -495,12 +543,17 @@ public class Scene {
 	}
 	
 	protected void onDraw(GL10 gl) {
+		onPreDraw(gl);
+		if(usePhysics) {
+			world.step(Time.getTicksFraction(), 3, 3);
+		}
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
         gl.glMatrixMode(GL10.GL_MODELVIEW);
         gl.glLoadIdentity();
 		for(int i = 0; i < layerCount; i++) {
 			layer[i].onDraw(gl);
 		}
+		onPostDraw(gl);
 	}
 	
 }

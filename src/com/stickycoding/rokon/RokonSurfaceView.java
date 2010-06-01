@@ -18,6 +18,7 @@ public class RokonSurfaceView extends GLSurfaceView {
 	    this.rokonActivity = rokonActivity;
 	    renderer = new RokonRenderer(rokonActivity);
 	    setRenderer(renderer);
+	    setKeepScreenOn(true);
 	}
 
 	@Override

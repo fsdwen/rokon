@@ -136,6 +136,11 @@ public class DrawableObject extends PhysicalObject {
 	
 	protected void onRemove() {
 		isOnScene = false;
+		if(usePhysics) {
+			if(body != null) {
+				parentScene.world.destroyBody(body);
+			}
+		}
 	}
 	
 	/**
@@ -235,11 +240,6 @@ public class DrawableObject extends PhysicalObject {
 	 */
 	public void remove() {
 		killNextUpdate = true;
-		if(usePhysics) {
-			if(body != null) {
-				parentScene.world.destroyBody(body);
-			}
-		}
 	}
 	
 	/**

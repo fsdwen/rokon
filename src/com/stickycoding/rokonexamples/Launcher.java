@@ -4,8 +4,8 @@ import javax.microedition.khronos.opengles.GL10;
 
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
-import com.stickycoding.rokon.Debug;
 import com.stickycoding.rokon.DrawPriority;
+import com.stickycoding.rokon.Movement;
 import com.stickycoding.rokon.RokonActivity;
 import com.stickycoding.rokon.Scene;
 import com.stickycoding.rokon.Sprite;
@@ -54,7 +54,7 @@ public class Launcher extends RokonActivity {
 		public void onPreDraw(GL10 gl) {
 			if(count < 128) {
 				if(Time.getTicks() > nextAdd) {
-					nextAdd = Time.getTicks() + 500;
+					nextAdd = Time.getTicks() + 150;
 					if(Math.random() < 0.5d) {
 						float size = 5 + (float)Math.random() * 4;
 						createCircle(((float)Math.random() * 40), 1, size);
@@ -84,6 +84,7 @@ public class Launcher extends RokonActivity {
 			sprite.setTexture(face);
 			sprite.createDynamicBox(fixtureDef);
 			sprite.setRGB((float)Math.random(), (float)Math.random(), (float)Math.random());
+			sprite.fade(0, 1, 250, Movement.SMOOTH);
 			add(sprite);
 		}
 		
@@ -95,6 +96,7 @@ public class Launcher extends RokonActivity {
 			fixtureDef.density = 10f;
 			sprite.createDynamicCircle(fixtureDef);
 			sprite.setRGB((float)Math.random(), (float)Math.random(), (float)Math.random());
+			sprite.fade(0, 1, 250, Movement.SMOOTH);
 			add(sprite);
 		}
 		

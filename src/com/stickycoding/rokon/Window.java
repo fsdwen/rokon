@@ -7,5 +7,7 @@ package com.stickycoding.rokon;
  */
 
 public class Window {
+	
+	protected float x, y, width, height;
 
 }

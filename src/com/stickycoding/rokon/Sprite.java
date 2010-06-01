@@ -3,7 +3,9 @@ package com.stickycoding.rokon;
 
 /**
  * Sprite.java
- * The standard object for rendering your textures to screen
+ * This contains some of the fancier things that you can do.
+ * A-la, SpriteModifiers from the past
+ * 
  * @author Richard
  *
  */
@@ -16,7 +18,8 @@ public class Sprite extends DrawableObject {
 	@Override
 	protected void onUpdate() {
 		super.onUpdate();
-		
 	}
+	
+	
 
 }

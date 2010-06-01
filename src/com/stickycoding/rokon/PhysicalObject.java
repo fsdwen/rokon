@@ -34,7 +34,7 @@ public class PhysicalObject extends DynamicObject {
 	
 	public void createBody(BodyDef bodyDef, Shape shape) {
 		body = Physics.world.createBody(bodyDef);
-		body.createFixture(shape, 10f);
+		body.createFixture(shape, 1f);
 		this.bodyDef = bodyDef;
 		usePhysics = true;
 	}

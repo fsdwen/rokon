@@ -24,6 +24,16 @@ public class Layer {
 	}
 	
 	/**
+	 * Returns a DrawableObject from this layer
+	 * 
+	 * @param index position in the array
+	 * @return NULL if not found
+	 */
+	public DrawableObject getDrawableObject(int index) {
+		return drawableObjects.get(index);
+	}
+	
+	/**
 	 * @return the current DrawQueue object for this Scene
 	 */
 	public DrawQueue getDrawQueue() {
@@ -72,6 +82,9 @@ public class Layer {
 	protected void onDraw(GL10 gl) {
 		for(int i = 0; i < drawableObjects.getCapacity(); i++) {
 			if(drawableObjects.get(i) != null) {
+				while(drawableObjects.get(i).killNextUpdate) {
+					drawableObjects.remove(i);
+				}
 				drawableObjects.get(i).onUpdate();
 				if(drawableObjects.get(i).isOnScreen()) {
 					drawableObjects.get(i).onDraw(gl);

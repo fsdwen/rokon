@@ -2,8 +2,11 @@ package com.stickycoding.rokonexamples;
 
 import javax.microedition.khronos.opengles.GL10;
 
+import android.view.MotionEvent;
+
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
+import com.stickycoding.rokon.Debug;
 import com.stickycoding.rokon.DrawPriority;
 import com.stickycoding.rokon.Movement;
 import com.stickycoding.rokon.RokonActivity;
@@ -11,6 +14,7 @@ import com.stickycoding.rokon.Scene;
 import com.stickycoding.rokon.Sprite;
 import com.stickycoding.rokon.Texture;
 import com.stickycoding.rokon.Time;
+import com.stickycoding.rokon.Window;
 
 public class Launcher extends RokonActivity {
 	
@@ -27,12 +31,16 @@ public class Launcher extends RokonActivity {
 		createEngine();
 	}
 	
+	Window window;
+	
 	public void onLoadComplete() {
 		texture = new Texture("circle.png");
 		face = new Texture("face.png");
 		myScene.useTexture(texture);
 
 		myScene.setWorld(world = new World(0f, 10f));
+		
+		window = new Window(0, 0, 48, 80);
 		
 		sprite = new Sprite(0, 75, 48, 5);
 		sprite.setTexture(face);
@@ -41,6 +49,7 @@ public class Launcher extends RokonActivity {
 		fixtureDef.friction = 0.2f;
 		sprite.createStaticBox(fixtureDef);
 		myScene.add(sprite);
+		myScene.setWindow(window);
 		
 		setScene(myScene);
 	}
@@ -50,6 +59,13 @@ public class Launcher extends RokonActivity {
 		int count = 1;		
 		long nextAdd = 0;
 		long nextCheck = 0;
+		
+		@Override
+		public void onTouchDown(float x, float y, MotionEvent event) {
+			float newWidth = 10f + (float)Math.random() * 48f;
+			float newHeight = newWidth / window.getRatio();
+			window.move( (float)Math.random() * 40f, (float)Math.random() * 70f, newWidth, newHeight, 2500 );
+		}
 		
 		public void onPreDraw(GL10 gl) {
 			if(count < 128) {
@@ -65,7 +81,7 @@ public class Launcher extends RokonActivity {
 			}
 			if(Time.getTicks() > nextCheck) {
 				for(int i = 0; i < 128; i++) {
-					if(getLayer(0).getDrawableObject(i) != null && !getLayer(0).getDrawableObject(i).isOnScreen()) {
+					if(getLayer(0).getDrawableObject(i) != null) {
 						if(getLayer(0).getDrawableObject(i).getY() > gameHeight) {
 							getLayer(0).getDrawableObject(i).remove();
 							count--;

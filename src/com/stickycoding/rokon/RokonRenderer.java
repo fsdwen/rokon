@@ -32,19 +32,6 @@ public class RokonRenderer implements GLSurfaceView.Renderer {
 		}
 		GLHelper.setGL(gl);
 		FPSCounter.onFrame();
-		//TODO Fix VBO
-		/*if(Device.supportsVBO) {
-			if(Rokon.elementVBO == null) {
-				return;
-			}
-			if(!Rokon.elementVBO.isLoaded()) {
-				Rokon.elementVBO.load(gl);
-			}
-			if(!Rokon.arrayVBO.isLoaded()) {
-				Rokon.arrayVBO.load(gl);
-			}
-		}*/
-		
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		if(RokonActivity.currentScene != null) {
 			if(!RokonActivity.currentScene.loadedTextures) {
@@ -93,7 +80,6 @@ public class RokonRenderer implements GLSurfaceView.Renderer {
 
         Debug.print("Graphics Support - " + version + ": " +(Device.supportsDrawTex ?  "draw texture," : "") + (Device.supportsVBO ? "vbos" : ""));
         
-
         GLU.gluOrtho2D(gl, 0, rokonActivity.gameWidth, rokonActivity.gameHeight, 0);
 	}
 

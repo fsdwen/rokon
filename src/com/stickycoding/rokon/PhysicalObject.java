@@ -61,7 +61,6 @@ public class PhysicalObject extends DynamicObject {
 		return createDynamicBody(boxPoly);
 	}
 	
-	//TODO Weird bug here? Something isn't right. setAsBox appears differently for Static and Dynamic bodies
 	public Body createStaticBody() {
 		PolygonShape boxPoly = new PolygonShape();
 		boxPoly.setAsBox(width / 2, height / 2);
@@ -111,12 +110,12 @@ public class PhysicalObject extends DynamicObject {
 	
 	@Override
 	protected void onUpdate() {
-		super.onUpdate();
-		
 		if(usePhysics) {
 			x = body.getPosition().x - width / 2;
 			y = body.getPosition().y - height / 2;
 			rotation = body.getAngle() * 57.2957795f;
+		} else {
+			super.onUpdate();
 		}
 	}
 

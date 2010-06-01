@@ -245,7 +245,6 @@ public class DrawableObject extends PhysicalObject {
 	}
 	
 	protected void onDraw(GL10 gl) {
-		onUpdate();
 		switch(forceDrawType) {
 			case DrawPriority.DEFAULT:
 				switch(DrawPriority.drawPriority) {
@@ -411,6 +410,21 @@ public class DrawableObject extends PhysicalObject {
 		
 		gl.glPopMatrix();
 		
+	}
+	
+	/**
+	 * Determines whether this object is actually visible on screen
+	 * 
+	 * @return TRUE if on screen, FALSE otherwise
+	 */
+	public boolean isOnScreen() {
+		//TODO Take into account Windows
+		//TODO Make this better, in regards of rotation
+		//Currently assumes extra width/height due to possible rotation
+		if (x - (width / 2) < RokonActivity.gameWidth && x + width + (width / 2) > 0 && y - (height / 2) < RokonActivity.gameHeight && y + height + (height / 2) > 0) {
+			return true;
+		}
+		return false;
 	}
 
 }

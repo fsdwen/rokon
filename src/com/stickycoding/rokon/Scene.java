@@ -547,7 +547,7 @@ public class Scene {
 	protected void onDraw(GL10 gl) {
 		onPreDraw(gl);
 		if(usePhysics) {
-			world.step(Time.getTicksFraction(), 3, 3);
+			world.step(Time.getTicksFraction(), 10, 10);
 		}
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
         gl.glMatrixMode(GL10.GL_MODELVIEW);

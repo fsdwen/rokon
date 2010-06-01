@@ -16,6 +16,8 @@ public class Physics {
 	public static PolygonShape polygonShape = new PolygonShape();
 	public static World world;
 	
+	public static final float BOX2D_FACTOR = 10;
+	
 	public static void load() {
 
 	}

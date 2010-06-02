@@ -13,6 +13,8 @@ import android.opengl.GLU;
 
 public class Window {
 	
+	//TODO Update touch events to take into account Window
+	
 	public float x, y, width, height;
 	protected boolean moving;
 	protected float startX, startY, startWidth, startHeight;

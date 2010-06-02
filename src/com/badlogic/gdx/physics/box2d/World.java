@@ -3,10 +3,8 @@ package com.badlogic.gdx.physics.box2d;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Stack;
 
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.JointDef.JointType;
 import com.badlogic.gdx.physics.box2d.joints.DistanceJoint;
 import com.badlogic.gdx.physics.box2d.joints.DistanceJointDef;
@@ -26,6 +24,7 @@ import com.badlogic.gdx.physics.box2d.joints.RevoluteJoint;
 import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
 import com.badlogic.gdx.physics.box2d.joints.WeldJoint;
 import com.badlogic.gdx.physics.box2d.joints.WeldJointDef;
+import com.stickycoding.rokon.Debug;
 
 /**
  * The world class manages all physics entities, dynamic simulation,
@@ -153,12 +152,16 @@ public class World
 	 */
 	public void destroyBody(Body body)
 	{
-		jniDestroyBody( body.addr, body.addr );
+		Debug.print("JNI REMOVE BODY");
+		jniDestroyBody( addr, body.addr );
+		Debug.print("JNI REMOVE BODY COMPLETE 1");
 		this.bodies.remove( body.addr );
 		for( int i = 0; i < body.getFixtureList().size(); i++ )
 			this.fixtures.remove(body.getFixtureList().get(i).addr);
+		Debug.print("JNI REMOVE BODY COMPLETE2");
 		for( int i = 0; i < body.getJointList().size(); i++ )
-			this.joints.remove(body.getJointList().get(i).joint.addr);		
+			this.joints.remove(body.getJointList().get(i).joint.addr);
+		Debug.print("JNI REMOVE BODY COMPLETE3");		
 	}
 
 	private native void jniDestroyBody( long addr, long bodyAddr );

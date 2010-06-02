@@ -4,6 +4,8 @@ import javax.microedition.khronos.opengles.GL10;
 
 import android.view.MotionEvent;
 
+import com.badlogic.gdx.physics.box2d.Contact;
+import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.stickycoding.rokon.Debug;
@@ -25,7 +27,7 @@ public class Launcher extends RokonActivity {
 	public void onCreate() {
 		forceFullscreen();
 		forcePortrait();
-		setGameSize(48, 80);
+		setGameSize(4.8f, 8.0f);
 		setDrawPriority(DrawPriority.PRIORITY_NORMAL);
 		setGraphicsPath("textures/");
 		createEngine();
@@ -40,9 +42,9 @@ public class Launcher extends RokonActivity {
 
 		myScene.setWorld(world = new World(0f, 10f));
 		
-		window = new Window(0, 0, 48, 80);
+		window = new Window(0, 0, 4.8f, 8f);
 		
-		sprite = new Sprite(0, 75, 48, 5);
+		sprite = new Sprite(0, 7.5f, 4.8f, 5);
 		sprite.setTexture(face);
 		FixtureDef fixtureDef = new FixtureDef();
 		fixtureDef.density = 10f;
@@ -50,9 +52,35 @@ public class Launcher extends RokonActivity {
 		sprite.createStaticBox(fixtureDef);
 		myScene.add(sprite);
 		myScene.setWindow(window);
+
+		sprite = new Sprite(2f, 0f, 0.5f, 0.5f);
+		fixtureDef = new FixtureDef();
+		fixtureDef.friction = 0.2f;
+		fixtureDef.density = 10f;
+		sprite.setTexture(face);
+		sprite.createDynamicBox(fixtureDef);
+		sprite.fade(0, 1, 250, Movement.SMOOTH);
+		myScene.add(sprite);
+		
 		
 		setScene(myScene);
 	}
+	
+	public class contactListener implements ContactListener {
+
+		public void beginContact(Contact contact) {
+			// TODO Auto-generated method stub
+			Debug.print("BEGIN CONTACT");
+			
+		}
+
+		public void endContact(Contact contact) {
+			// TODO Auto-generated method stub
+			Debug.print("END CONTACT");
+			
+		}
+		
+	};
 	
 	public Scene myScene = new Scene(1, 128) {
 		
@@ -62,9 +90,9 @@ public class Launcher extends RokonActivity {
 		
 		@Override
 		public void onTouchDown(float x, float y, MotionEvent event) {
-			float newWidth = 10f + (float)Math.random() * 48f;
+			/*float newWidth = 1f + (float)Math.random() * 4.8f;
 			float newHeight = newWidth / window.getRatio();
-			window.move( (float)Math.random() * 40f, (float)Math.random() * 70f, newWidth, newHeight, 2500 );
+			window.move( (float)Math.random() * 4f, (float)Math.random() * 7f, newWidth, newHeight, 2500 );*/
 		}
 		
 		public void onPreDraw(GL10 gl) {
@@ -72,10 +100,10 @@ public class Launcher extends RokonActivity {
 				if(Time.getTicks() > nextAdd) {
 					nextAdd = Time.getTicks() + 150;
 					if(Math.random() < 0.5d) {
-						float size = 5 + (float)Math.random() * 4;
-						createCircle(((float)Math.random() * 40), 1, size);
+						float size = 0.5f + (float)Math.random() * 0.4f;
+						createCircle(((float)Math.random() * 4f), 0.1f, size);
 					} else {
-						createBox(((float)Math.random() * 40), 1, 1 + (float)Math.random() * 16, 1 + (float)Math.random() * 16);
+						createBox(((float)Math.random() * 4f), 0.1f, 0.1f + (float)Math.random() * 1.6f, 0.1f + (float)Math.random() * 1.6f);
 					}
 				}
 			}
@@ -83,7 +111,9 @@ public class Launcher extends RokonActivity {
 				for(int i = 0; i < 128; i++) {
 					if(getLayer(0).getDrawableObject(i) != null) {
 						if(getLayer(0).getDrawableObject(i).getY() > gameHeight) {
+							Debug.print("Removing");
 							getLayer(0).getDrawableObject(i).remove();
+							Debug.print("REMOVED");
 							count--;
 						}
 					}
@@ -92,7 +122,7 @@ public class Launcher extends RokonActivity {
 			}
 		}
 		
-		private void createBox(float x, float y, float width, float height) {
+		public void createBox(float x, float y, float width, float height) {
 			sprite = new Sprite(x, y, width, height);
 			FixtureDef fixtureDef = new FixtureDef();
 			fixtureDef.friction = 0.2f;
@@ -104,7 +134,7 @@ public class Launcher extends RokonActivity {
 			add(sprite);
 		}
 		
-		private void createCircle(float x, float y, float radius) {
+		public void createCircle(float x, float y, float radius) {
 			sprite = new Sprite(x, y, radius, radius);
 			sprite.setTexture(texture);
 			FixtureDef fixtureDef = new FixtureDef();

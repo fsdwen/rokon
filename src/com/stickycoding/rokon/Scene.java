@@ -549,7 +549,7 @@ public class Scene {
 			window.onUpdate(gl);
 		}
 		onPreDraw(gl);
-		if(usePhysics) {
+		if(usePhysics && !pausePhysics) {
 			world.step(Time.getTicksFraction(), 10, 10);
 		}
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
@@ -559,6 +559,16 @@ public class Scene {
 			layer[i].onDraw(gl);
 		}
 		onPostDraw(gl);
+	}
+	
+	protected boolean pausePhysics = false;
+	
+	public void pausePhysics() {
+		pausePhysics = true;
+	}
+	
+	public void resumePhysics() {
+		pausePhysics = false;
 	}
 	
 }

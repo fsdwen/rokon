@@ -83,6 +83,9 @@ public class Layer {
 		for(int i = 0; i < drawableObjects.getCapacity(); i++) {
 			if(drawableObjects.get(i) != null) {
 				while(drawableObjects.get(i).killNextUpdate) {
+					if(drawableObjects.get(i).body != null) {
+						parentScene.world.destroyBody(drawableObjects.get(i).body);
+					}
 					drawableObjects.remove(i);
 				}
 				drawableObjects.get(i).onUpdate();

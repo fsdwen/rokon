@@ -28,6 +28,9 @@ public class PhysicalObject extends DynamicObject {
 	public void createBody(BodyDef bodyDef, FixtureDef fixture) {
 		body = Physics.world.createBody(bodyDef);
 		body.createFixture(fixture);
+		//Debug.print("Prepare destroy");
+		//Physics.world.destroyBody(body);
+		//Debug.print("Prepare destroy 3");
 		this.bodyDef = bodyDef;
 		usePhysics = true;
 	}

@@ -112,9 +112,7 @@ public class Launcher extends RokonActivity {
 				for(int i = 0; i < 128; i++) {
 					if(getLayer(0).getDrawableObject(i) != null) {
 						if(getLayer(0).getDrawableObject(i).getY() > gameHeight) {
-							Debug.print("Removing");
 							getLayer(0).getDrawableObject(i).remove();
-							Debug.print("REMOVED");
 							count--;
 						}
 					}

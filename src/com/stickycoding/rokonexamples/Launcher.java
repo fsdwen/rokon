@@ -4,6 +4,7 @@ import javax.microedition.khronos.opengles.GL10;
 
 import android.view.MotionEvent;
 
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
@@ -40,7 +41,7 @@ public class Launcher extends RokonActivity {
 		face = new Texture("face.png");
 		myScene.useTexture(texture);
 
-		myScene.setWorld(world = new World(0f, 10f));
+		myScene.setWorld(world = new World(new Vector2(0f, 10f), true));
 		
 		window = new Window(0, 0, 4.8f, 8f);
 		

@@ -98,6 +98,9 @@ public class RokonActivity extends Activity {
 		Debug.print("Engine Activity received onPause()");
 		isOnPause = true;
 		reloadToHardware = true;
+		if(currentScene != null) {
+			currentScene.onPause();
+		}
 	}
 	
 	@Override
@@ -106,6 +109,9 @@ public class RokonActivity extends Activity {
 		Rokon.currentActivity = this;
 		isOnPause = false;
 		Debug.print("Engine Activity received onResume()");
+		if(currentScene != null) {
+			currentScene.onPause();
+		}
 	}
 	
 	@Override

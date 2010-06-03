@@ -41,6 +41,9 @@ public class Scene {
 	public void onPreDraw(GL10 gl) { }
 	public void onPostDraw(GL10 gl) { }
 	
+	public void onPause() { }
+	public void onResume() { }
+	
 	public void onTouchDown(DrawableObject object, float x, float y, MotionEvent event) { }
 	public void onTouchUp(DrawableObject object, float x, float y, MotionEvent event) { }
 	public void onTouchMove(DrawableObject object, float x, float y, MotionEvent event) { }

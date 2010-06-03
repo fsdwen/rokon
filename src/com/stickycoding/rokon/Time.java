@@ -8,17 +8,19 @@ package com.stickycoding.rokon;
  */
 public class Time {
 	
-	protected static long ticks;
+	protected static long ticks, realTicks;
 	protected static int ticksSinceLastFrame;
 	protected static float ticksFraction;
 	protected static long lastTicks;
+	protected static long pauseStart, pauseTime;
+	protected static boolean paused;
 	
 	protected static void update() {
 		lastTicks = ticks;
-		ticks = System.currentTimeMillis();
-		if(lastTicks == 0) {
-			return;
-		}
+		realTicks = System.currentTimeMillis();
+		if(paused) return;
+		ticks = realTicks - pauseTime;
+		if(lastTicks == 0) return;
 		ticksSinceLastFrame = (int)(ticks - lastTicks);
 		ticksFraction = ticksSinceLastFrame / 1000f;
 	}
@@ -38,5 +40,17 @@ public class Time {
 	public static long getLastTicks() {
 		return lastTicks;
 	}
+	
+	public static void pause() {
+		pauseStart = ticks;
+		paused = true;
+	}
+	
+	public static void unpause() {
+		pauseTime = System.currentTimeMillis() - pauseStart;
+		paused = false;
+	}
+	
+	
 
 }

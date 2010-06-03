@@ -14,5 +14,8 @@ import javax.microedition.khronos.opengles.GL10;
 public interface Drawable {
 	
 	void onDraw(GL10 gl);
+	void onAdd(Layer layer);
+	boolean onCheckAlive();
+	boolean isOnScreen();
 
 }

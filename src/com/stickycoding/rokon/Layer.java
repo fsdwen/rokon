@@ -12,7 +12,7 @@ import javax.microedition.khronos.opengles.GL10;
 public class Layer {
 	
 	protected Scene parentScene;
-	protected FixedSizeArray<DrawableObject> drawableObjects;	
+	protected FixedSizeArray<GameObject> gameObjects;	
 	protected int maximumDrawableObjects;
 	protected DrawQueue drawQueue;
 	protected boolean ignoreWindow;
@@ -21,7 +21,7 @@ public class Layer {
 		this.parentScene = parentScene;
 		this.maximumDrawableObjects = maximumDrawableObjects;
 		drawQueue = new DrawQueue();
-		drawableObjects = new FixedSizeArray<DrawableObject>(maximumDrawableObjects);
+		gameObjects = new FixedSizeArray<GameObject>(maximumDrawableObjects);
 	}
 	
 	/**
@@ -53,8 +53,8 @@ public class Layer {
 	 * @param index position in the array
 	 * @return NULL if not found
 	 */
-	public DrawableObject getDrawableObject(int index) {
-		return drawableObjects.get(index);
+	public GameObject getGameObject(int index) {
+		return gameObjects.get(index);
 	}
 	
 	/**
@@ -82,7 +82,7 @@ public class Layer {
 	 * Clears all the DrawableObjects off this Layer
 	 */
 	public void clear() {
-		drawableObjects.clear();
+		gameObjects.clear();
 	}
 	
 	/**
@@ -90,16 +90,16 @@ public class Layer {
 	 * 
 	 * @param drawableObject a valid DrawableObject
 	 */
-	public void add(DrawableObject drawableObject) {
+	public void add(GameObject drawableObject) {
 		if(drawableObject == null) {
 			Debug.warning("Layer.add", "Tried adding an invalid DrawableObject");
 			return;
 		}
-		if(drawableObjects.getCount() == drawableObjects.getCapacity()) {
+		if(gameObjects.getCount() == gameObjects.getCapacity()) {
 			Debug.warning("Layer.add", "Tried adding to a Layer which is full, maximum=" + maximumDrawableObjects);
 			return;
 		}
-		drawableObjects.add(drawableObject);
+		gameObjects.add(drawableObject);
 		drawableObject.onAdd(this);
 	}
 	
@@ -109,24 +109,17 @@ public class Layer {
 			gl.glMatrixMode(GL10.GL_MODELVIEW);
 	        gl.glLoadIdentity();
 		}
-		for(int i = 0; i < drawableObjects.getCapacity(); i++) {
-			if(drawableObjects.get(i) != null) {
-				try {
-					while(drawableObjects.get(i) != null && drawableObjects.get(i).killNextUpdate) {
-						if(drawableObjects.get(i).body != null) {
-							parentScene.world.destroyBody(drawableObjects.get(i).body);
-							drawableObjects.get(i).body = null;
-						}
-						drawableObjects.remove(i);
+		for(int i = 0; i < gameObjects.getCapacity(); i++) {
+			if(gameObjects.get(i) != null) {
+				if(gameObjects.get(i) != null) {
+					while(gameObjects.get(i) != null && !gameObjects.get(i).onCheckAlive()) {
+						gameObjects.remove(i);
 					}
-				} catch (Exception e) { 
-					Debug.warning("Exception onDraw!");
-					e.printStackTrace();
-				}
-				if(drawableObjects.get(i) != null) {
-					drawableObjects.get(i).onUpdate();
-					if(drawableObjects.get(i).isOnScreen()) {
-						drawableObjects.get(i).onDraw(gl);
+					if(gameObjects.get(i) != null) {
+						gameObjects.get(i).onUpdate();
+						if(gameObjects.get(i).isOnScreen()) {
+							gameObjects.get(i).onDraw(gl);
+						}
 					}
 				}
 			}

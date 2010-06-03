@@ -10,8 +10,8 @@ import android.view.MotionEvent;
  */
 public interface Touchable {
 	
-	void onTouchDown(StaticObject object, int x, int y, MotionEvent event);
-	void onTouch(StaticObject object, int x, int y, MotionEvent event);
-	void onTouchUp(StaticObject object, int x, int y, MotionEvent event);
+	void onTouchDown(BasicGameObject object, int x, int y, MotionEvent event);
+	void onTouch(BasicGameObject object, int x, int y, MotionEvent event);
+	void onTouchUp(BasicGameObject object, int x, int y, MotionEvent event);
 
 }

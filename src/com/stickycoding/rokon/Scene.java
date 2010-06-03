@@ -279,7 +279,7 @@ public class Scene {
 					checkX = realX;
 					checkY = realY;
 				}
-				DrawableObject object = layer[i].drawableObjects.get(j);
+				GameObject object = layer[i].gameObjects.get(j);
 				if(object != null && object.isTouchable) {
 					if(MathHelper.pointInRect(checkX, checkY, object.x, object.y, object.width, object.height)) {
 						onTouch(object, checkX, checkY, event);
@@ -528,7 +528,7 @@ public class Scene {
 	 * 
 	 * @param drawableObject a valid DrawableObject
 	 */
-	public void add(DrawableObject drawableObject) {
+	public void add(GameObject drawableObject) {
 		layer[0].add(drawableObject);
 	}
 	
@@ -538,7 +538,7 @@ public class Scene {
 	 * @param layerIndex a valid index of a Layer
 	 * @param drawableObject a valid DrawableObject
 	 */
-	public void add(int layerIndex, DrawableObject drawableObject) {
+	public void add(int layerIndex, GameObject drawableObject) {
 		if(layerIndex < 0 || layerIndex > layerCount) {
 			Debug.warning("Scene.add", "Tried adding to an invalid Layer, layerIndex=" + layerIndex + ", maximum is " + layerCount);
 			return;
@@ -608,7 +608,6 @@ public class Scene {
 	
 	protected void onDraw(GL10 gl) {
 		onPreDraw(gl);
-		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		if(background != null) {
 			background.onDraw(gl);
 		}
@@ -618,6 +617,7 @@ public class Scene {
 		if(usePhysics && !pausePhysics) {
 			world.step(Time.getTicksFraction(), 10, 10);
 		}
+		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		gl.glMatrixMode(GL10.GL_MODELVIEW);
         gl.glLoadIdentity();
 		for(int i = 0; i < layerCount; i++) {

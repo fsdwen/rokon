@@ -159,8 +159,8 @@ public class TiledSprite extends Sprite {
 	}
 	
 	@Override
-	protected void onUpdate() {
-		
+	public void onUpdate() {
+		super.onUpdate();
 	}
 
 }

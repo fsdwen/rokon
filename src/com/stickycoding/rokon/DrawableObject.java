@@ -8,61 +8,69 @@ import com.stickycoding.rokon.device.Graphics;
 import com.stickycoding.rokon.vbos.ArrayVBO;
 import com.stickycoding.rokon.vbos.VBO;
 
-/**
- * DrawableObject.java
- * An extension of DynamicObject, for objects which are to be drawn 
- * Confusion with Androids own Drawable class may be a potential issue, though this being an interface they cannot easily be used accidentally
- *  
- * @author Richard
- */
+public class DrawableObject extends BasicGameObject implements Drawable, Updateable {
 
-/**
- * @author Richard
- *
- */
-public class DrawableObject extends PhysicalObject {
-
-	protected boolean isTouchable = false;
+	protected boolean killNextUpdate = false;
+	
 	protected BlendFunction blendFunction;
 	protected int forceDrawType = DrawPriority.DEFAULT;
-	protected boolean isOnScene = false;
-	protected boolean killNextUpdate = false;
-	protected float red, green, blue, alpha;
+	protected float red = 1, green = 1, blue = 1, alpha = 1;
 	protected BufferObject buffer;
 	protected Texture texture;
 	protected ArrayVBO arrayVBO;
 	protected int textureTile = 0;
 	
+	protected boolean isFading;
+	protected int fadeTime, fadeType;
+	protected long fadeStartTime;
+	protected float fadeTo, fadeStart;
+	protected boolean fadeUp;
+	
+	public void fade(float alpha, int time, int movementType) {
+		fade(this.alpha, alpha, time, movementType);
+	}
+	
+	public void fade(float alpha, int time) {
+		fade(this.alpha, alpha, time, Movement.LINEAR);
+	}
+
+	
+	public void fade(float startAlpha, float alpha, int time, int movementType) {
+		if(alpha == startAlpha) return;
+		this.alpha = startAlpha;
+		fadeType = movementType; 
+		isFading = true;
+		fadeTime = time;
+		fadeStartTime = Time.ticks;
+		fadeTo = alpha;
+		fadeStart = this.alpha;
+		fadeUp = alpha > this.alpha;
+		
+	}
+	
+	private void updateFadeTo() {
+		if(!isFading) return;
+		float position = (float)(Time.ticks - fadeStartTime) / (float)fadeTime;
+		float factor = Movement.getPosition(position, fadeType);
+		if(position >= 1) {
+			this.alpha = fadeTo;
+			isFading = false;
+			return;
+		}
+		if(fadeUp) {
+			this.alpha = fadeStart + ((fadeTo - fadeStart) * factor);
+		} else {
+			this.alpha = fadeStart - ((fadeStart - fadeTo) * factor);
+		}
+	}
+	
 	public DrawableObject(float x, float y, float width, float height) {
 		super(x, y, width, height);
-		onCreate();
 	}
 	
 	public DrawableObject(float x, float y, float width, float height, Texture texture) {
 		super(x, y, width, height);
-		onCreate();
 		setTexture(texture);
-	}
-	
-	/**
-	 * Sets the DrawableObject to a touchable, it will be checked when Scene handles input events 
-	 */
-	public void setTouchable() {
-		isTouchable = true;
-	}
-	
-	/**
-	 * Sets the DrawableObject as un-touchable
-	 */
-	public void removeTouchable() {
-		isTouchable = false;
-	}
-	
-	/**
-	 * @return TRUE if the object is touchable, FALSE otherwise
-	 */
-	public boolean isTouchable() {
-		return isTouchable;
 	}
 	
 	/**
@@ -105,19 +113,7 @@ public class DrawableObject extends PhysicalObject {
 		return blendFunction;
 	}
 	
-	protected void onCreate() {
-		red = 1f;
-		green = 1f;
-		blue = 1f;
-		alpha = 1f;
-		isOnScene = false;
-		killNextUpdate = false;
-		if(forceDrawType == DrawPriority.VBO || DrawPriority.drawPriority == DrawPriority.PRIORITY_VBO_DRAWTEX_NORMAL || DrawPriority.drawPriority == DrawPriority.PRIORITY_VBO_NORMAL) {
-			prepareVBO();
-		}
-	}
-	
-	private void prepareVBO() {
+	protected void prepareVBO() {
 		arrayVBO = new ArrayVBO(VBO.STATIC);
 		arrayVBO.update(x, y, width, height);
 	}
@@ -137,24 +133,6 @@ public class DrawableObject extends PhysicalObject {
 				arrayVBO = null;
 			}
 		}
-	}
-	
-	protected void onAdd(Layer layer) {
-		killNextUpdate = false;
-		isOnScene = true;
-		parentScene = layer.parentScene;
-		parentLayer = layer;
-		if(texture != null && texture.textureIndex == -1) {
-			if(layer.parentScene != null) {
-				if(Rokon.verbose) Debug.verbose("DrawableObject.onAdd", "Scene does not already contain the this objects Texture, adding automatically."); 
-				layer.parentScene.useTexture(texture);
-			}
-		}
-	}
-	
-	
-	protected void onRemove() {
-		isOnScene = false;
 	}
 	
 	/**
@@ -249,21 +227,7 @@ public class DrawableObject extends PhysicalObject {
 		this.alpha = alpha;
 	}
 	
-	/**
-	 * Removes this DrawableObject from the Scene
-	 */
-	public void remove() {
-		killNextUpdate = true;
-	}
-	
-	/**
-	 * @return TRUE if the DrawableObject has been added to the current Scene
-	 */
-	public boolean isAdded() {
-		return isOnScene;
-	}
-	
-	protected void onDraw(GL10 gl) {
+	public void onDraw(GL10 gl) {
 		switch(forceDrawType) {
 			case DrawPriority.DEFAULT:
 				switch(DrawPriority.drawPriority) {
@@ -498,6 +462,37 @@ public class DrawableObject extends PhysicalObject {
 	 */
 	public int getTextureTileColumn() {
 		return textureTile % texture.columns;
+	}
+
+	public void onUpdate() {
+		updateFadeTo();		
+	}
+
+	public void onAdd(Layer layer) {
+        killNextUpdate = false;
+        if(forceDrawType == DrawPriority.VBO || DrawPriority.drawPriority == DrawPriority.PRIORITY_VBO_DRAWTEX_NORMAL || DrawPriority.drawPriority == DrawPriority.PRIORITY_VBO_NORMAL) {
+        	prepareVBO();
+        }
+	}
+
+	public void onRemove() {
+
+	}
+
+	/**
+	 * Removes this DrawableObject from the Scene
+	 */
+	public void remove() {
+		killNextUpdate = true;
+	}
+	
+	public boolean onCheckAlive() {
+		if(killNextUpdate) {
+			onRemove();
+			return false;
+		} else {
+			return true;
+		}
 	}
 
 }

@@ -15,13 +15,13 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
  * @author Richard
  *
  */
-public class PhysicalObject extends DynamicObject {
+public class PhysicalSprite extends Sprite implements Updateable {
 	
 	public Body body;
 	public BodyDef bodyDef;
 	protected boolean usePhysics;
 
-	public PhysicalObject(float x, float y, float width, float height) {
+	public PhysicalSprite(float x, float y, float width, float height) {
 		super(x, y, width, height);
 	}
 	
@@ -201,20 +201,24 @@ public class PhysicalObject extends DynamicObject {
 	/**
 	 * Sets the Body for this PhysicalObject
 	 * Automatically flags usePhysics as TRUE
+	 * Stops any kinematics from Sprite
 	 * 
 	 * @param body valid Body object
 	 */
 	public void setBody(Body body) {
 		this.body = body;
 		usePhysics = true;
+		stop();
 	}
 	
 	/**
 	 * Flags the PhysicalObject to use the Box2D physics engine
 	 * If the Body object is not set, this will raise an exception on next redraw
+	 * Stops any kinematics from Sprite
 	 */
 	public void usePhysics() {
 		usePhysics = true;
+		stop();
 	}
 	
 	/**
@@ -225,13 +229,20 @@ public class PhysicalObject extends DynamicObject {
 	}
 	
 	@Override
-	protected void onUpdate() {
+	public void onUpdate() {
+		super.onUpdate();
 		if(usePhysics) {
 			x = body.getPosition().x - width / 2;
 			y = body.getPosition().y - height / 2;
 			rotation = body.getAngle() * 57.2957795f;
-		} else {
-			super.onUpdate();
+		}
+	}
+	
+	@Override
+	public void onRemove() {
+		super.onRemove();
+		if(body != null) {
+			Physics.world.destroyBody(body);
 		}
 	}
 

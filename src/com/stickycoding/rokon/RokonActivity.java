@@ -8,9 +8,9 @@ import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.WindowManager;
 
-import com.stickycoding.rokon.VBO.ArrayVBO;
-import com.stickycoding.rokon.VBO.ElementVBO;
-import com.stickycoding.rokon.VBO.VBO;
+import com.stickycoding.rokon.vboo.ArrayVBO;
+import com.stickycoding.rokon.vboo.ElementVBO;
+import com.stickycoding.rokon.vboo.VBO;
 
 /**
  * RokonActivity.java

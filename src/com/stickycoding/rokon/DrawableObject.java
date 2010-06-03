@@ -4,8 +4,8 @@ import javax.microedition.khronos.opengles.GL10;
 import javax.microedition.khronos.opengles.GL11;
 import javax.microedition.khronos.opengles.GL11Ext;
 
-import com.stickycoding.rokon.VBO.ArrayVBO;
-import com.stickycoding.rokon.VBO.VBO;
+import com.stickycoding.rokon.vboo.ArrayVBO;
+import com.stickycoding.rokon.vboo.VBO;
 
 /**
  * DrawableObject.java

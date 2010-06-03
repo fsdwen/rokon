@@ -63,7 +63,6 @@ public class Launcher extends RokonActivity {
 		sprite.fade(0, 1, 250, Movement.SMOOTH);
 		myScene.add(sprite);
 		
-		
 		setScene(myScene);
 	}
 	
@@ -75,9 +74,9 @@ public class Launcher extends RokonActivity {
 		
 		@Override
 		public void onTouchDown(float x, float y, MotionEvent event) {
-			/*float newWidth = 1f + (float)Math.random() * 4.8f;
+			float newWidth = 1f + (float)Math.random() * 4.8f;
 			float newHeight = newWidth / window.getRatio();
-			window.move( (float)Math.random() * 4f, (float)Math.random() * 7f, newWidth, newHeight, 2500 );*/
+			window.move( (float)Math.random() * 4f, (float)Math.random() * 7f, newWidth, newHeight, 2500 );
 		}
 		
 		public void onPreDraw(GL10 gl) {

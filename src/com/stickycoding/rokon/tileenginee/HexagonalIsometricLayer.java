@@ -1,4 +1,4 @@
-package com.stickycoding.rokon.TileEngine;
+package com.stickycoding.rokon.tileenginee;
 
 public class HexagonalIsometricLayer {
 

@@ -37,6 +37,7 @@ public class Scene {
 	protected boolean usePhysics = false;
 	protected ContactListener contactListener;
 	protected boolean useContactListener;
+	protected Background background;
 
 	public void onPreDraw(GL10 gl) { }
 	public void onPostDraw(GL10 gl) { }
@@ -606,14 +607,17 @@ public class Scene {
 	}
 	
 	protected void onDraw(GL10 gl) {
+		onPreDraw(gl);
+		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		if(background != null) {
+			background.onDraw(gl);
+		}
 		if(window != null) {
 			window.onUpdate(gl);
 		}
-		onPreDraw(gl);
 		if(usePhysics && !pausePhysics) {
 			world.step(Time.getTicksFraction(), 10, 10);
 		}
-		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		gl.glMatrixMode(GL10.GL_MODELVIEW);
         gl.glLoadIdentity();
 		for(int i = 0; i < layerCount; i++) {
@@ -631,6 +635,22 @@ public class Scene {
 	public void resumePhysics() {
 		pausePhysics = false;
 	}
+	
+	public void setBackground(Background background) {
+		this.background = background;
+		background.parentScene = this;
+	}
+	
+	public Background getBackground() {
+		return this.background;
+	}
+	
+	
+	
+	
+	
+	
+	
 	
 	protected class SceneContactListener implements ContactListener {
 

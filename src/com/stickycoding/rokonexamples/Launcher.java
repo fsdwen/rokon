@@ -16,6 +16,7 @@ import com.stickycoding.rokon.Sprite;
 import com.stickycoding.rokon.Texture;
 import com.stickycoding.rokon.Time;
 import com.stickycoding.rokon.Window;
+import com.stickycoding.rokon.backgrounds.FixedBackground;
 
 public class Launcher extends RokonActivity {
 	
@@ -40,6 +41,9 @@ public class Launcher extends RokonActivity {
 		myScene.useTexture(texture);
 
 		myScene.setWorld(world = new World(new Vector2(0f, 10f), true));
+		
+		FixedBackground fb =new FixedBackground(face);
+		myScene.setBackground(fb);
 		
 		window = new Window(0, 0, 4.8f, 8f);
 		

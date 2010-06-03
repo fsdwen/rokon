@@ -26,6 +26,18 @@ public class Texture {
 		textureIndex = -1;
 	}
 	
+	public int getTextureIndex() {
+		return textureIndex;
+	}
+	
+	public BufferObject[] getBuffer() {
+		return buffer;
+	}
+	
+	public BufferObject getBuffer(int index) {
+		return buffer[index];
+	}
+	
 	/**
 	 * Creates a texture, with a file from the assets
 	 * 

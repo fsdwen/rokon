@@ -31,6 +31,14 @@ public class RokonActivity extends Activity {
 	protected static boolean reloadToHardware;
 	protected static boolean isOnPause;
 	
+	public static float getGameWidth() {
+		return gameWidth;
+	}
+	
+	public static float getGameHeight() {
+		return gameHeight;
+	}
+	
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if(currentScene != null) {

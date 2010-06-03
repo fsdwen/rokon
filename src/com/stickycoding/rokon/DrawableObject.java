@@ -236,11 +236,6 @@ public class DrawableObject extends PhysicalObject {
 	 */
 	public void remove() {
 		killNextUpdate = true;
-		if(body != null) {
-			//TODO Fix this!
-			Physics.world.destroyBody(body);
-			body = null;
-		}
 	}
 	
 	/**

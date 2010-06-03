@@ -8,6 +8,8 @@ import javax.microedition.khronos.opengles.GL10;
 
 import android.view.MotionEvent;
 
+import com.badlogic.gdx.physics.box2d.Contact;
+import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.World;
 
 /**
@@ -30,6 +32,8 @@ public class Scene {
 	protected boolean useInvoke;
 	protected World world;
 	protected boolean usePhysics = false;
+	protected ContactListener contactListener;
+	protected boolean useContactListener;
 
 	public void onPreDraw(GL10 gl) { }
 	public void onPostDraw(GL10 gl) { }
@@ -571,4 +575,32 @@ public class Scene {
 		pausePhysics = false;
 	}
 	
+	protected class SceneContactListener implements ContactListener {
+
+		public void beginContact(Contact contact) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		public void endContact(Contact contact) {
+			// TODO Auto-generated method stub
+			
+		}
+		
+	}
+	
+	public void useContactListener() {
+		if(contactListener == null) {
+			contactListener = new SceneContactListener();
+		}
+		useContactListener = true;
+	}
+	
+	public void stopContactListener() {
+		useContactListener = false;
+	}
+	
+	public void setContactListener(ContactListener contactListener) {
+		this.contactListener = contactListener;
+	}
 }

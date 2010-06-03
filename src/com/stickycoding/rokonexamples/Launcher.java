@@ -67,22 +67,6 @@ public class Launcher extends RokonActivity {
 		setScene(myScene);
 	}
 	
-	public class contactListener implements ContactListener {
-
-		public void beginContact(Contact contact) {
-			// TODO Auto-generated method stub
-			Debug.print("BEGIN CONTACT");
-			
-		}
-
-		public void endContact(Contact contact) {
-			// TODO Auto-generated method stub
-			Debug.print("END CONTACT");
-			
-		}
-		
-	};
-	
 	public Scene myScene = new Scene(1, 128) {
 		
 		int count = 1;		
@@ -113,11 +97,10 @@ public class Launcher extends RokonActivity {
 					if(getLayer(0).getDrawableObject(i) != null) {
 						if(getLayer(0).getDrawableObject(i).getY() > gameHeight) {
 							getLayer(0).getDrawableObject(i).remove();
-							count--;
 						}
 					}
 				}
-				nextCheck = Time.getTicks() + 1000;
+				nextCheck = Time.getTicks() + 10;
 			}
 		}
 		

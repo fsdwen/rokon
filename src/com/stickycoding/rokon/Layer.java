@@ -84,9 +84,7 @@ public class Layer {
 			if(drawableObjects.get(i) != null) {
 				while(drawableObjects.get(i).killNextUpdate) {
 					if(drawableObjects.get(i).body != null) {
-						Debug.print("removing from physics");
 						parentScene.world.destroyBody(drawableObjects.get(i).body);
-						Debug.print("removing from scene");
 						drawableObjects.get(i).body = null;
 					}
 					drawableObjects.remove(i);

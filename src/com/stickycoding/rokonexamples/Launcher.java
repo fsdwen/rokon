@@ -38,14 +38,14 @@ public class Launcher extends RokonActivity {
 	
 	public void onLoadComplete() {
 		texture = new Texture("circle.png");
-		face = new Texture("face.png");
+		face = new Texture("face.png", 3, 2);
 		myScene.useTexture(texture);
 
 		myScene.setWorld(world = new World(new Vector2(0f, 10f), true));
 		
 		window = new Window(0, 0, 4.8f, 8f);
 		
-		sprite = new Sprite(0, 7.5f, 4.8f, 5);
+		sprite = new Sprite(0, 7.5f, 4.8f, 0.5f);
 		sprite.setTexture(face);
 		FixtureDef fixtureDef = new FixtureDef();
 		fixtureDef.density = 10f;

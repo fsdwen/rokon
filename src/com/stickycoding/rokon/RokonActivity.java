@@ -27,6 +27,21 @@ public class RokonActivity extends Activity {
 	protected static boolean engineLoaded = false;
 	protected static float gameWidth, gameHeight;
 	protected static String graphicsPath;
+	protected static boolean reloadToHardware;
+	protected static boolean isOnPause;
+	
+	protected void dispose() {
+		//TODO Properly remove all things from memory
+		isOnPause = false;
+		engineLoaded = false;
+		engineCreated = false;
+		reloadToHardware = false;
+		graphicsPath = null;
+		currentScene = null;
+		System.gc();
+		System.exit(0);
+		finish();
+	}
 	
 	public void onCreate() {};
 	public void onLoadComplete() { };
@@ -34,6 +49,11 @@ public class RokonActivity extends Activity {
 	@Override
 	public void onCreate(Bundle savedState) {
 		super.onCreate(savedState);
+		if(isOnPause) {
+			Debug.print("Engine Activity created, loading previous state");
+			finish();//initEngine();
+			return;
+		}
 		Debug.print("Engine Activity created");
 		onCreate();
 		if(!engineCreated) {
@@ -41,6 +61,15 @@ public class RokonActivity extends Activity {
 			finish();
 			return;
 		}
+	}
+	
+	@Override
+	public void onDestroy() {
+		if(isFinishing()) {
+			Debug.print("DESTROY");
+			dispose();
+		}
+		super.onDestroy();
 	}
 	
 	private void createStatics() {
@@ -58,12 +87,15 @@ public class RokonActivity extends Activity {
 	public void onPause() {
 		super.onPause();
 		Debug.print("Engine Activity received onPause()");
+		isOnPause = true;
+		reloadToHardware = true;
 	}
 	
 	@Override
 	public void onResume() {
 		super.onResume();
 		Rokon.currentActivity = this;
+		isOnPause = false;
 		Debug.print("Engine Activity received onResume()");
 	}
 	
@@ -212,11 +244,15 @@ public class RokonActivity extends Activity {
 	 * Note that some functions may only be called before createEngine
 	 */
 	public void createEngine() {
-		createStatics();
 		if(engineCreated) {
 			Debug.warning("RokonActivity.createEngine", "Attempted to call createEngine for a second time");
 			return;
 		}
+		createStatics();
+		initEngine();
+	}
+	
+	private void initEngine() {
 		if(forceFullscreen) {
 	        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 	        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);

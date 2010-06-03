@@ -17,9 +17,9 @@ import android.opengl.GLUtils;
 public class Texture {
 		
 	protected int textureWidth, textureHeight;
-	protected int width, height, columns, rows;
+	protected int width, height, columns, rows, tileCount;
 	protected String path;
-	protected BufferObject buffer;
+	protected BufferObject[] buffer;
 	protected int textureIndex = -1;
 	
 	protected void setUnloaded() {
@@ -56,17 +56,27 @@ public class Texture {
 		height = opts.outHeight;
 		this.columns = columns;
 		this.rows = rows;
+		tileCount = columns * rows;
 		textureWidth = nextPowerOfTwo(width);
 		textureHeight = nextPowerOfTwo(height);
 	}
 	
 	protected void prepareBuffers() {
-		buffer = new BufferObject();
-		buffer.update(0, 0, (float)width / (float)textureWidth, (float)height / (float)textureHeight);
+		buffer = new BufferObject[tileCount];
+		for(int i = 0; i < buffer.length; i++) {
+			float col = i % columns;
+			float row = (i - col) / (float)columns;
+			buffer[i] = new BufferObject();
+			float x = col * (float)(width / columns);
+			float y = row * (float)(height / rows);
+			buffer[i].update(x / textureWidth, y / textureHeight, (float)(width / columns) / (float)textureWidth, (float)(height / rows) / (float)textureHeight);
+		}
 	}
 	
 	protected void freeBuffers() {
-		buffer.free();
+		for(int i = 0; i < buffer.length; i++) {
+			buffer[i].free();
+		}
 	}
 	
 	/**
@@ -111,7 +121,16 @@ public class Texture {
         gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T, GL10.GL_CLAMP_TO_EDGE);
         gl.glTexEnvf(GL10.GL_TEXTURE_ENV, GL10.GL_TEXTURE_ENV_MODE, GL10.GL_MODULATE);
 
-        gl.glTexSubImage2D(GL10.GL_TEXTURE_2D, 0, 0, 0, width, height, GL10.GL_RGBA, GL10.GL_UNSIGNED_BYTE, buffer.get());
+        if(tileCount == 1) {
+            gl.glTexSubImage2D(GL10.GL_TEXTURE_2D, 0, 0, 0, width, height, GL10.GL_RGBA, GL10.GL_UNSIGNED_BYTE, buffer[0].get());
+        } else {
+            BufferObject bigBuffer;
+        	bigBuffer = new BufferObject();
+			bigBuffer.update(0, 0, (float)(width / textureWidth), (float)(height / (float)textureHeight));	
+	        gl.glTexSubImage2D(GL10.GL_TEXTURE_2D, 0, 0, 0, width, height, GL10.GL_RGBA, GL10.GL_UNSIGNED_BYTE, bigBuffer.get());
+	        bigBuffer.free();
+	        bigBuffer = null;
+        }
         
         try {
         	bmp = BitmapFactory.decodeStream(Rokon.currentActivity.getAssets().open(path));

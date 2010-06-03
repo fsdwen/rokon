@@ -16,6 +16,10 @@ import com.stickycoding.rokon.vbos.VBO;
  * @author Richard
  */
 
+/**
+ * @author Richard
+ *
+ */
 public class DrawableObject extends PhysicalObject {
 
 	protected boolean isTouchable = false;
@@ -28,6 +32,7 @@ public class DrawableObject extends PhysicalObject {
 	protected BufferObject buffer;
 	protected Texture texture;
 	protected ArrayVBO arrayVBO;
+	protected int textureTile = 0;
 	
 	public DrawableObject(float x, float y, float width, float height) {
 		super(x, y, width, height);
@@ -68,6 +73,18 @@ public class DrawableObject extends PhysicalObject {
 	 */
 	public void setTexture(Texture texture) {
 		this.texture = texture;
+	}
+
+	
+	/**
+	 * Uses a Texture rather than a blank square
+	 * 
+	 * @param texture valid Texture object
+	 * @param tile the tile index to use
+	 */
+	public void setTextureTile(Texture texture, int tileIndex) {
+		setTexture(texture);
+		textureTile = tileIndex;
 	}
 	
 	/**
@@ -341,7 +358,7 @@ public class DrawableObject extends PhysicalObject {
 			GLHelper.enableTextures();
 			GLHelper.enableTexCoordArray();
 			GLHelper.bindTexture(texture.textureIndex);
-			GLHelper.texCoordPointer(texture.buffer, GL10.GL_FLOAT);
+			GLHelper.texCoordPointer(texture.buffer[textureTile], GL10.GL_FLOAT);
 		} else {
 			GLHelper.disableTexCoordArray();
 			GLHelper.disableTextures();
@@ -401,7 +418,7 @@ public class DrawableObject extends PhysicalObject {
 			GLHelper.enableTextures();
 			GLHelper.enableTexCoordArray();
 			GLHelper.bindTexture(texture.textureIndex);
-			GLHelper.texCoordPointer(texture.buffer, GL10.GL_FLOAT);
+			GLHelper.texCoordPointer(texture.buffer[textureTile], GL10.GL_FLOAT);
 		} else {
 			GLHelper.disableTexCoordArray();
 			GLHelper.disableTextures();
@@ -435,6 +452,55 @@ public class DrawableObject extends PhysicalObject {
 			}
 		}
 		return false;
+	}
+	
+	/**
+	 * Sets the tile inside the Texture that this DrawableObject should use
+	 * 
+	 * @param tileIndex integer, starting at 0
+	 */
+	public void setTextureTile(int tileIndex) {
+		textureTile = tileIndex;
+	}
+	
+	/**
+	 * Sets the tile inside the Texture that this DrawableObject should use
+	 * based on columsn and rows, not the index
+	 * 
+	 * @param column integer, starting at 0
+	 * @param row integer, starting at 0
+	 */
+	public void setTextureTile(int column, int row) {
+		textureTile = (row * texture.columns) + column;
+	}
+	
+	/**
+	 * Returns the current tile which the Texture is using
+	 * 
+	 * @return 0 as default
+	 */
+	public int getTextureTile() {
+		return textureTile;
+	}
+	
+	/**
+	 * Returns the current row of the Texture which this DrawableObject is using
+	 * 
+	 * @return positive integer
+	 */
+	public int getTextureTileRow() {
+		float col = textureTile % texture.columns;
+		return (int)((textureTile - col) / texture.columns);
+	}
+
+	
+	/**
+	 * Returns the current row of the Texture which this DrawableObject is using
+	 * 
+	 * @return positive integer
+	 */
+	public int getTextureTileColumn() {
+		return textureTile % texture.columns;
 	}
 
 }

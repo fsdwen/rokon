@@ -29,7 +29,8 @@ public class Scene {
 	protected boolean loadedTextures;
 	protected int layerCount;
 	protected Window window = null;
-	protected Texture[] textures;
+	protected Texture[] texturesToLoad;
+	protected Texture[] texturesOnHardware;
 	protected boolean useInvoke;
 	protected World world;
 	protected boolean usePhysics = false;
@@ -325,7 +326,8 @@ public class Scene {
 	}
 	
 	private void prepareNewScene() {
-		textures = new Texture[SCENE_TEXTURE_COUNT];
+		texturesToLoad = new Texture[SCENE_TEXTURE_COUNT];
+		texturesOnHardware = new Texture[SCENE_TEXTURE_COUNT];
 	}
 	
 	/**
@@ -335,13 +337,14 @@ public class Scene {
 	 * @param texture valid Texture object
 	 */
 	public void useTexture(Texture texture) {
-		for(int i = 0; i < textures.length; i++) {
-			if(textures[i] == null) {
-				textures[i] = texture;
+		for(int i = 0; i < texturesToLoad.length; i++) {
+			if(texturesToLoad[i] == texture) return;
+			if(texturesToLoad[i] == null) {
+				texturesToLoad[i] = texture;
 				return;
 			}
 		}
-		Debug.warning("Scene.useTexture", "Tried loading too many Textures onto the Scene, max is " + textures.length);
+		Debug.warning("Scene.useTexture", "Tried loading too many Textures onto the Scene, max is " + texturesToLoad.length);
 	}
 	
 	/**
@@ -540,13 +543,33 @@ public class Scene {
 	
 	protected void onLoadTextures(GL10 gl) {
 		Debug.print("Loading textures onto the Scene");
-		for(int i = 0; i < textures.length; i++) {
-			if(textures[i] != null) {
-				textures[i].onLoadTexture(gl);
-				textures[i] = null;
+		for(int i = 0; i < texturesToLoad.length; i++) {
+			if(texturesToLoad[i] != null) {
+				texturesToLoad[i].onLoadTexture(gl);
+				boolean foundSpace = false;
+				for(int j = 0; j < texturesOnHardware.length; j++) {
+					if(texturesOnHardware[j] == null) {
+						Debug.print("found room...");
+						texturesOnHardware[j] = texturesToLoad[i];
+						foundSpace = true;
+						break;
+					}
+				}
+				if(!foundSpace) {
+					Debug.warning("Loading more textures than we can remember - will not be there if we onPause, may not be destroyed on Scene death");
+				}
+				texturesToLoad[i] = null;
 			}
 		}
 		loadedTextures = true;
+	}
+	
+	protected void onReloadTextures(GL10 gl) {
+		texturesToLoad = texturesOnHardware;
+		for(int i = 0; i < texturesOnHardware.length; i++) {
+			texturesOnHardware[i] = null;
+		}
+		onLoadTextures(gl);
 	}
 	
 	protected void onDraw(GL10 gl) {

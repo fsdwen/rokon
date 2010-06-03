@@ -25,6 +25,9 @@ public class RokonRenderer implements GLSurfaceView.Renderer {
 	}
 	
 	public void onDrawFrame(GL10 gl) {
+		if(rokonActivity.isOnPause) {
+			return;
+		}
 		Time.update();
 		if(!RokonActivity.engineLoaded) {
 			RokonActivity.engineLoaded = true;
@@ -38,6 +41,11 @@ public class RokonRenderer implements GLSurfaceView.Renderer {
 		if(RokonActivity.currentScene != null) {
 			if(!RokonActivity.currentScene.loadedTextures) {
 				RokonActivity.currentScene.onLoadTextures(gl);
+			}
+			if(RokonActivity.reloadToHardware) {
+				Debug.print("Reloading");
+				RokonActivity.currentScene.onReloadTextures(gl);
+				RokonActivity.reloadToHardware = false;
 			}
 			RokonActivity.currentScene.onDraw(gl);			
 		}

@@ -82,16 +82,21 @@ public class Layer {
 	protected void onDraw(GL10 gl) {
 		for(int i = 0; i < drawableObjects.getCapacity(); i++) {
 			if(drawableObjects.get(i) != null) {
-				while(drawableObjects.get(i).killNextUpdate) {
-					if(drawableObjects.get(i).body != null) {
-						parentScene.world.destroyBody(drawableObjects.get(i).body);
-						drawableObjects.get(i).body = null;
+				try {
+					while(drawableObjects.get(i).killNextUpdate) {
+						if(drawableObjects.get(i).body != null) {
+							parentScene.world.destroyBody(drawableObjects.get(i).body);
+							drawableObjects.get(i).body = null;
+						}
+						drawableObjects.remove(i);
 					}
-					drawableObjects.remove(i);
-				}
-				drawableObjects.get(i).onUpdate();
-				if(drawableObjects.get(i).isOnScreen()) {
-					drawableObjects.get(i).onDraw(gl);
+					drawableObjects.get(i).onUpdate();
+					if(drawableObjects.get(i).isOnScreen()) {
+						drawableObjects.get(i).onDraw(gl);
+					}
+				} catch (Exception e) { 
+					Debug.warning("Exception onDraw!");
+					e.printStackTrace();
 				}
 			}
 		}

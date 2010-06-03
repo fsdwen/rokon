@@ -6,6 +6,7 @@ import java.util.Arrays;
 
 import javax.microedition.khronos.opengles.GL10;
 
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 
 import com.badlogic.gdx.physics.box2d.Contact;
@@ -39,6 +40,7 @@ public class Scene {
 
 	public void onPreDraw(GL10 gl) { }
 	public void onPostDraw(GL10 gl) { }
+	
 	public void onTouchDown(DrawableObject object, float x, float y, MotionEvent event) { }
 	public void onTouchUp(DrawableObject object, float x, float y, MotionEvent event) { }
 	public void onTouchMove(DrawableObject object, float x, float y, MotionEvent event) { }
@@ -47,6 +49,13 @@ public class Scene {
 	public void onTouchMove(float x, float y, MotionEvent event) { }
 	public void onTouch(float x, float y, MotionEvent event) { }
 	public void onTouchUp(float x, float y, MotionEvent event) { }
+	
+	public void onTouchDownReal(float x, float y, MotionEvent event) { }
+	public void onTouchMoveReal(float x, float y, MotionEvent event) { }
+	public void onTouchUpReal(float x, float y, MotionEvent event) { }
+	public void onTouchReal(float x, float y, MotionEvent event) { }
+	
+	public void onKeyDown(int keyCode, KeyEvent event) { }
 	
 	/**
 	 * Sets a World for the physics in this Scene
@@ -230,17 +239,31 @@ public class Scene {
 	}
 	
 	protected void handleTouch(MotionEvent event) {
-		event.setLocation(event.getX() * (Graphics.getHalfWidthPixels() / RokonActivity.gameWidth), event.getY() * (Graphics.getHeightPixels()  / RokonActivity.gameHeight));
+		float realX = event.getX() * (Graphics.getWidthPixels() / RokonActivity.gameWidth);
+		float realY = event.getY() * (Graphics.getHeightPixels() / RokonActivity.gameHeight);
+		if(window != null) {
+			float xFraction = event.getX() / Graphics.getWidthPixels();
+			float yFraction = event.getY() / Graphics.getHeightPixels();
+			float gameX = window.x + (window.width * xFraction);
+			float gameY = window.y + (window.height * yFraction);
+			event.setLocation(gameX, gameY);
+		} else {
+			event.setLocation(event.getX() * (Graphics.getWidthPixels() / RokonActivity.gameWidth), event.getY() * (Graphics.getHeightPixels()  / RokonActivity.gameHeight));			
+		}
 		onTouch(event.getX(), event.getY(), event);
+		onTouchReal(realX, realY, event);
 		switch(event.getAction()) {
 			case MotionEvent.ACTION_DOWN:
 				onTouchDown(event.getX(), event.getY(), event);
+				onTouchDownReal(realX, realY, event);
 				break;
 			case MotionEvent.ACTION_UP:
 				onTouchUp(event.getX(), event.getY(), event);
+				onTouchUpReal(realX, realY, event);
 				break;
 			case MotionEvent.ACTION_MOVE:
 				onTouch(event.getX(), event.getY(), event);
+				onTouchUp(realX, realY, event);
 				break;
 		}
 		for(int i = 0; i < layerCount; i++) {
@@ -627,4 +650,7 @@ public class Scene {
 	public void setContactListener(ContactListener contactListener) {
 		this.contactListener = contactListener;
 	}
+	
+	
+	
 }

@@ -2,14 +2,12 @@ package com.stickycoding.rokonexamples;
 
 import javax.microedition.khronos.opengles.GL10;
 
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Contact;
-import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
-import com.stickycoding.rokon.Debug;
 import com.stickycoding.rokon.DrawPriority;
 import com.stickycoding.rokon.Movement;
 import com.stickycoding.rokon.RokonActivity;
@@ -72,17 +70,31 @@ public class Launcher extends RokonActivity {
 		long nextAdd = 0;
 		long nextCheck = 0;
 		
+		boolean addNew = false;
+		float x, y;
+		
 		@Override
 		public void onTouchDown(float x, float y, MotionEvent event) {
+			this.x = x;
+			this.y = y;
+			addNew = true;
+		}
+		
+		@Override
+		public void onKeyDown(int keyCode, KeyEvent event) {
 			float newWidth = 1f + (float)Math.random() * 4.8f;
 			float newHeight = newWidth / window.getRatio();
 			window.move( (float)Math.random() * 4f, (float)Math.random() * 7f, newWidth, newHeight, 2500 );
 		}
 		
 		public void onPreDraw(GL10 gl) {
+			if(addNew) {
+				createCircle(x, y, 0.5f);
+				addNew = false;
+			}
 			if(count < 128) {
 				if(Time.getTicks() > nextAdd) {
-					nextAdd = Time.getTicks() + 150;
+					nextAdd = Time.getTicks() + 10000;
 					if(Math.random() < 0.5d) {
 						float size = 0.5f + (float)Math.random() * 0.4f;
 						createCircle(((float)Math.random() * 4f), 0.1f, size);

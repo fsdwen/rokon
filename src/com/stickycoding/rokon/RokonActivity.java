@@ -5,6 +5,7 @@ import javax.microedition.khronos.opengles.GL10;
 import android.app.Activity;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.WindowManager;
 
@@ -29,6 +30,14 @@ public class RokonActivity extends Activity {
 	protected static String graphicsPath;
 	protected static boolean reloadToHardware;
 	protected static boolean isOnPause;
+	
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if(currentScene != null) {
+			currentScene.onKeyDown(keyCode, event);
+		}
+		return super.onKeyDown(keyCode, event);
+	}
 	
 	protected void dispose() {
 		//TODO Properly remove all things from memory

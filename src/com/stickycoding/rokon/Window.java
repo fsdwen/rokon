@@ -14,6 +14,7 @@ import android.opengl.GLU;
 public class Window {
 	
 	//TODO Update touch events to take into account Window
+	//TODO Needs documentation
 	
 	public float x, y, width, height;
 	protected boolean moving;
@@ -111,6 +112,11 @@ public class Window {
 		finishWidth = width;
 		finishHeight = height;
 		moving = true;
+	}
+	
+	public void centre(float x, float y) {
+		this.x = x - width / 2;
+		this.y = y - height / 2;
 	}
 
 }

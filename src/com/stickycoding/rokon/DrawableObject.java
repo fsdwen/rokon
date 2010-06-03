@@ -207,9 +207,9 @@ public class DrawableObject extends PhysicalObject {
 	/**
 	 * Sets the red, green and blue values
 	 * 
-	 * @param red float, 0 to 1
-	 * @param green float, 0 to 1
-	 * @param blue float, 0 to 1
+	 * @param red float, 0 to 1f
+	 * @param green float, 0 to 1f
+	 * @param blue float, 0 to 1f
 	 */
 	public void setRGB(float red, float green, float blue) {
 		this.red = red;
@@ -220,12 +220,12 @@ public class DrawableObject extends PhysicalObject {
 	/**
 	 * Sets the red, green, blue and alpha values
 	 * 
-	 * @param red fixed point integer, 0 to ONE
-	 * @param green fixed point integer, 0 to ONE
-	 * @param blue fixed point integer, 0 to ONE
-	 * @param alpha fixed point integer, 0 to ONE
+	 * @param red float, 0 to 1f
+	 * @param green float, 0 to 1f
+	 * @param blue float, 0 to 1f
+	 * @param alpha float, 0 to 1f
 	 */
-	public void setRGBA(int red, int green, int blue, int alpha) {
+	public void setRGBA(float red, float green, float blue, float alpha) {
 		this.red = red;
 		this.green = green;
 		this.blue = blue;

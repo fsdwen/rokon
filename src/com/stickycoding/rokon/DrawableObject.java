@@ -25,7 +25,6 @@ public class DrawableObject extends PhysicalObject {
 	protected boolean isTouchable = false;
 	protected BlendFunction blendFunction;
 	protected int forceDrawType = DrawPriority.DEFAULT;
-	protected Layer parentLayer;
 	protected boolean isOnScene = false;
 	protected boolean killNextUpdate = false;
 	protected float red, green, blue, alpha;
@@ -144,6 +143,7 @@ public class DrawableObject extends PhysicalObject {
 		killNextUpdate = false;
 		isOnScene = true;
 		parentScene = layer.parentScene;
+		parentLayer = layer;
 		if(texture != null && texture.textureIndex == -1) {
 			if(layer.parentScene != null) {
 				if(Rokon.verbose) Debug.verbose("DrawableObject.onAdd", "Scene does not already contain the this objects Texture, adding automatically."); 
@@ -437,12 +437,9 @@ public class DrawableObject extends PhysicalObject {
 	 * @return TRUE if on screen, FALSE otherwise
 	 */
 	public boolean isOnScreen() {
-		//TODO Take into account Windows
-		//TODO Make this better, in regards of rotation
-		//Currently assumes extra width/height due to possible rotation
 		float maxSize = width;
 		if(height > width) maxSize = height;
-		if(parentScene.window == null) {
+		if(parentLayer.ignoreWindow || parentScene.window == null) {
 			if (x - (maxSize / 2) < RokonActivity.gameWidth && x + maxSize + (maxSize / 2) > 0 && y - (maxSize / 2) < RokonActivity.gameHeight && y + maxSize + (maxSize / 2) > 0) {
 				return true;
 			}

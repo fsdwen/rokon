@@ -30,6 +30,12 @@ public class Window {
 		this.height = height;
 	}
 	
+	public static void setDefault(GL10 gl) {
+		gl.glMatrixMode(GL10.GL_PROJECTION);
+		gl.glLoadIdentity();
+        GLU.gluOrtho2D(gl, 0, RokonActivity.gameWidth, RokonActivity.gameHeight, 0);
+	}
+	
 	protected void onUpdate(GL10 gl) {
 		if(moving) {
 			float position = (float)(Time.ticks - startTime) / (float)moveTime;

@@ -15,6 +15,7 @@ public class StaticObject {
 	protected float x, y, width, height, rotation, rotationPivotX, rotationPivotY;
 	protected boolean rotateAboutPoint;
 	protected Scene parentScene;
+	protected Layer parentLayer;
 
 	/**
 	 * Attempts to invoke a method in this objects parentScene

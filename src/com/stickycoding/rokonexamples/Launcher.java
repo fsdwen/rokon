@@ -61,10 +61,16 @@ public class Launcher extends RokonActivity {
 		sprite.fade(0, 1, 250, Movement.SMOOTH);
 		myScene.add(sprite);
 		
+		myScene.getLayer(1).ignoreWindow();
+		
+		sprite = new Sprite(0, 1, 3, 1);
+		sprite.setAlpha(0.5f);
+		myScene.add(1, sprite);
+		
 		setScene(myScene);
 	}
 	
-	public Scene myScene = new Scene(1, 128) {
+	public Scene myScene = new Scene(2, 128) {
 		
 		int count = 1;		
 		long nextAdd = 0;

@@ -15,12 +15,36 @@ public class Layer {
 	protected FixedSizeArray<DrawableObject> drawableObjects;	
 	protected int maximumDrawableObjects;
 	protected DrawQueue drawQueue;
+	protected boolean ignoreWindow;
 	
 	public Layer(Scene parentScene, int maximumDrawableObjects) {
 		this.parentScene = parentScene;
 		this.maximumDrawableObjects = maximumDrawableObjects;
 		drawQueue = new DrawQueue();
 		drawableObjects = new FixedSizeArray<DrawableObject>(maximumDrawableObjects);
+	}
+	
+	/**
+	 * Tells this layer to ignore the current Scenes Window (if any) and draw straight to the device
+	 * Useful for interface layers
+	 */
+	public void ignoreWindow() {
+		ignoreWindow = true;
+	}
+	
+	/**
+	 * Tells this layer to use the current Scenes Window (if any)
+	 * By default, this is on
+	 */
+	public void useWindow() {
+		ignoreWindow = false;
+	}
+	
+	/**
+	 * @return TRUE if this Layer is drawing with respect to the current Scenes Window (if any)
+	 */
+	public boolean isUsingWindow() {
+		return !ignoreWindow;
 	}
 	
 	/**
@@ -80,6 +104,11 @@ public class Layer {
 	}
 	
 	protected void onDraw(GL10 gl) {
+		if(ignoreWindow && parentScene.window != null) {
+			Window.setDefault(gl);
+			gl.glMatrixMode(GL10.GL_MODELVIEW);
+	        gl.glLoadIdentity();
+		}
 		for(int i = 0; i < drawableObjects.getCapacity(); i++) {
 			if(drawableObjects.get(i) != null) {
 				try {
@@ -90,15 +119,22 @@ public class Layer {
 						}
 						drawableObjects.remove(i);
 					}
-					drawableObjects.get(i).onUpdate();
-					if(drawableObjects.get(i).isOnScreen()) {
-						drawableObjects.get(i).onDraw(gl);
-					}
 				} catch (Exception e) { 
 					Debug.warning("Exception onDraw!");
 					e.printStackTrace();
 				}
+				if(drawableObjects.get(i) != null) {
+					drawableObjects.get(i).onUpdate();
+					if(drawableObjects.get(i).isOnScreen()) {
+						drawableObjects.get(i).onDraw(gl);
+					}
+				}
 			}
+		}
+		if(ignoreWindow && parentScene.window != null) {
+			parentScene.window.onUpdate(gl);
+			gl.glMatrixMode(GL10.GL_MODELVIEW);
+	        gl.glLoadIdentity();
 		}
 	}
 	

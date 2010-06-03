@@ -268,28 +268,35 @@ public class Scene {
 		}
 		for(int i = 0; i < layerCount; i++) {
 			for(int j = 0; j < layer[i].maximumDrawableObjects; j++) {
+				float checkX, checkY;
+				checkX = event.getX();
+				checkY = event.getY();
+				if(layer[i].ignoreWindow) {
+					checkX = realX;
+					checkY = realY;
+				}
 				DrawableObject object = layer[i].drawableObjects.get(j);
 				if(object != null && object.isTouchable) {
-					if(MathHelper.pointInRect(event.getX(), event.getY(), object.x, object.y, object.width, object.height)) {
-						onTouch(object, event.getX(), event.getY(), event);
+					if(MathHelper.pointInRect(checkX, checkY, object.x, object.y, object.width, object.height)) {
+						onTouch(object, checkX, checkY, event);
 						if(object.getName() != null) {
 							invoke(object.getName() + "_onTouch", new Class[] { float.class, float.class, MotionEvent.class }, new Object[] { event.getX(), event.getY(), event });
 						}
 						switch(event.getAction()) {
 							case MotionEvent.ACTION_DOWN:
-								onTouchDown(object, event.getX(), event.getY(), event);
+								onTouchDown(object, checkX, checkY, event);
 								if(object.getName() != null) {
 									invoke(object.getName() + "_onTouchDown", new Class[] { float.class, float.class, MotionEvent.class }, new Object[] { event.getX(), event.getY(), event });
 								}
 								break;
 							case MotionEvent.ACTION_UP:
-								onTouchUp(object, event.getX(), event.getY(), event);
+								onTouchUp(object, checkX, checkY, event);
 								if(object.getName() != null) {
 									invoke(object.getName() + "_onTouchUp", new Class[] { float.class, float.class, MotionEvent.class }, new Object[] { event.getX(), event.getY(), event });
 								}
 								break;
 							case MotionEvent.ACTION_MOVE:
-								onTouch(object, event.getX(), event.getY(), event);
+								onTouch(object, checkX, checkY, event);
 								if(object.getName() != null) {
 									invoke(object.getName() + "_onTouchMove", new Class[] { float.class, float.class, MotionEvent.class }, new Object[] { event.getX(), event.getY(), event });
 								}

@@ -422,12 +422,14 @@ public class DrawableObject extends PhysicalObject {
 		//TODO Take into account Windows
 		//TODO Make this better, in regards of rotation
 		//Currently assumes extra width/height due to possible rotation
+		float maxSize = width;
+		if(height > width) maxSize = height;
 		if(parentScene.window == null) {
-			if (x - (width / 2) < RokonActivity.gameWidth && x + width + (width / 2) > 0 && y - (height / 2) < RokonActivity.gameHeight && y + height + (height / 2) > 0) {
+			if (x - (maxSize / 2) < RokonActivity.gameWidth && x + maxSize + (maxSize / 2) > 0 && y - (maxSize / 2) < RokonActivity.gameHeight && y + maxSize + (maxSize / 2) > 0) {
 				return true;
 			}
 		} else {
-			if (x - (width / 2) < parentScene.window.x + parentScene.window.width && x + width + (width / 2) > parentScene.window.x && y - (height / 2) < parentScene.window.height + parentScene.window.y && y + height + (height / 2) > parentScene.window.y) {
+			if (x - (maxSize / 2) < parentScene.window.x + parentScene.window.width && x + maxSize + (maxSize / 2) > parentScene.window.x && y - (maxSize / 2) < parentScene.window.height + parentScene.window.y && y + maxSize + (maxSize / 2) > parentScene.window.y) {
 				return true;
 			}
 		}

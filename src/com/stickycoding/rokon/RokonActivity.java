@@ -8,9 +8,10 @@ import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.WindowManager;
 
-import com.stickycoding.rokon.vboo.ArrayVBO;
-import com.stickycoding.rokon.vboo.ElementVBO;
-import com.stickycoding.rokon.vboo.VBO;
+import com.stickycoding.rokon.device.Graphics;
+import com.stickycoding.rokon.vbos.ArrayVBO;
+import com.stickycoding.rokon.vbos.ElementVBO;
+import com.stickycoding.rokon.vbos.VBO;
 
 /**
  * RokonActivity.java
@@ -43,7 +44,7 @@ public class RokonActivity extends Activity {
 	}
 	
 	private void createStatics() {
-		Device.determine(this);
+		Graphics.determine(this);
 		Rokon.blendFunction = new BlendFunction(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 		Rokon.defaultVertexBuffer = new BufferObject();
 		Rokon.defaultVertexBuffer.update(0, 0, 1, 1);

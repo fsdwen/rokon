@@ -11,6 +11,7 @@ import android.view.MotionEvent;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.World;
+import com.stickycoding.rokon.device.Graphics;
 
 /**
  * Scene.java
@@ -228,7 +229,7 @@ public class Scene {
 	}
 	
 	protected void handleTouch(MotionEvent event) {
-		event.setLocation(event.getX() * (Device.widthPixels / RokonActivity.gameWidth), event.getY() * (Device.heightPixels  / RokonActivity.gameHeight));
+		event.setLocation(event.getX() * (Graphics.getHalfWidthPixels() / RokonActivity.gameWidth), event.getY() * (Graphics.getHeightPixels()  / RokonActivity.gameHeight));
 		onTouch(event.getX(), event.getY(), event);
 		switch(event.getAction()) {
 			case MotionEvent.ACTION_DOWN:

@@ -1,4 +1,4 @@
-package com.stickycoding.rokon.vboo;
+package com.stickycoding.rokon.vbos;
 
 import java.nio.Buffer;
 

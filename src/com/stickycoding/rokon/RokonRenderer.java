@@ -7,6 +7,8 @@ import android.opengl.GLSurfaceView;
 import android.opengl.GLU;
 import android.os.Build;
 
+import com.stickycoding.rokon.device.Graphics;
+
 /**
  * RokonRenderer.java
  * The GLSurfaceView.Renderer class for OpenGL
@@ -72,13 +74,13 @@ public class RokonRenderer implements GLSurfaceView.Renderer {
 
         String extensions = gl.glGetString(GL10.GL_EXTENSIONS);
         String version = gl.glGetString(GL10.GL_VERSION);
-        Device.isOpenGL10 = version.contains("1.0");
-        Device.supportsVBO = !Device.isOpenGL10 || extensions.contains("vertex_buffer_object");
-        Device.supportsDrawTex = extensions.contains("draw_texture");
+        Graphics.setOpenGL10(version.contains("1.0"));
+        Graphics.setSupportsVBO(!Graphics.isOpenGL10() || extensions.contains("vertex_buffer_object"));
+        Graphics.setSupportsDrawTex(extensions.contains("draw_texture"));
 
         hackBrokenDevices();
 
-        Debug.print("Graphics Support - " + version + ": " +(Device.supportsDrawTex ?  "draw texture," : "") + (Device.supportsVBO ? "vbos" : ""));
+        Debug.print("Graphics Support - " + version + ": " +(Graphics.isSupportsDrawTex() ?  "draw texture," : "") + (Graphics.isSupportsVBO() ? "vbos" : ""));
         
         GLU.gluOrtho2D(gl, 0, rokonActivity.gameWidth, rokonActivity.gameHeight, 0);
 	}
@@ -88,7 +90,7 @@ public class RokonRenderer implements GLSurfaceView.Renderer {
 	 */
 	private void hackBrokenDevices() {
 	        if (Build.PRODUCT.contains("morrison")) {
-	                Device.supportsVBO = false;
+	                Graphics.setSupportsVBO(false);
 	        }
 	    }
 

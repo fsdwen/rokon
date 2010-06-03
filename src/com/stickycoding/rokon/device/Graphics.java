@@ -1,4 +1,4 @@
-package com.stickycoding.rokon;
+package com.stickycoding.rokon.device;
 
 import android.app.Activity;
 import android.util.DisplayMetrics;
@@ -9,11 +9,13 @@ import android.util.DisplayMetrics;
  * 
  * @author Richard 
  */
-public class Device {
+public class Graphics {
 	
-	protected static DisplayMetrics displayMetrics;	
-	protected static int widthPixels, heightPixels, halfWidthPixels, halfHeightPixels;
-	protected static boolean supportsVBO, supportsDrawTex, isOpenGL10;
+	private static DisplayMetrics displayMetrics;	
+	private static int widthPixels, heightPixels, halfWidthPixels, halfHeightPixels;
+	private static boolean isOpenGL10;
+	private static boolean supportsVBO;
+	private static boolean supportsDrawTex;
 	
 	/**
 	 * Determines several characterstics of the physical device and stores for later usage
@@ -84,13 +86,37 @@ public class Device {
 	 * @return TRUE if the device supports VBOs
 	 */
 	public static boolean supportsVBO() {
-		return supportsVBO;
+		return isSupportsVBO();
 	}
 	
 	/**
 	 * @return TRUE if the device supports the draw_tex extension
 	 */
 	public static boolean supportsDrawTex() {
+		return isSupportsDrawTex();
+	}
+
+	public static void setSupportsDrawTex(boolean supportsDrawTex) {
+		Graphics.supportsDrawTex = supportsDrawTex;
+	}
+
+	public static boolean isSupportsDrawTex() {
 		return supportsDrawTex;
+	}
+
+	public static void setSupportsVBO(boolean supportsVBO) {
+		Graphics.supportsVBO = supportsVBO;
+	}
+
+	public static boolean isSupportsVBO() {
+		return supportsVBO;
+	}
+
+	public static void setOpenGL10(boolean isOpenGL10) {
+		Graphics.isOpenGL10 = isOpenGL10;
+	}
+
+	public static boolean isOpenGL10() {
+		return isOpenGL10;
 	}
 }

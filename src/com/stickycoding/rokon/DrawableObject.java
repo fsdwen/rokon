@@ -4,8 +4,9 @@ import javax.microedition.khronos.opengles.GL10;
 import javax.microedition.khronos.opengles.GL11;
 import javax.microedition.khronos.opengles.GL11Ext;
 
-import com.stickycoding.rokon.vboo.ArrayVBO;
-import com.stickycoding.rokon.vboo.VBO;
+import com.stickycoding.rokon.device.Graphics;
+import com.stickycoding.rokon.vbos.ArrayVBO;
+import com.stickycoding.rokon.vbos.VBO;
 
 /**
  * DrawableObject.java
@@ -250,36 +251,36 @@ public class DrawableObject extends PhysicalObject {
 			case DrawPriority.DEFAULT:
 				switch(DrawPriority.drawPriority) {
 					case DrawPriority.PRIORITY_VBO_DRAWTEX_NORMAL:
-						if(Device.supportsVBO) {
+						if(Graphics.isSupportsVBO()) {
 							onDrawVBO(gl);
 							return;
 						}
-						if(Device.supportsDrawTex && rotation == 0) {
+						if(Graphics.isSupportsDrawTex() && rotation == 0) {
 							onDrawTex(gl);
 							return;
 						}
 						onDrawNormal(gl);
 						return;
 					case DrawPriority.PRIORITY_VBO_NORMAL:
-						if(Device.supportsVBO) {
+						if(Graphics.isSupportsVBO()) {
 							onDrawVBO(gl);
 							return;
 						}
 						onDrawNormal(gl);
 						return;
 					case DrawPriority.PRIORITY_DRAWTEX_VBO_NORMAL:
-						if(Device.supportsDrawTex) {
+						if(Graphics.isSupportsDrawTex()) {
 							onDrawTex(gl);
 							return; 
 						}
-						if(Device.supportsVBO) {
+						if(Graphics.isSupportsVBO()) {
 							onDrawVBO(gl);
 							return;
 						}
 						onDrawNormal(gl);
 						return;
 					case DrawPriority.PRIORITY_DRAWTEX_NORMAL:
-						if(Device.supportsDrawTex) {
+						if(Graphics.isSupportsDrawTex()) {
 							onDrawTex(gl);
 							return;
 						}
@@ -358,7 +359,7 @@ public class DrawableObject extends PhysicalObject {
 		GLHelper.color4f(red, green, blue, alpha);
 		GLHelper.bindTexture(texture.textureIndex);
 		GLHelper.drawTexCrop(new float[] { 0, 0, texture.width, texture.height} );
-		((GL11Ext)gl).glDrawTexfOES(x, Device.heightPixels - y - height, 0, 100, 100);
+		((GL11Ext)gl).glDrawTexfOES(x, Graphics.getHeightPixels() - y - height, 0, 100, 100);
 		
 	}
 	

@@ -45,10 +45,10 @@ public class Scene {
 	public void onPause() { }
 	public void onResume() { }
 	
-	public void onTouchDown(DrawableObject object, float x, float y, MotionEvent event) { }
-	public void onTouchUp(DrawableObject object, float x, float y, MotionEvent event) { }
-	public void onTouchMove(DrawableObject object, float x, float y, MotionEvent event) { }
-	public void onTouch(DrawableObject object, float x, float y, MotionEvent event) { }
+	public void onTouchDown(GameObject object, float x, float y, MotionEvent event) { }
+	public void onTouchUp(GameObject object, float x, float y, MotionEvent event) { }
+	public void onTouchMove(GameObject object, float x, float y, MotionEvent event) { }
+	public void onTouch(GameObject object, float x, float y, MotionEvent event) { }
 	public void onTouchDown(float x, float y, MotionEvent event) { }
 	public void onTouchMove(float x, float y, MotionEvent event) { }
 	public void onTouch(float x, float y, MotionEvent event) { }

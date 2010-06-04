@@ -57,20 +57,28 @@ public class Launcher extends RokonActivity {
 		myScene.add(sprite);
 		myScene.setWindow(window);
 
-		sprite = new PhysicalSprite(2f, 0f, 0.5f, 0.5f);
-		fixtureDef = new FixtureDef();
-		fixtureDef.friction = 0.2f;
-		fixtureDef.density = 10f;
-		sprite.setTexture(face);
-		sprite.createDynamicBox(fixtureDef);
-		sprite.fade(0, 1, 250, Movement.SMOOTH);
-		myScene.add(sprite);
-
 		myScene.getLayer(1).ignoreWindow();
 		
 		sprite = new PhysicalSprite(0, 1, 3, 1);
 		sprite.setAlpha(0.3f);
 		myScene.add(1, sprite);
+		
+		
+		float startX = 0.5f, floor = 7.5f;
+		float size = 0.2f, gap = 0.2f;
+		
+		for(int j = 15; j > 0; j--) {
+			for(int i = 0; i < j; i++) {
+				sprite = new PhysicalSprite(startX + (gap * i), floor - (size * (14 - j + 1)), size, size);
+				fixtureDef = new FixtureDef();
+				fixtureDef.friction = 0.8f;
+				fixtureDef.density = 1f;
+				sprite.createDynamicBox(fixtureDef);
+				myScene.add(sprite);
+			}
+			startX += (gap / 2);
+		}
+
 		
 		setScene(myScene);
 	}
@@ -99,18 +107,18 @@ public class Launcher extends RokonActivity {
 		}
 		
 		public void onPreDraw(GL10 gl) {
-			if(addNew) {
+			/*if(addNew) {
 				createCircle(x, y, 0.5f);
 				addNew = false;
 			}
 			if(count < 128) {
 				if(Time.getTicks() > nextAdd) {
-					nextAdd = Time.getTicks() + 150;
+					nextAdd = Time.getTicks() + 70;
 					if(Math.random() < 0.5d) {
-						float size = 0.5f + (float)Math.random() * 0.4f;
+						float size = 0.05f + (float)Math.random() * 0.4f;
 						createCircle(((float)Math.random() * 4f), 0.1f, size);
 					} else {
-						createBox(((float)Math.random() * 4f), 0.1f, 0.1f + (float)Math.random() * 1.6f, 0.1f + (float)Math.random() * 1.6f);
+						createBox(((float)Math.random() * 4f), 0.1f, 0.1f + (float)Math.random() * 0.6f, 0.1f + (float)Math.random() * 0.6f);
 					}
 				}
 			}
@@ -123,7 +131,7 @@ public class Launcher extends RokonActivity {
 					}
 				}
 				nextCheck = Time.getTicks() + 10;
-			}
+			}*/
 		}
 		
 		public void createBox(float x, float y, float width, float height) {
@@ -134,7 +142,7 @@ public class Launcher extends RokonActivity {
 			sprite.setTexture(face);
 			sprite.createDynamicBox(fixtureDef);
 			sprite.setRGB((float)Math.random(), (float)Math.random(), (float)Math.random());
-			//sprite.fade(0, 1, 250, Movement.SMOOTH);
+			sprite.fade(0, 1, 250, Movement.SMOOTH);
 			add(sprite);
 		}
 		
@@ -146,7 +154,7 @@ public class Launcher extends RokonActivity {
 			fixtureDef.density = 10f;
 			sprite.createDynamicCircle(fixtureDef);
 			sprite.setRGB((float)Math.random(), (float)Math.random(), (float)Math.random());
-			//sprite.fade(0, 1, 250, Movement.SMOOTH);
+			sprite.fade(0, 1, 250, Movement.SMOOTH);
 			add(sprite);
 		}
 		

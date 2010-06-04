@@ -11,19 +11,15 @@ import android.opengl.GLU;
  * @author Richard
  */
 
-public class Window {
+public class Window extends DimensionalObject {
 	
 	//TODO Update touch events to take into account Window
 	//TODO Needs documentation
 	
-	public float x, y, width, height;
-	protected boolean moving;
-	protected float startX, startY, startWidth, startHeight;
-	protected float finishX, finishY, finishWidth, finishHeight;
-	protected long startTime;
-	protected int moveTime, moveType;
+	//public float x, y, width, height;
 	
 	public Window(float x, float y, float width, float height) {
+		super(x, y, width, height);
 		this.x = x;
 		this.y = y;
 		this.width = width;
@@ -118,11 +114,6 @@ public class Window {
 		finishWidth = width;
 		finishHeight = height;
 		moving = true;
-	}
-	
-	public void centre(float x, float y) {
-		this.x = x - width / 2;
-		this.y = y - height / 2;
 	}
 
 }

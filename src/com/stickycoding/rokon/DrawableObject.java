@@ -20,11 +20,25 @@ public class DrawableObject extends BasicGameObject implements Drawable, Updatea
 	protected ArrayVBO arrayVBO;
 	protected int textureTile = 0;
 	
+	protected boolean invisible;
+	
 	protected boolean isFading;
 	protected int fadeTime, fadeType;
 	protected long fadeStartTime;
 	protected float fadeTo, fadeStart;
 	protected boolean fadeUp;
+	
+	public void hide() {
+		invisible = true;
+	}
+	
+	public void show() {
+		invisible = false;
+	}
+	
+	public boolean isVisible() {
+		return !invisible;
+	}
 	
 	public void fade(float alpha, int time, int movementType) {
 		fade(this.alpha, alpha, time, movementType);
@@ -228,6 +242,7 @@ public class DrawableObject extends BasicGameObject implements Drawable, Updatea
 	}
 	
 	public void onDraw(GL10 gl) {
+		if(invisible) return;
 		switch(forceDrawType) {
 			case DrawPriority.DEFAULT:
 				switch(DrawPriority.drawPriority) {
@@ -465,6 +480,7 @@ public class DrawableObject extends BasicGameObject implements Drawable, Updatea
 	}
 
 	public void onUpdate() {
+		super.onUpdate();
 		updateFadeTo();		
 	}
 
@@ -486,7 +502,7 @@ public class DrawableObject extends BasicGameObject implements Drawable, Updatea
 		killNextUpdate = true;
 	}
 	
-	public boolean onCheckAlive() {
+	public boolean isAlive() {
 		if(killNextUpdate) {
 			onRemove();
 			return false;

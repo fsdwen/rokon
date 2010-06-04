@@ -112,7 +112,7 @@ public class Layer {
 		for(int i = 0; i < gameObjects.getCapacity(); i++) {
 			if(gameObjects.get(i) != null) {
 				if(gameObjects.get(i) != null) {
-					while(gameObjects.get(i) != null && !gameObjects.get(i).onCheckAlive()) {
+					while(gameObjects.get(i) != null && !gameObjects.get(i).isAlive()) {
 						gameObjects.remove(i);
 					}
 					if(gameObjects.get(i) != null) {

@@ -7,6 +7,9 @@ package com.stickycoding.rokon;
  * @author Richard
  */
 public class RotationalObject extends DimensionalObject {
+
+	//protected float angularVelocity, angularAcceleration, terminalAngularVelocity;
+	////protected boolean useTerminalAngularVelocity;
 	
 	protected float rotation, rotationPivotX, rotationPivotY;
 	protected boolean rotateAboutPoint;
@@ -53,6 +56,10 @@ public class RotationalObject extends DimensionalObject {
 	
 	public boolean isRotateAboutPoint() {
 		return rotateAboutPoint;
+	}
+	
+	public void onUpdate() {
+		super.onUpdate();
 	}
 
 }

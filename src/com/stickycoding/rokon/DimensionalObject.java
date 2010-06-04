@@ -92,5 +92,20 @@ public class DimensionalObject extends PositionalObject {
 			if(this.height < 0) this.height = 0;
 		}
 	}
+	
+	public void centre(float x, float y) {
+		this.x = x - width / 2;
+		this.y = y - height / 2;
+	}
+
+	protected boolean moving;
+	protected float startX, startY, startWidth, startHeight;
+	protected float finishX, finishY, finishWidth, finishHeight;
+	protected long startTime;
+	protected int moveTime, moveType;
+	
+	public void onUpdate() {
+		
+	}
 
 }

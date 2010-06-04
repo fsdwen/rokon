@@ -7,7 +7,7 @@ package com.stickycoding.rokon;
  * @author Richard
  */
 
-public class DimensionalObject extends PositionalObject {
+public class DimensionalObject extends Point {
 	
 	protected float width, height;
 

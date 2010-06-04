@@ -1,6 +1,8 @@
-package com.stickycoding.rokon;
+package com.stickycoding.rokon.background;
 
 import javax.microedition.khronos.opengles.GL10;
+
+import com.stickycoding.rokon.Scene;
 
 
 /**
@@ -12,7 +14,7 @@ import javax.microedition.khronos.opengles.GL10;
 
 public class Background {
 
-	protected Scene parentScene;
+	public Scene parentScene;
 	
 	public Scene getParentScene() { 
 		return parentScene;

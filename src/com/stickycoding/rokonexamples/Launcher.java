@@ -17,7 +17,7 @@ import com.stickycoding.rokon.Sprite;
 import com.stickycoding.rokon.Texture;
 import com.stickycoding.rokon.Time;
 import com.stickycoding.rokon.Window;
-import com.stickycoding.rokon.backgrounds.FixedBackground;
+import com.stickycoding.rokon.background.FixedBackground;
 
 public class Launcher extends RokonActivity {
 	

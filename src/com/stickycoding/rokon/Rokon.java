@@ -1,7 +1,7 @@
 package com.stickycoding.rokon;
 
-import com.stickycoding.rokon.vbos.ArrayVBO;
-import com.stickycoding.rokon.vbos.ElementVBO;
+import com.stickycoding.rokon.vbo.ArrayVBO;
+import com.stickycoding.rokon.vbo.ElementVBO;
 
 /**
  * BlendFunction.java

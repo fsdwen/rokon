@@ -1,8 +1,7 @@
-package com.stickycoding.rokon.backgrounds;
+package com.stickycoding.rokon.background;
 
 import javax.microedition.khronos.opengles.GL10;
 
-import com.stickycoding.rokon.Background;
 import com.stickycoding.rokon.GLHelper;
 import com.stickycoding.rokon.Rokon;
 import com.stickycoding.rokon.RokonActivity;

@@ -12,6 +12,7 @@ import android.view.MotionEvent;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.World;
+import com.stickycoding.rokon.background.Background;
 import com.stickycoding.rokon.device.Graphics;
 
 /**

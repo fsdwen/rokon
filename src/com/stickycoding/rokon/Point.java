@@ -2,16 +2,16 @@ package com.stickycoding.rokon;
 
 /**
  * PositionalObject.java
- * An object which has basic 2D positional coordinates, and methods to move between them
+ * An point which has basic 2D positional coordinates, and methods to move
  * 
  * @author Richard
  */
 
-public class PositionalObject {
+public class Point {
 
 	protected float x, y;
 	
-	public PositionalObject(float x, float y) {
+	public Point(float x, float y) {
 		this.x = x;
 		this.y = y;
 	}	

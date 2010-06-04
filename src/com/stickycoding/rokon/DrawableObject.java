@@ -5,8 +5,8 @@ import javax.microedition.khronos.opengles.GL11;
 import javax.microedition.khronos.opengles.GL11Ext;
 
 import com.stickycoding.rokon.device.Graphics;
-import com.stickycoding.rokon.vbos.ArrayVBO;
-import com.stickycoding.rokon.vbos.VBO;
+import com.stickycoding.rokon.vbo.ArrayVBO;
+import com.stickycoding.rokon.vbo.VBO;
 
 public class DrawableObject extends BasicGameObject implements Drawable, Updateable {
 

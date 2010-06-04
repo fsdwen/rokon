@@ -28,6 +28,11 @@ public class DrawableObject extends BasicGameObject implements Drawable, Updatea
 	protected float fadeTo, fadeStart;
 	protected boolean fadeUp;
 	
+	protected boolean animated, hasCustomAnimation, animationReturnToStart;
+	protected int animationStartTile, animationEndTile, animationLoops, animationCustomPosition;
+	protected int[] customAnimationSequence;
+	private long animationFrameTicks, animationLastTicks;
+	
 	public void hide() {
 		invisible = true;
 	}
@@ -481,7 +486,8 @@ public class DrawableObject extends BasicGameObject implements Drawable, Updatea
 
 	public void onUpdate() {
 		super.onUpdate();
-		updateFadeTo();		
+		updateFadeTo();
+		updateAnimation();
 	}
 
 	public void onAdd(Layer layer) {
@@ -510,5 +516,117 @@ public class DrawableObject extends BasicGameObject implements Drawable, Updatea
 			return true;
 		}
 	}
-
+	
+	/**
+	 * Animates the Textures tile index, between minimum and maximum
+	 * 
+	 * @param startTile first tile index to animate from
+	 * @param endTile the final tile index
+	 * @param frameTime length of time to show one frame (in ms)
+	 * @param loops number of animation loops before stopping
+	 * @param returnToStart TRUE if the animation should return to the start after finished
+	 */
+	public void animate(int startTile, int endTile, long frameTime, int loops, boolean returnToStart) {
+		animationStartTile = startTile;
+		animationEndTile = endTile;
+		animationFrameTicks = frameTime;
+		animationLoops = loops;
+		animationLastTicks = Time.ticks;
+		textureTile = startTile;
+		hasCustomAnimation = false;
+		animationReturnToStart = returnToStart;
+		animated = true;
+	}
+	
+	/**
+	 * Animates the Textures tile index, beween minimum and maximum
+	 * 
+	 * @param startTile first tile index to animate from
+	 * @param endTile the final tile index
+	 * @param frameTime length of time to show one frame (in ms)
+	 */
+	public void animate(int startTile, int endTile, long frameTime) {
+		animate(startTile, endTile, frameTime, -1, false);
+	}
+	
+	/**
+	 * Animates the Texture tile index, through a custom array
+	 * 
+	 * @param animationTiles int array of texture tile indices
+	 * @param frameTime length of time to show one frame (in ms)
+	 * @param loops number of animation loops before stopping
+	 * @param returnToStart TRUE if the animation should return to the start after finished
+	 */
+	public void animate(int[] animationTiles, long frameTime, int loops, boolean returnToStart) {
+		hasCustomAnimation = true;
+		textureTile = animationTiles[0];
+		animationReturnToStart = returnToStart;
+		animationLoops = loops;
+		animationLastTicks = Time.ticks;
+		animationFrameTicks = frameTime;
+		customAnimationSequence = animationTiles;
+		animated = true;
+	}
+	
+	/**
+	 * Animates the Texture tile index, through a custom array
+	 * 
+	 * @param animationTiles int array of texture tile indices
+	 * @param frameTime length of time to show one frame (in ms)
+	 */	
+	public void animate(int[] animationTiles, long frameTime) {
+		animate(animationTiles, frameTime, -1, false);
+	}
+	
+	private void updateAnimation() {
+		if(!animated) return;
+		long tickDifference = Time.ticks - animationLastTicks - animationFrameTicks;
+		if(tickDifference > 0) {
+			int frameSkip = 0;
+			while(tickDifference > 0) {
+				tickDifference -= animationFrameTicks;
+				frameSkip++;
+			}
+			if(hasCustomAnimation) {
+				while(frameSkip > 0) {
+					animationCustomPosition++;
+					if(animationCustomPosition == customAnimationSequence.length) {
+						animationCustomPosition = 0;
+						if(animationLoops > 0) {
+							animationLoops--;
+							if(animationReturnToStart) {
+								textureTile = customAnimationSequence[0];
+							} else {
+								animated = false;
+								return;
+							}
+						}
+					}
+					textureTile = customAnimationSequence[animationCustomPosition];
+					frameSkip--;
+				}
+			} else {
+				while(frameSkip > 0) {
+					textureTile++;
+					if(textureTile > animationEndTile) {
+						if(animationLoops > 0) {
+							animationLoops--;
+							if(animationLoops == 0) {
+								if(animationReturnToStart) {
+									textureTile = animationStartTile;
+								} else {
+									textureTile--;
+									animated = false;
+									return;
+								}
+							}
+						}
+						textureTile = animationStartTile;
+					}
+					frameSkip--;
+				}
+			}
+			animationLastTicks -= tickDifference;
+		}
+	}
 }

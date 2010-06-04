@@ -54,6 +54,7 @@ public class Launcher extends RokonActivity {
 		fixtureDef.density = 10f;
 		fixtureDef.friction = 0.2f;
 		sprite.createStaticBox(fixtureDef);
+		sprite.animate(new int[] { 0, 1 }, 500);
 		myScene.add(sprite);
 		myScene.setWindow(window);
 
@@ -63,22 +64,6 @@ public class Launcher extends RokonActivity {
 		sprite.setAlpha(0.3f);
 		myScene.add(1, sprite);
 		
-		
-		float startX = 0.5f, floor = 7.5f;
-		float size = 0.2f, gap = 0.2f;
-		
-		for(int j = 15; j > 0; j--) {
-			for(int i = 0; i < j; i++) {
-				sprite = new PhysicalSprite(startX + (gap * i), floor - (size * (14 - j + 1)), size, size);
-				fixtureDef = new FixtureDef();
-				fixtureDef.friction = 0.8f;
-				fixtureDef.density = 1f;
-				sprite.createDynamicBox(fixtureDef);
-				myScene.add(sprite);
-			}
-			startX += (gap / 2);
-		}
-
 		
 		setScene(myScene);
 	}
@@ -107,7 +92,7 @@ public class Launcher extends RokonActivity {
 		}
 		
 		public void onPreDraw(GL10 gl) {
-			/*if(addNew) {
+			if(addNew) {
 				createCircle(x, y, 0.5f);
 				addNew = false;
 			}
@@ -131,7 +116,7 @@ public class Launcher extends RokonActivity {
 					}
 				}
 				nextCheck = Time.getTicks() + 10;
-			}*/
+			}
 		}
 		
 		public void createBox(float x, float y, float width, float height) {

@@ -19,6 +19,13 @@ public class GLHelper {
     private static float drawTexCrop0 = -1, drawTexCrop1 = -1, drawTexCrop2 = -1, drawTexCrop3 = -1;
     private static BufferObject lastVertexPointerBuffer;
     private static BufferObject lastTexCoordPointerBuffer;
+    private static float lineWidth;
+    
+    public static void lineWidth(float lineWidth) {
+    	if(lineWidth == GLHelper.lineWidth) return;
+    	GLHelper.lineWidth = lineWidth;
+    	gl.glLineWidth(lineWidth);
+    }
 	
 	protected static void setGL(GL10 gl) {
 		GLHelper.gl = gl;

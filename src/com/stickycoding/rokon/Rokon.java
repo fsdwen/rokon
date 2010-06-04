@@ -14,6 +14,7 @@ public class Rokon {
 	
 	protected static BlendFunction blendFunction;
 	protected static BufferObject defaultVertexBuffer;
+	protected static BufferObject boxVertexBuffer;
 	protected static RokonActivity currentActivity;
 	protected static ElementVBO elementVBO;
 	protected static ArrayVBO arrayVBO;

@@ -39,6 +39,8 @@ public class Scene {
 	protected ContactListener contactListener;
 	protected boolean useContactListener;
 	protected Background background;
+	
+	protected float defaultLineWidth = 1;
 
 	public void onPreDraw(GL10 gl) { }
 	public void onPostDraw(GL10 gl) { }
@@ -59,8 +61,10 @@ public class Scene {
 	public void onTouchMoveReal(float x, float y, MotionEvent event) { }
 	public void onTouchUpReal(float x, float y, MotionEvent event) { }
 	public void onTouchReal(float x, float y, MotionEvent event) { }
-	
+
 	public void onKeyDown(int keyCode, KeyEvent event) { }
+	public void onKeyUp(int keyCode, KeyEvent event) { }
+	public void onTrackballEvent(MotionEvent event) { }
 	
 	/**
 	 * Sets a World for the physics in this Scene
@@ -609,6 +613,7 @@ public class Scene {
 	
 	protected void onDraw(GL10 gl) {
 		onPreDraw(gl);
+		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		if(background != null) {
 			background.onDraw(gl);
 		}
@@ -618,7 +623,6 @@ public class Scene {
 		if(usePhysics && !pausePhysics) {
 			world.step(Time.getTicksFraction(), 10, 10);
 		}
-		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		gl.glMatrixMode(GL10.GL_MODELVIEW);
         gl.glLoadIdentity();
 		for(int i = 0; i < layerCount; i++) {
@@ -680,6 +684,14 @@ public class Scene {
 	
 	public void setContactListener(ContactListener contactListener) {
 		this.contactListener = contactListener;
+	}
+	
+	public void setDefaultLineWidth(float lineWidth) {
+		defaultLineWidth = lineWidth;
+	}
+	
+	public float getDefaultLineWidth() {
+		return defaultLineWidth;
 	}
 	
 	

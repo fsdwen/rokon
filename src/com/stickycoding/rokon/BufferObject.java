@@ -18,12 +18,16 @@ public class BufferObject {
 	protected ByteBuffer byteBuffer;
 	protected IntBuffer intBuffer;
 	
-	public BufferObject() {
+	public BufferObject(int length) {
 		if(Build.VERSION.SDK == "3")
-			byteBuffer = ByteBuffer.allocate(8*4);
+			byteBuffer = ByteBuffer.allocate(length*4);
 		else
-			byteBuffer = ByteBuffer.allocateDirect(8*4);
-		byteBuffer.order(ByteOrder.nativeOrder());		
+			byteBuffer = ByteBuffer.allocateDirect(length*4);
+		byteBuffer.order(ByteOrder.nativeOrder());	
+	}
+	
+	public BufferObject() {
+		this(8);
 	}
 	
 	public void free() {

@@ -46,6 +46,22 @@ public class RokonActivity extends Activity {
 		}
 		return super.onKeyDown(keyCode, event);
 	}
+
+	@Override
+	public boolean onTrackballEvent(MotionEvent event) {
+		if(currentScene != null) {
+			currentScene.onTrackballEvent(event);
+		}
+		return super.onTrackballEvent(event);
+	}
+	
+	@Override
+	public boolean onKeyUp(int keyCode, KeyEvent event) {
+		if(currentScene != null) {
+			currentScene.onKeyUp(keyCode, event);
+		}
+		return super.onKeyUp(keyCode, event);
+	}
 	
 	protected void dispose() {
 		//TODO Properly remove all things from memory
@@ -98,6 +114,9 @@ public class RokonActivity extends Activity {
 		Rokon.elementVBO.getBufferObject().updateRaw(new float[] { 0, 1, 1, 0, 1, 1 });
 		Rokon.arrayVBO = new ArrayVBO(VBO.STATIC);
 		Rokon.arrayVBO.update(0, 0, 1, 1);
+		
+		Rokon.boxVertexBuffer = new BufferObject();
+		Rokon.boxVertexBuffer.updateRaw(new float[] { 0, 0, 1, 0, 1, 1, 0, 1 });
 	}
 	
 	@Override
@@ -155,7 +174,7 @@ public class RokonActivity extends Activity {
 	 * @param width
 	 */
 	public void setGameWidth(float width) {
-		this.gameWidth = width;
+		gameWidth = width;
 		if(engineLoaded) {
 			
 		}
@@ -168,7 +187,7 @@ public class RokonActivity extends Activity {
 	 * @param height
 	 */
 	public void setGameHeight(float height) {
-		this.gameHeight = height;
+		gameHeight = height;
 	}
 	
 	/**
@@ -179,8 +198,8 @@ public class RokonActivity extends Activity {
 	 * @param height
 	 */
 	public void setGameSize(float width, float height) {
-		this.gameWidth = width;
-		this.gameHeight = height;
+		gameWidth = width;
+		gameHeight = height;
 	}
 	
 	/**

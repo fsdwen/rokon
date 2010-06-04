@@ -2,8 +2,7 @@ package com.stickycoding.rokon.background;
 
 import javax.microedition.khronos.opengles.GL10;
 
-import com.stickycoding.rokon.GLHelper;
-import com.stickycoding.rokon.Rokon;
+import com.stickycoding.rokon.DrawableObject;
 import com.stickycoding.rokon.RokonActivity;
 import com.stickycoding.rokon.Texture;
 import com.stickycoding.rokon.Window;
@@ -16,15 +15,15 @@ import com.stickycoding.rokon.Window;
  */
 public class FixedBackground extends Background {
 	
-	private Texture texture;
+	private DrawableObject bg;
 	
 	public FixedBackground(Texture texture) {
-		this.texture = texture;
+		bg = new DrawableObject(0, 0, RokonActivity.getGameWidth(), RokonActivity.getGameHeight(), texture);
 	}
 	
 	public void onDraw(GL10 gl) {
-		//Debug.print("DRAWING");
-		//gl.glPopMatrix();
+		Window.setDefault(gl);
+		bg.onDraw(gl);
 	}
 
 }

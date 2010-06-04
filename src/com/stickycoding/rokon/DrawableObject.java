@@ -33,6 +33,50 @@ public class DrawableObject extends BasicGameObject implements Drawable, Updatea
 	protected int[] customAnimationSequence;
 	private long animationFrameTicks, animationLastTicks;
 	
+	protected float lineWidth = -1;
+	protected boolean fill = true;
+	protected float borderRed = 0, borderGreen = 0, borderBlue = 0;
+	
+	protected boolean border;
+	
+	/**
+	 * Removes the border
+	 */
+	public void noBorder() {
+		fill = false;
+	}
+	
+	/**
+	 * Draws a border around the object
+	 * This only applied to untextured objects
+	 * 
+	 * @param red
+	 * @param green
+	 * @param blue
+	 */
+	public void border(float red, float green, float blue) {
+		fill = true;
+		borderRed = red;
+		borderGreen = green;
+		borderBlue = blue;
+	}
+	
+	public void setLineWidth(float lineWidth) {
+		this.lineWidth = lineWidth;
+	}
+	
+	public float getLineWidth() {
+		return lineWidth;
+	}
+	
+	public void useDefaultLineWidth() {
+		lineWidth = -1;
+	}
+	
+	public void border() {
+		border = true;
+	}
+	
 	public void hide() {
 		invisible = true;
 	}
@@ -320,8 +364,9 @@ public class DrawableObject extends BasicGameObject implements Drawable, Updatea
 		
 		gl.glPushMatrix();
 		GLHelper.enableVertexArray();
-		
+
 		GLHelper.vertexPointer(Rokon.defaultVertexBuffer, GL10.GL_FLOAT);
+			
 		gl.glTranslatef(x, y, 0);
 		
 		if(rotation != 0) {
@@ -343,12 +388,25 @@ public class DrawableObject extends BasicGameObject implements Drawable, Updatea
 			GLHelper.enableTexCoordArray();
 			GLHelper.bindTexture(texture.textureIndex);
 			GLHelper.texCoordPointer(texture.buffer[textureTile], GL10.GL_FLOAT);
+			gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
 		} else {
 			GLHelper.disableTexCoordArray();
 			GLHelper.disableTextures();
+			if(fill) {
+				gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
+			}
+			if(border) {
+				GLHelper.vertexPointer(Rokon.boxVertexBuffer, GL10.GL_FLOAT);
+				GLHelper.color4f(borderRed, borderGreen, borderBlue, alpha);
+				if(lineWidth != -1) {
+					GLHelper.lineWidth(lineWidth);
+				} else {
+					GLHelper.lineWidth(parentScene.defaultLineWidth);
+				}
+				gl.glDrawArrays(GL10.GL_LINE_LOOP, 0, 4);
+			}
 		}
 		
-		gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
 		gl.glPopMatrix();
 
 	}

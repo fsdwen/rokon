@@ -12,7 +12,7 @@ import javax.microedition.khronos.opengles.GL10;
 public class Layer {
 	
 	protected Scene parentScene;
-	protected FixedSizeArray<GameObject> gameObjects;	
+	protected FixedSizeArray<Drawable> gameObjects;	
 	protected int maximumDrawableObjects;
 	protected DrawQueue drawQueue;
 	protected boolean ignoreWindow;
@@ -21,7 +21,7 @@ public class Layer {
 		this.parentScene = parentScene;
 		this.maximumDrawableObjects = maximumDrawableObjects;
 		drawQueue = new DrawQueue();
-		gameObjects = new FixedSizeArray<GameObject>(maximumDrawableObjects);
+		gameObjects = new FixedSizeArray<Drawable>(maximumDrawableObjects);
 	}
 	
 	/**
@@ -53,7 +53,7 @@ public class Layer {
 	 * @param index position in the array
 	 * @return NULL if not found
 	 */
-	public GameObject getGameObject(int index) {
+	public Drawable getGameObject(int index) {
 		return gameObjects.get(index);
 	}
 	

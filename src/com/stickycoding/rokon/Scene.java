@@ -48,10 +48,10 @@ public class Scene {
 	public void onPause() { }
 	public void onResume() { }
 	
-	public void onTouchDown(GameObject object, float x, float y, MotionEvent event) { }
-	public void onTouchUp(GameObject object, float x, float y, MotionEvent event) { }
-	public void onTouchMove(GameObject object, float x, float y, MotionEvent event) { }
-	public void onTouch(GameObject object, float x, float y, MotionEvent event) { }
+	public void onTouchDown(Drawable object, float x, float y, MotionEvent event) { }
+	public void onTouchUp(Drawable object, float x, float y, MotionEvent event) { }
+	public void onTouchMove(Drawable object, float x, float y, MotionEvent event) { }
+	public void onTouch(Drawable object, float x, float y, MotionEvent event) { }
 	public void onTouchDown(float x, float y, MotionEvent event) { }
 	public void onTouchMove(float x, float y, MotionEvent event) { }
 	public void onTouch(float x, float y, MotionEvent event) { }
@@ -248,8 +248,8 @@ public class Scene {
 	}
 	
 	protected void handleTouch(MotionEvent event) {
-		float realX = event.getX() * (Graphics.getWidthPixels() / RokonActivity.gameWidth);
-		float realY = event.getY() * (Graphics.getHeightPixels() / RokonActivity.gameHeight);
+		float realX = event.getX() * (RokonActivity.gameWidth / Graphics.getWidthPixels());
+		float realY = event.getY() * (RokonActivity.gameHeight / Graphics.getHeightPixels());
 		if(window != null) {
 			float xFraction = event.getX() / Graphics.getWidthPixels();
 			float yFraction = event.getY() / Graphics.getHeightPixels();
@@ -257,7 +257,7 @@ public class Scene {
 			float gameY = window.y + (window.height * yFraction);
 			event.setLocation(gameX, gameY);
 		} else {
-			event.setLocation(event.getX() * (Graphics.getWidthPixels() / RokonActivity.gameWidth), event.getY() * (Graphics.getHeightPixels()  / RokonActivity.gameHeight));			
+			event.setLocation(realX, realY);			
 		}
 		onTouch(event.getX(), event.getY(), event);
 		onTouchReal(realX, realY, event);
@@ -284,9 +284,9 @@ public class Scene {
 					checkX = realX;
 					checkY = realY;
 				}
-				GameObject object = layer[i].gameObjects.get(j);
-				if(object != null && object.isTouchable) {
-					if(MathHelper.pointInRect(checkX, checkY, object.x, object.y, object.width, object.height)) {
+				Drawable object = layer[i].gameObjects.get(j);
+				if(object != null && object.isTouchable()) {
+					if(MathHelper.pointInRect(checkX, checkY, object.getX(), object.getY(), object.getWidth(), object.getHeight())) {
 						onTouch(object, checkX, checkY, event);
 						if(object.getName() != null) {
 							invoke(object.getName() + "_onTouch", new Class[] { float.class, float.class, MotionEvent.class }, new Object[] { event.getX(), event.getY(), event });

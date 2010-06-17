@@ -15,7 +15,15 @@ public interface Drawable {
 	
 	void onDraw(GL10 gl);
 	void onAdd(Layer layer);
+	void onUpdate();
 	boolean isAlive();
 	boolean isOnScreen();
+	
+	boolean isTouchable();
+	String getName();
+	float getX();
+	float getY();
+	float getWidth();
+	float getHeight();
 
 }

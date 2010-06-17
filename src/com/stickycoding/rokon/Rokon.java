@@ -18,6 +18,7 @@ public class Rokon {
 	protected static RokonActivity currentActivity;
 	protected static ElementVBO elementVBO;
 	protected static ArrayVBO arrayVBO;
+	protected static ArrayVBO boxArrayVBO;
 	protected static boolean verbose = false;
 	
 	public static void verboseMode() {

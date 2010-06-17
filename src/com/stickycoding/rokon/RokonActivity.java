@@ -115,6 +115,9 @@ public class RokonActivity extends Activity {
 		Rokon.arrayVBO = new ArrayVBO(VBO.STATIC);
 		Rokon.arrayVBO.update(0, 0, 1, 1);
 		
+		Rokon.boxArrayVBO = new ArrayVBO(VBO.STATIC);
+		Rokon.boxArrayVBO.updateRaw(new float[] { 0, 0, 1, 0, 1, 1, 0, 1 });
+		
 		Rokon.boxVertexBuffer = new BufferObject();
 		Rokon.boxVertexBuffer.updateRaw(new float[] { 0, 0, 1, 0, 1, 1, 0, 1 });
 	}

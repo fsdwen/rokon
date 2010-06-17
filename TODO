@@ -1,0 +1,17 @@
+This todo list sets out what will be completed before a stable release is put out there
+
+VBO
+DrawTexture
+Text by OGL
+Parent/Child sprites
+Texture atlas
+Modify textures at run time
+Use UI over the top
+Text by UI
+Working with 1.5
+Multi touch
+Polygons
+Tiled layers
+Basic collision detection
+Helper for aspect ratio detection
+Sprite modifiers

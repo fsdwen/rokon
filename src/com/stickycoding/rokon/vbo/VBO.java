@@ -30,6 +30,10 @@ public class VBO {
 		bufferObject.update(x, y, width, height);
 	}
 	
+	public void updateRaw(float[] floats) {
+		bufferObject.updateRaw(floats);
+	}
+	
 	/**
 	 * Returns the buffer index (on the hardware) of the VBO
 	 * 

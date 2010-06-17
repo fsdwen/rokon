@@ -41,7 +41,7 @@ public class Launcher extends RokonActivity {
 		face = new Texture("face.png", 3, 2);
 		myScene.useTexture(texture);
 
-		myScene.setWorld(world = new World(new Vector2(0f, 10f), true));
+		myScene.setWorld(world = new World(new Vector2(0f, 6f), true));
 		
 		FixedBackground fb = new FixedBackground(face);
 		myScene.setBackground(fb);

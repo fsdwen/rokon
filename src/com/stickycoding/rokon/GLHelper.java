@@ -132,7 +132,7 @@ public class GLHelper {
 
     public static void texCoordPointer(BufferObject buffer, int type) {
         if(lastTexCoordPointerBuffer != buffer) {
-        	gl.glTexCoordPointer(2, type , 0, buffer.get());
+        	gl.glTexCoordPointer(2, type, 0, buffer.get());
             lastTexCoordPointerBuffer = buffer;
         }
     }

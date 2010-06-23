@@ -4,7 +4,6 @@ VBO
 DrawTexture
 Text by OGL
 Parent/Child sprites
-Texture atlas
 Modify textures at run time
 Use UI over the top
 Text by UI

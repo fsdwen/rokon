@@ -8,20 +8,21 @@ import android.view.MotionEvent;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
+import com.stickycoding.rokon.Debug;
 import com.stickycoding.rokon.DrawPriority;
 import com.stickycoding.rokon.Movement;
 import com.stickycoding.rokon.PhysicalSprite;
 import com.stickycoding.rokon.RokonActivity;
 import com.stickycoding.rokon.Scene;
-import com.stickycoding.rokon.Sprite;
 import com.stickycoding.rokon.Texture;
-import com.stickycoding.rokon.Time;
+import com.stickycoding.rokon.TextureAtlas;
 import com.stickycoding.rokon.Window;
 import com.stickycoding.rokon.background.FixedBackground;
 
 public class Launcher extends RokonActivity {
 	
 	public PhysicalSprite sprite;
+	public TextureAtlas atlas;
 	public Texture texture, face;
 	public World world;
 
@@ -37,9 +38,9 @@ public class Launcher extends RokonActivity {
 	Window window;
 	
 	public void onLoadComplete() {
-		texture = new Texture("circle.png");
-		face = new Texture("face.png", 3, 2);
-		myScene.useTexture(texture);
+		atlas = new TextureAtlas();
+		atlas.insert(texture = new Texture("circle.png"));
+		atlas.insert(face = new Texture("face.png", 3, 2));
 
 		myScene.setWorld(world = new World(new Vector2(0f, 6f), true));
 		
@@ -64,10 +65,15 @@ public class Launcher extends RokonActivity {
 		sprite.setAlpha(0.3f);
 		myScene.add(1, sprite);
 		
-		myScene.setDefaultLineWidth(2f);
-		
+		myScene.setDefaultLineWidth(2f);		
 		
 		setScene(myScene);
+	}
+	
+	@Override
+	public void onDestroy() {
+		android.os.Debug.stopMethodTracing();
+		super.onDestroy();
 	}
 	
 	public Scene myScene = new Scene(2, 128) {
@@ -85,12 +91,22 @@ public class Launcher extends RokonActivity {
 			this.y = y;
 			addNew = true;
 		}
-		
+		boolean tracing = false;
+		int traceCount = 0;
 		@Override
 		public void onKeyDown(int keyCode, KeyEvent event) {
-			float newWidth = 1f + (float)Math.random() * 4.8f;
-			float newHeight = newWidth / window.getRatio();
-			window.move( (float)Math.random() * 4f, (float)Math.random() * 7f, newWidth, newHeight, 2500 );
+			if(tracing) {
+				tracing = false;
+				//android.os.Debug.stopMethodTracing();
+				//Debug.print("Stop Tracing");
+			} else {
+				//Debug.print("Start Tracing");
+				//android.os.Debug.startMethodTracing("game-" + traceCount++);
+				tracing = true;
+			}
+			//float newWidth = 1f + (float)Math.random() * 4.8f;
+			//float newHeight = newWidth / window.getRatio();
+			//window.move( (float)Math.random() * 4f, (float)Math.random() * 7f, newWidth, newHeight, 2500 );
 		}
 		
 		public void onPreDraw(GL10 gl) {

@@ -388,7 +388,7 @@ public class DrawableObject extends BasicGameObject implements Drawable, Updatea
 		if(texture != null) {
 			GLHelper.enableTextures();
 			GLHelper.enableTexCoordArray();
-			GLHelper.bindTexture(texture.textureIndex);
+			GLHelper.bindTexture(texture);
 			GLHelper.texCoordPointer(texture.buffer[textureTile], GL10.GL_FLOAT);
 			gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
 		} else {

@@ -94,6 +94,17 @@ public class GLHelper {
 		}
 	}
 	
+	public static void bindTexture(Texture texture) {
+		if(texture.textureIndex == -1 && texture.parentAtlas == null) {
+			texture.onLoadTexture(gl);
+		} else {
+			if(texture.textureIndex == -1) {
+				texture.parentAtlas.onLoadTexture(gl);
+			}
+		}
+		bindTexture(texture.textureIndex);
+	}
+	
 	public static void blendMode(int srcBlendMode, int dstBlendMode) {
 		if(GLHelper.srcBlendMode != srcBlendMode || GLHelper.dstBlendMode != dstBlendMode) {
 			gl.glBlendFunc(srcBlendMode, dstBlendMode);

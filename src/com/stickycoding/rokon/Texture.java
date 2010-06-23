@@ -15,7 +15,10 @@ import android.opengl.GLUtils;
  */
 
 public class Texture {
-		
+	
+	protected TextureAtlas parentAtlas;
+	protected int atlasX, atlasY;
+	
 	protected int textureWidth, textureHeight;
 	protected int width, height, columns, rows, tileCount;
 	protected String path;
@@ -47,6 +50,10 @@ public class Texture {
 		this(filename, 1, 1);
 	}
 	
+	protected Texture() {
+
+	}
+	
 	/**
 	 * Creates a texture, with a file from the assets
 	 * 
@@ -74,14 +81,42 @@ public class Texture {
 	}
 	
 	protected void prepareBuffers() {
-		buffer = new BufferObject[tileCount];
-		for(int i = 0; i < buffer.length; i++) {
-			float col = i % columns;
-			float row = (i - col) / (float)columns;
-			buffer[i] = new BufferObject();
-			float x = col * (float)(width / columns);
-			float y = row * (float)(height / rows);
-			buffer[i].update(x / textureWidth, y / textureHeight, (float)(width / columns) / (float)textureWidth, (float)(height / rows) / (float)textureHeight);
+		if(parentAtlas == null) {
+			buffer = new BufferObject[tileCount];
+			for(int i = 0; i < buffer.length; i++) {
+				float col = i % columns;
+				float row = (i - col) / (float)columns;
+				buffer[i] = new BufferObject();
+				float x = col * (float)(width / columns);
+				float y = row * (float)(height / rows);
+				buffer[i].update(x / textureWidth, y / textureHeight, (float)(width / columns) / (float)textureWidth, (float)(height / rows) / (float)textureHeight);
+			}
+		} else {
+			buffer = new BufferObject[tileCount];
+			for(int i = 0; i < buffer.length; i++) {
+				float col = i % columns;
+				float row = (i - col) / (float)columns;
+				buffer[i] = new BufferObject();
+				float x = col * (float)(width / columns);
+				float y = row * (float)(height / rows);
+				
+				float finalX = x / textureWidth;
+				float finalY = y / textureHeight;
+				float finalWidth = (float)(width / columns) / (float)textureWidth;
+				float finalHeight = (float)(height / rows) / (float)textureHeight;
+				
+				float realX = (float)atlasX / (float)parentAtlas.atlasWidth;
+				float realY = (float)atlasY / (float)parentAtlas.atlasHeight;
+				float realWidth = (float)textureWidth / (float)parentAtlas.atlasWidth;
+				float realHeight = (float)textureHeight / (float)parentAtlas.atlasHeight;
+				
+				float theX = realX + (finalX * realWidth);
+				float theY = realY + (finalY * realHeight);
+				float theWidth = finalWidth * realWidth;
+				float theHeight = finalHeight * realHeight;
+
+				buffer[i].update(theX, theY, theWidth, theHeight);
+			}
 		}
 	}
 	
@@ -119,40 +154,44 @@ public class Texture {
 	}
 	
 	protected void onLoadTexture(GL10 gl) {
-		prepareBuffers();
-		int[] nameArray = new int[1];
-		GLHelper.enableTextures();
-		gl.glGenTextures(1, nameArray, 0);
-		textureIndex = nameArray[0];
-		GLHelper.bindTexture(textureIndex);
-		Bitmap bmp = Bitmap.createBitmap(textureWidth, textureHeight, Bitmap.Config.ARGB_8888);
-		GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, bmp, 0);
-        gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_LINEAR);
-        gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER, GL10.GL_LINEAR);
-        gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S, GL10.GL_CLAMP_TO_EDGE);
-        gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T, GL10.GL_CLAMP_TO_EDGE);
-        gl.glTexEnvf(GL10.GL_TEXTURE_ENV, GL10.GL_TEXTURE_ENV_MODE, GL10.GL_MODULATE);
-
-        if(tileCount == 1) {
-            gl.glTexSubImage2D(GL10.GL_TEXTURE_2D, 0, 0, 0, width, height, GL10.GL_RGBA, GL10.GL_UNSIGNED_BYTE, buffer[0].get());
-        } else {
-            BufferObject bigBuffer;
-        	bigBuffer = new BufferObject();
-			bigBuffer.update(0, 0, (float)(width / textureWidth), (float)(height / (float)textureHeight));	
-	        gl.glTexSubImage2D(GL10.GL_TEXTURE_2D, 0, 0, 0, width, height, GL10.GL_RGBA, GL10.GL_UNSIGNED_BYTE, bigBuffer.get());
-	        bigBuffer.free();
-	        bigBuffer = null;
-        }
-        
-        try {
-        	bmp = BitmapFactory.decodeStream(Rokon.currentActivity.getAssets().open(path));
-        } catch (Exception e) {
-        	Debug.error("onLoadTexture error, bad asset?");
-        	return;
-        }
-        GLUtils.texSubImage2D(GL10.GL_TEXTURE_2D, 0, 0, 0, bmp);
-        bmp.recycle();
-        bmp = null;
+		if(parentAtlas == null) {
+			prepareBuffers();
+			int[] nameArray = new int[1];
+			GLHelper.enableTextures();
+			gl.glGenTextures(1, nameArray, 0);
+			textureIndex = nameArray[0];
+			GLHelper.bindTexture(textureIndex);
+			Bitmap bmp = Bitmap.createBitmap(textureWidth, textureHeight, Bitmap.Config.ARGB_8888);
+			GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, bmp, 0);
+	        gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_LINEAR);
+	        gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER, GL10.GL_LINEAR);
+	        gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S, GL10.GL_CLAMP_TO_EDGE);
+	        gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T, GL10.GL_CLAMP_TO_EDGE);
+	        gl.glTexEnvf(GL10.GL_TEXTURE_ENV, GL10.GL_TEXTURE_ENV_MODE, GL10.GL_MODULATE);
+	
+	        if(tileCount == 1) {
+	            gl.glTexSubImage2D(GL10.GL_TEXTURE_2D, 0, 0, 0, width, height, GL10.GL_RGBA, GL10.GL_UNSIGNED_BYTE, buffer[0].get());
+	        } else {
+	            BufferObject bigBuffer;
+	        	bigBuffer = new BufferObject();
+				bigBuffer.update(0, 0, (float)(width / textureWidth), (float)(height / (float)textureHeight));	
+		        gl.glTexSubImage2D(GL10.GL_TEXTURE_2D, 0, 0, 0, width, height, GL10.GL_RGBA, GL10.GL_UNSIGNED_BYTE, bigBuffer.get());
+		        bigBuffer.free();
+		        bigBuffer = null;
+	        }
+	        
+	        try {
+	        	bmp = BitmapFactory.decodeStream(Rokon.currentActivity.getAssets().open(path));
+	        } catch (Exception e) {
+	        	Debug.error("onLoadTexture error, bad asset?");
+	        	return;
+	        }
+	        GLUtils.texSubImage2D(GL10.GL_TEXTURE_2D, 0, 0, 0, bmp);
+	        bmp.recycle();
+	        bmp = null;
+		} else {
+			parentAtlas.onLoadTexture(gl);
+		}
 	}
 
 }

@@ -9,19 +9,32 @@ package com.stickycoding.rokon;
 
 public class Point {
 
-	protected float x, y;
+	private float x, y;
+	private Point parent;
 	
 	public Point(float x, float y) {
 		this.x = x;
 		this.y = y;
 	}	
 	
+	public void setParent(Point point) {
+		parent = point;
+	}
+	
+	public void removeParent() {
+		parent = null;
+	}
+	
+	public Point getParent() {
+		return parent;
+	}
+	
 	public float getX() {
-		return x;
+		return parent == null ? x : parent.getX() + x;
 	}
 	
 	public float getY() {
-		return y;
+		return parent == null ? y : parent.getX() + y;
 	}
 	
 	public void setX(float x) {

@@ -180,7 +180,7 @@ public class DrawableObject extends BasicGameObject implements Drawable, Updatea
 	
 	protected void prepareVBO() {
 		arrayVBO = new ArrayVBO(VBO.STATIC);
-		arrayVBO.update(x, y, width, height);
+		arrayVBO.update(getX(), getY(), width, height);
 	}
 
 	public void forceDrawType(int drawType) {
@@ -369,7 +369,7 @@ public class DrawableObject extends BasicGameObject implements Drawable, Updatea
 		GLHelper.enableVertexArray();
 		GLHelper.bindBuffer(0);
 		GLHelper.vertexPointer(Rokon.defaultVertexBuffer, GL10.GL_FLOAT);			
-		gl.glTranslatef(x, y, 0);
+		gl.glTranslatef(getX(), getY(), 0);
 		
 		if(rotation != 0) {
 			if(!rotateAboutPoint) {
@@ -418,7 +418,7 @@ public class DrawableObject extends BasicGameObject implements Drawable, Updatea
 		GLHelper.color4f(red, green, blue, alpha);
 		GLHelper.bindTexture(texture.textureIndex);
 		GLHelper.drawTexCrop(new float[] { 0, 0, texture.width, texture.height} );
-		((GL11Ext)gl).glDrawTexfOES(x, Graphics.getHeightPixels() - y - height, 0, 100, 100);
+		((GL11Ext)gl).glDrawTexfOES(getX(), Graphics.getHeightPixels() - getY() - height, 0, 100, 100);
 		
 	}
 	
@@ -443,7 +443,7 @@ public class DrawableObject extends BasicGameObject implements Drawable, Updatea
 		//GLHelper.bindBuffer(arrayVBO.getBufferIndex());
 		GLHelper.bindBuffer(Rokon.arrayVBO.getBufferIndex());
 		GLHelper.vertexPointer(GL10.GL_FLOAT);
-		gl.glTranslatef(x, y, 0);		
+		gl.glTranslatef(getX(), getY(), 0);		
 		if(rotation != 0) {
 			if(!rotateAboutPoint) {
 				gl.glTranslatef(width / 2, height / 2, 0);
@@ -491,11 +491,11 @@ public class DrawableObject extends BasicGameObject implements Drawable, Updatea
 		float maxSize = width;
 		if(height > width) maxSize = height;
 		if(parentLayer.ignoreWindow || parentScene.window == null) {
-			if (x - (maxSize / 2) < RokonActivity.gameWidth && x + maxSize + (maxSize / 2) > 0 && y - (maxSize / 2) < RokonActivity.gameHeight && y + maxSize + (maxSize / 2) > 0) {
+			if (getX() - (maxSize / 2) < RokonActivity.gameWidth && getX() + maxSize + (maxSize / 2) > 0 && getY() - (maxSize / 2) < RokonActivity.gameHeight && getY() + maxSize + (maxSize / 2) > 0) {
 				return true;
 			}
 		} else {
-			if (x - (maxSize / 2) < parentScene.window.x + parentScene.window.width && x + maxSize + (maxSize / 2) > parentScene.window.x && y - (maxSize / 2) < parentScene.window.height + parentScene.window.y && y + maxSize + (maxSize / 2) > parentScene.window.y) {
+			if (getX() - (maxSize / 2) < parentScene.window.getX() + parentScene.window.width && getX() + maxSize + (maxSize / 2) > parentScene.window.getX() && getY() - (maxSize / 2) < parentScene.window.height + parentScene.window.getY() && getY() + maxSize + (maxSize / 2) > parentScene.window.getY()) {
 				return true;
 			}
 		}

@@ -2,7 +2,6 @@ This todo list sets out what will be completed before a stable release is put ou
 
 VBO
 DrawTexture
-Parent/Child sprites
 Modify textures at run time
 Use UI over the top
 Text by UI

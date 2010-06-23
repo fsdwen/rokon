@@ -94,8 +94,8 @@ public class DimensionalObject extends Point {
 	}
 	
 	public void centre(float x, float y) {
-		this.x = x - width / 2;
-		this.y = y - height / 2;
+		setX(x - width / 2);
+		setY(y - height / 2);
 	}
 
 	protected boolean moving;

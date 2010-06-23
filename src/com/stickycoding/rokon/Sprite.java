@@ -80,10 +80,10 @@ public class Sprite extends GameObject implements Updateable {
 			}
 		}
 		if(speedX != 0) {
-			x += speedX * Time.ticksFraction;
+			moveX(speedX * Time.ticksFraction);
 		}
 		if(speedY != 0) {
-			y += speedY * Time.ticksFraction;
+			moveY(speedY * Time.ticksFraction);
 		}
 		if(acceleration != 0) {
 			velocity += acceleration * Time.ticksFraction;
@@ -94,8 +94,8 @@ public class Sprite extends GameObject implements Updateable {
 			}
 		}
 		if(velocity != 0) {
-			x += velocityXFactor * (velocity * Time.ticksFraction);
-			y += velocityYFactor * (velocity * Time.ticksFraction);
+			moveX(velocityXFactor * (velocity * Time.ticksFraction));
+			moveY(velocityYFactor * (velocity * Time.ticksFraction));
 		}
 		if(angularAcceleration != 0) {
 			angularVelocity += angularAcceleration * Time.ticksFraction;
@@ -588,8 +588,8 @@ public class Sprite extends GameObject implements Updateable {
 		terminalSpeedY = 0;
 		terminalVelocity = 0;		
 		
-		moveToStartX = this.x;
-		moveToStartY = this.y;
+		moveToStartX = this.getX();
+		moveToStartY = this.getY();
 		moveToFinalX = x;
 		moveToFinalY = y;
 		isMoveTo = true;
@@ -618,8 +618,8 @@ public class Sprite extends GameObject implements Updateable {
 		float position = (float)(Time.ticks - moveToStartTime) / (float)moveToTime;
 		float movementFactor = Movement.getPosition(position, moveToType);
 		if(position >= 1) {
-			x = moveToFinalX;
-			y = moveToFinalY;
+			setX(moveToFinalX);
+			setY(moveToFinalY);
 			isMoveTo = false;
 			if(moveToCallback != null) {
 				attemptInvoke(moveToCallback);
@@ -641,8 +641,8 @@ public class Sprite extends GameObject implements Updateable {
 			terminalVelocity = 0;
 			return;
 		}
-		x = moveToStartX + ((moveToFinalX - moveToStartX) * movementFactor);
-		y = moveToStartY + ((moveToFinalY - moveToStartY) * movementFactor);
+		setX(moveToStartX + ((moveToFinalX - moveToStartX) * movementFactor));
+		setY(moveToStartY + ((moveToFinalY - moveToStartY) * movementFactor));
 	}
 
 }

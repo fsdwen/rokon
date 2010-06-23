@@ -54,48 +54,48 @@ public class PhysicalSprite extends Sprite implements Updateable {
 	public void createDynamicBody(FixtureDef fixture) {
 		bodyDef = new BodyDef();
 		bodyDef.type = BodyType.DynamicBody;
-		bodyDef.position.x = x + width / 2f;
-		bodyDef.position.y = y + height / 2f;
+		bodyDef.position.x = getX() + width / 2f;
+		bodyDef.position.y = getY() + height / 2f;
 		createBody(bodyDef, fixture);
 	}
 	
 	public void createDynamicBody(Shape shape) {
 		bodyDef = new BodyDef();
 		bodyDef.type = BodyType.DynamicBody;
-		bodyDef.position.x = x + width / 2f;
-		bodyDef.position.y = y + height / 2f;
+		bodyDef.position.x = getX() + width / 2f;
+		bodyDef.position.y = getY() + height / 2f;
 		createBody(bodyDef, shape);
 	}
 	
 	public void createStaticBody(FixtureDef fixture) {
 		bodyDef = new BodyDef();
 		bodyDef.type = BodyType.StaticBody;
-		bodyDef.position.x = x + width / 2f;
-		bodyDef.position.y = y + height / 2f;
+		bodyDef.position.x = getX() + width / 2f;
+		bodyDef.position.y = getY() + height / 2f;
 		createBody(bodyDef, fixture);
 	}
 	
 	public void createStaticBody(Shape shape) {
 		bodyDef = new BodyDef();
 		bodyDef.type = BodyType.StaticBody;
-		bodyDef.position.x = x + width / 2f;
-		bodyDef.position.y = y + height / 2f;
+		bodyDef.position.x = getX() + width / 2f;
+		bodyDef.position.y = getY() + height / 2f;
 		createBody(bodyDef, shape);
 	}
 	
 	public void createKinematicBody(FixtureDef fixture) {
 		bodyDef = new BodyDef();
 		bodyDef.type = BodyType.KinematicBody;
-		bodyDef.position.x = x + width / 2f;
-		bodyDef.position.y = y + height / 2f;
+		bodyDef.position.x = getX() + width / 2f;
+		bodyDef.position.y = getY() + height / 2f;
 		createBody(bodyDef, fixture);
 	}
 	
 	public void createKinematicBody(Shape shape) {
 		bodyDef = new BodyDef();
 		bodyDef.type = BodyType.KinematicBody;
-		bodyDef.position.x = x + width / 2f;
-		bodyDef.position.y = y + height / 2f;
+		bodyDef.position.x = getX() + width / 2f;
+		bodyDef.position.y = getY() + height / 2f;
 		createBody(bodyDef, shape);
 	}
 	
@@ -232,8 +232,8 @@ public class PhysicalSprite extends Sprite implements Updateable {
 	public void onUpdate() {
 		super.onUpdate();
 		if(usePhysics) {
-			x = body.getPosition().x - width / 2;
-			y = body.getPosition().y - height / 2;
+			setX(body.getPosition().x - width / 2);
+			setY(body.getPosition().y - height / 2);
 			rotation = body.getAngle() * 57.2957795f;
 		}
 	}

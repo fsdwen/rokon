@@ -41,25 +41,21 @@ public class TextSprite extends Sprite {
 	@Override
 	protected void onDrawNormal(GL10 gl) {
 		if(text.length() < 1)
-			return;
-		
-		GLHelper.color4f(red, green, blue, alpha);
-		
+			return;		
+		GLHelper.color4f(red, green, blue, alpha);		
 		if(blendFunction != null) {
 			GLHelper.blendMode(blendFunction);
 		} else {
 			GLHelper.blendMode(Rokon.blendFunction);
-		}
-		
+		}		
 		GLHelper.enableTextures();
 		GLHelper.enableTexCoordArray();
-		GLHelper.bindTexture(texture);
-		
+		GLHelper.bindTexture(texture);		
 		gl.glPushMatrix();
 		GLHelper.enableVertexArray();
 		GLHelper.bindBuffer(0);
 		GLHelper.vertexPointer(Rokon.defaultVertexBuffer, GL10.GL_FLOAT);			
-		gl.glTranslatef(x, y, 0);	
+		gl.glTranslatef(getX(), getY(), 0);	
 		for(int i = 0; i < textLength; i++) {
 			gl.glPushMatrix();
 			gl.glTranslatef(i * characterWidth, 0, 0);
@@ -67,11 +63,7 @@ public class TextSprite extends Sprite {
 			GLHelper.texCoordPointer(texture.buffer[((TextTexture)texture).charPos(text.charAt(i))], GL10.GL_FLOAT);
 			gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
 			gl.glPopMatrix();
-		}
-		
-		if(texture != null) {
-		}
-		
+		}		
 		gl.glPopMatrix();	
 	}
 }

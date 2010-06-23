@@ -253,8 +253,8 @@ public class Scene {
 		if(window != null) {
 			float xFraction = event.getX() / Graphics.getWidthPixels();
 			float yFraction = event.getY() / Graphics.getHeightPixels();
-			float gameX = window.x + (window.width * xFraction);
-			float gameY = window.y + (window.height * yFraction);
+			float gameX = window.getX() + (window.width * xFraction);
+			float gameY = window.getY() + (window.height * yFraction);
 			event.setLocation(gameX, gameY);
 		} else {
 			event.setLocation(realX, realY);			

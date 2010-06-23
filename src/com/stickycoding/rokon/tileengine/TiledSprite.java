@@ -29,11 +29,11 @@ public class TiledSprite extends Sprite {
 		if(tileOffset < 0) tileOffset = 0;
 		if(tileOffset > 1) tileOffset = 1;
 		if(tileOffset == 0) {
-			x = tiledLayer.getDrawX(tileX, tileY);
-			y = tiledLayer.getDrawY(tileX, tileY);
+			setX(tiledLayer.getDrawX(tileX, tileY));
+			setY(tiledLayer.getDrawY(tileX, tileY));
 		} else {
-			x = tiledLayer.getDrawX(tileX, tileY, targetTileX, targetTileY, tileOffset);
-			y = tiledLayer.getDrawY(tileY, tileY, targetTileX, targetTileY, tileOffset);
+			setX(tiledLayer.getDrawX(tileX, tileY, targetTileX, targetTileY, tileOffset));
+			setY(tiledLayer.getDrawY(tileY, tileY, targetTileX, targetTileY, tileOffset));
 		}
 	}
 

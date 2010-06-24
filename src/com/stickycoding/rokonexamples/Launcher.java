@@ -45,7 +45,7 @@ public class Launcher extends RokonActivity {
 		atlas.insert(texture = new Texture("circle.png"));
 		atlas.insert(face = new Texture("face.png", 3, 2));
 		Font font = new Font("fonts/angltrr.ttf");
-		TextTexture textTexture = font.createTexture("Hello there Mr Double bacon", 600);
+		TextTexture textTexture = font.createTexture("This text should split into several lines, finger's crossed! :)", 600);
 		atlas.insert(textTexture);
 		atlas.complete();
 

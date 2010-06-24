@@ -6,11 +6,11 @@ package com.stickycoding.rokon;
  * 
  * @author Richard
  */
-public class TextTexture extends Texture {
+public class FontTexture extends Texture {
 	
 	public char[] chars;
 
-	public TextTexture(String filename, String characters, int columns, int rows) {
+	public FontTexture(String filename, String characters, int columns, int rows) {
 		super(filename, columns, rows);
 		chars = new char[characters.length()];
 		for(int i = 0; i < characters.length(); i++) {
@@ -18,7 +18,7 @@ public class TextTexture extends Texture {
 		}
 	}
 	
-	public TextTexture(String filename, String characters) {
+	public FontTexture(String filename, String characters) {
 		this(filename, characters, characters.length(), 1);
 	}
 	

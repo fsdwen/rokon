@@ -4,7 +4,6 @@ VBO
 DrawTexture
 Modify textures at run time
 Use UI over the top
-Text by UI
 Multi touch
 Polygons
 Tiled layers

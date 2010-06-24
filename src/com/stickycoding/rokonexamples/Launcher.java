@@ -14,7 +14,7 @@ import com.stickycoding.rokon.PhysicalSprite;
 import com.stickycoding.rokon.RokonActivity;
 import com.stickycoding.rokon.Scene;
 import com.stickycoding.rokon.TextSprite;
-import com.stickycoding.rokon.TextTexture;
+import com.stickycoding.rokon.FontTexture;
 import com.stickycoding.rokon.Texture;
 import com.stickycoding.rokon.TextureAtlas;
 import com.stickycoding.rokon.Window;
@@ -68,7 +68,7 @@ public class Launcher extends RokonActivity {
 		
 		myScene.setDefaultLineWidth(2f);	
 		
-		TextTexture textTexture = new TextTexture("font.png", "ABCDEFGHIJKLMNOPQRSTUVWXYZ        :.()1234567890         ", 19, 3);
+		FontTexture textTexture = new FontTexture("font.png", "ABCDEFGHIJKLMNOPQRSTUVWXYZ        :.()1234567890         ", 19, 3);
 		
 		TextSprite text = new TextSprite(1, 1, 0.5f, 0.5f);
 		text.setTexture(textTexture);

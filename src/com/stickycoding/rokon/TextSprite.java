@@ -31,7 +31,7 @@ public class TextSprite extends Sprite {
 
 	@Override
 	public void setTexture(Texture texture) {
-		if(!(texture instanceof TextTexture)) {
+		if(!(texture instanceof FontTexture)) {
 			Debug.error("Tried setting TextSprite to non-TextTexture");
 			return;
 		}
@@ -60,7 +60,7 @@ public class TextSprite extends Sprite {
 			gl.glPushMatrix();
 			gl.glTranslatef(i * characterWidth, 0, 0);
 			gl.glScalef(characterWidth, height, 0);
-			GLHelper.texCoordPointer(texture.buffer[((TextTexture)texture).charPos(text.charAt(i))], GL10.GL_FLOAT);
+			GLHelper.texCoordPointer(texture.buffer[((FontTexture)texture).charPos(text.charAt(i))], GL10.GL_FLOAT);
 			gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
 			gl.glPopMatrix();
 		}		

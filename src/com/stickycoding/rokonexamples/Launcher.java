@@ -45,7 +45,7 @@ public class Launcher extends RokonActivity {
 		atlas.insert(texture = new Texture("circle.png"));
 		atlas.insert(face = new Texture("face.png", 3, 2));
 		Font font = new Font("fonts/angltrr.ttf");
-		TextTexture textTexture = font.createTexture("This text should split into several lines, finger's crossed! :)", 600);
+		TextTexture textTexture = font.createTexture("This text should split into several lines, finger's crossed!", 600);
 		atlas.insert(textTexture);
 		atlas.complete();
 
@@ -74,7 +74,7 @@ public class Launcher extends RokonActivity {
 		
 		myScene.setDefaultLineWidth(2f);	
 		
-		Sprite text = new Sprite(0, 0, 2, textTexture.getHeight(2));
+		Sprite text = new Sprite(0, 0, 5, textTexture.getHeight(5));
 		text.setTexture(textTexture);
 		myScene.add(1, text);
 		

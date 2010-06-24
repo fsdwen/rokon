@@ -91,7 +91,6 @@ public class Font {
 		
 		for(int i = 0; i <= lineCount; i++) {
 			if(lines[i] != null) {
-				Debug.print("##" + lines[i]);
 				canvas.drawText(lines[i], 0, (int) (fontMetrics.bottom - fontMetrics.top) * i, paint);
 			}
 		}

@@ -18,6 +18,8 @@ public class Texture {
 	
 	protected TextureAtlas parentAtlas;
 	protected int atlasX, atlasY;
+	protected Bitmap bmp;
+	
 	
 	protected int textureWidth, textureHeight;
 	protected int width, height, columns, rows, tileCount;
@@ -153,6 +155,16 @@ public class Texture {
 		}
 	}
 	
+	protected Bitmap getBitmap() {
+        try {
+        	bmp = BitmapFactory.decodeStream(Rokon.currentActivity.getAssets().open(path));
+        	return bmp;
+        } catch (Exception e) {
+        	Debug.error("Texture.getBitmap() error, bad asset?");
+        	return null;
+        }
+	}
+	
 	protected void onLoadTexture(GL10 gl) {
 		if(parentAtlas == null) {
 			prepareBuffers();
@@ -179,19 +191,52 @@ public class Texture {
 		        bigBuffer.free();
 		        bigBuffer = null;
 	        }
-	        
-	        try {
-	        	bmp = BitmapFactory.decodeStream(Rokon.currentActivity.getAssets().open(path));
-	        } catch (Exception e) {
-	        	Debug.error("onLoadTexture error, bad asset?");
-	        	return;
-	        }
-	        GLUtils.texSubImage2D(GL10.GL_TEXTURE_2D, 0, 0, 0, bmp);
 	        bmp.recycle();
+	        bmp = getBitmap();
+	        GLUtils.texSubImage2D(GL10.GL_TEXTURE_2D, 0, 0, 0, bmp);
+	        clearBitmap();
 	        bmp = null;
 		} else {
 			parentAtlas.onLoadTexture(gl);
 		}
+	}
+	
+	protected void clearBitmap() {
+		if(bmp == null) return;
+		bmp.recycle();
+		bmp = null;
+	}
+	
+	public int getWidth() {
+		return width;
+	}
+	
+	public int getHeight() {
+		return height;
+	}
+	
+	public int getTileWidth() {
+		return width / columns;
+	}
+	
+	public int getTileHeight() {
+		return height / rows;
+	}
+	
+	public float getRatio() {
+		return (float)height / (float)width / columns;
+	}
+	
+	public float getTileRatio() {
+		return ((float)height / rows) / ((float)width / columns);
+	}
+	
+	public float getTileHeight(float width) {
+		return (width / columns) * getRatio();
+	}
+	
+	public float getHeight(float width) {
+		return width * getRatio();
 	}
 
 }

@@ -8,13 +8,15 @@ import android.view.MotionEvent;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
+import com.stickycoding.rokon.Debug;
 import com.stickycoding.rokon.DrawPriority;
+import com.stickycoding.rokon.Font;
 import com.stickycoding.rokon.Movement;
 import com.stickycoding.rokon.PhysicalSprite;
 import com.stickycoding.rokon.RokonActivity;
 import com.stickycoding.rokon.Scene;
-import com.stickycoding.rokon.TextSprite;
-import com.stickycoding.rokon.FontTexture;
+import com.stickycoding.rokon.Sprite;
+import com.stickycoding.rokon.TextTexture;
 import com.stickycoding.rokon.Texture;
 import com.stickycoding.rokon.TextureAtlas;
 import com.stickycoding.rokon.Window;
@@ -42,6 +44,10 @@ public class Launcher extends RokonActivity {
 		atlas = new TextureAtlas();
 		atlas.insert(texture = new Texture("circle.png"));
 		atlas.insert(face = new Texture("face.png", 3, 2));
+		Font font = new Font("fonts/angltrr.ttf");
+		TextTexture textTexture = font.createTexture("Hello there Mr Double bacon", 600);
+		atlas.insert(textTexture);
+		atlas.complete();
 
 		myScene.setWorld(world = new World(new Vector2(0f, 6f), true));
 		
@@ -68,11 +74,8 @@ public class Launcher extends RokonActivity {
 		
 		myScene.setDefaultLineWidth(2f);	
 		
-		FontTexture textTexture = new FontTexture("font.png", "ABCDEFGHIJKLMNOPQRSTUVWXYZ        :.()1234567890         ", 19, 3);
-		
-		TextSprite text = new TextSprite(1, 1, 0.5f, 0.5f);
+		Sprite text = new Sprite(0, 0, 2, textTexture.getHeight(2));
 		text.setTexture(textTexture);
-		text.setText("HELLO");
 		myScene.add(1, text);
 		
 		setScene(myScene);

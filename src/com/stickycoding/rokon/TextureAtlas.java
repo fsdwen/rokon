@@ -21,6 +21,7 @@ public class TextureAtlas extends Texture {
 	
 	protected int atlasWidth, atlasHeight, maxTextureCount;	
 	protected Texture[] texture;
+	protected boolean complete;
 
 	public TextureAtlas() {
 		super();
@@ -29,6 +30,10 @@ public class TextureAtlas extends Texture {
 		atlasWidth = DEFAULT_TEXTURE_ATLAS_WIDTH;
 		atlasHeight = DEFAULT_TEXTURE_ATLAS_HEIGHT;
 		
+	}
+	
+	public void complete() {
+		complete = true;
 	}
 	
 	public TextureAtlas(int maxTextureCount) {
@@ -46,6 +51,11 @@ public class TextureAtlas extends Texture {
 	}
 	
 	public void insert(Texture texture) {
+		if(complete) {
+			Debug.error("Tried inserting Texture into TextureAtlas after complete()");
+			Debug.forceExit();
+			return;
+		}
 		int slot = getNextEmptySlot();
 		if(slot == -1) {
 			Debug.error("TextureAtlas is full");
@@ -104,6 +114,11 @@ public class TextureAtlas extends Texture {
 	}
 	
 	protected void onLoadTexture(GL10 gl) {
+		if(!complete) {
+			Debug.error("Tried loading TextureAtlas without calling complete() first");
+			Debug.forceExit();
+			return;
+		}
 		
 		int[] nameArray = new int[1];
 		GLHelper.enableTextures();
@@ -124,14 +139,9 @@ public class TextureAtlas extends Texture {
 				Debug.print("Loading texture " + i);
                 texture[i].textureIndex = textureIndex;
 				texture[i].prepareBuffers();
-		        try {
-		        	bmp = BitmapFactory.decodeStream(Rokon.currentActivity.getAssets().open(texture[i].path));
-		        } catch (Exception e) {
-		        	Debug.error("onLoadTexture error, bad asset?");
-		        	return;
-		        }		        
+				bmp = texture[i].getBitmap();
                 GLUtils.texSubImage2D(GL10.GL_TEXTURE_2D, 0, texture[i].atlasX, texture[i].atlasY, bmp);
-                bmp.recycle();
+                texture[i].clearBitmap();
                 bmp = null;
             }
 		}

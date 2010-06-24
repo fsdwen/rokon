@@ -88,5 +88,12 @@ public class Debug {
 	public static void verbose(String message) {
 		Log.v(tag, message);
 	}
+	
+	/**
+	 * Forces the application to exit, this is messy, unsure if it should be used. For debugging purposes while testing, it will be.
+	 */
+	public static void forceExit() {
+		System.exit(0);
+	}
 
 }

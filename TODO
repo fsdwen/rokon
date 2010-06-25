@@ -5,7 +5,6 @@ DrawTexture
 Modify textures at run time
 Use UI over the top
 Multi touch
-Polygons
 Tiled layers
 Basic collision detection
 Helper for aspect ratio detection

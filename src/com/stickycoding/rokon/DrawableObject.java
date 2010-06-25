@@ -383,7 +383,9 @@ public class DrawableObject extends BasicGameObject implements Drawable, Updatea
 			}
 		}
 		
-		gl.glScalef(width, height, 0);
+		if(width != 1 || height != 1) {
+			gl.glScalef(width, height, 0);
+		}
 		
 		if(texture != null) {
 			GLHelper.enableTextures();

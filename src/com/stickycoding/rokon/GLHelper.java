@@ -169,6 +169,60 @@ public class GLHelper {
 	        drawTexCrop3 = buffer[3];
 		}
     }
+    
+    public static void drawNormal(boolean fill, float red, float green, float blue, float alpha, BlendFunction blendFunction, BufferObject vertexBuffer, float x, float y, float width, float height, float rotation, boolean rotateAboutPivot, float rotationPivotX, float rotationPivotY, boolean border, float borderRed, float borderGreen, float borderBlue, float lineWidth, boolean hasTexture, Texture texture, int textureTile) {
+		if(blendFunction != null) {
+			GLHelper.blendMode(blendFunction);
+		} else {
+			GLHelper.blendMode(Rokon.blendFunction);
+		}
+		gl.glPushMatrix();
+		enableVertexArray();
+		bindBuffer(0);
+		vertexPointer(vertexBuffer, GL10.GL_FLOAT);
+		if(x != 0 || y != 0) {
+			gl.glTranslatef(x, y, 0);
+		}
+		if(rotation != 0) {
+			if(!rotateAboutPivot) {
+				gl.glTranslatef(width / 2, height / 2, 0);
+				gl.glRotatef(rotation, 0, 0, 1);
+				gl.glTranslatef(-width / 2, -height / 2, 0);
+			} else {
+				gl.glTranslatef(rotationPivotX, rotationPivotY, 0);
+				gl.glRotatef(rotation, 0, 0, 1);
+				gl.glTranslatef(-rotationPivotX, -rotationPivotY, 0);
+			}
+		}
+		if(width != 1 || height != 1) {
+			gl.glScalef(width, height, 0);
+		}
+		if(texture != null) {
+			enableTextures();
+			enableTexCoordArray();
+			bindTexture(texture);
+			texCoordPointer(texture.buffer[textureTile], GL10.GL_FLOAT);
+			gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
+		} else {
+			disableTexCoordArray();
+			disableTextures();
+			if(fill) {
+				color4f(red, green, blue, alpha);
+				gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
+			}
+			if(border) {
+				color4f(borderRed, borderGreen, borderBlue, alpha);
+				vertexPointer(vertexBuffer, GL10.GL_FLOAT);
+				if(lineWidth != -1) {
+					lineWidth(lineWidth);
+				} else {
+					lineWidth(RokonActivity.currentScene.defaultLineWidth);
+				}
+				gl.glDrawArrays(GL10.GL_LINE_LOOP, 0, 4);
+			}
+		}
+		gl.glPopMatrix();	
+    }
 
 
 }

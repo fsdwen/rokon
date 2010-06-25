@@ -15,11 +15,17 @@ public class Rokon {
 	protected static BlendFunction blendFunction;
 	protected static BufferObject defaultVertexBuffer;
 	protected static BufferObject boxVertexBuffer;
+	protected static BufferObject lineVertexBuffer;
+	
 	protected static RokonActivity currentActivity;
 	protected static ElementVBO elementVBO;
 	protected static ArrayVBO arrayVBO;
 	protected static ArrayVBO boxArrayVBO;
 	protected static boolean verbose = false;
+	
+	public static BufferObject lineVertexBuffer() {
+		return lineVertexBuffer;
+	}
 	
 	public static void verboseMode() {
 		verbose = true;

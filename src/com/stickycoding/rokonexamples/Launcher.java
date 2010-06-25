@@ -8,9 +8,9 @@ import android.view.MotionEvent;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
-import com.stickycoding.rokon.Debug;
 import com.stickycoding.rokon.DrawPriority;
 import com.stickycoding.rokon.Font;
+import com.stickycoding.rokon.LineSprite;
 import com.stickycoding.rokon.Movement;
 import com.stickycoding.rokon.PhysicalSprite;
 import com.stickycoding.rokon.RokonActivity;
@@ -77,6 +77,9 @@ public class Launcher extends RokonActivity {
 		Sprite text = new Sprite(0, 0, 5, textTexture.getHeight(5));
 		text.setTexture(textTexture);
 		myScene.add(1, text);
+		
+		LineSprite lineSprite = new LineSprite(1, 3, 2, 1);
+		myScene.add(1, lineSprite);
 		
 		setScene(myScene);
 	}

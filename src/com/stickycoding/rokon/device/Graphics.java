@@ -3,6 +3,8 @@ package com.stickycoding.rokon.device;
 import android.app.Activity;
 import android.util.DisplayMetrics;
 
+import com.stickycoding.rokon.Debug;
+
 /**
  * Device.java
  * Discovers and retrieves information about the devices hardware
@@ -11,11 +13,37 @@ import android.util.DisplayMetrics;
  */
 public class Graphics {
 	
+	public static int NORMAL = 0, WIDE = 1, FULL_WIDTH = 2;
+	
+	public static final float WIDE_RATIO = 0.60037524f;
+	
 	private static DisplayMetrics displayMetrics;	
 	private static int widthPixels, heightPixels, halfWidthPixels, halfHeightPixels;
+	private static float aspectRatio;
+	private static int screenType;
 	private static boolean isOpenGL10;
 	private static boolean supportsVBO;
 	private static boolean supportsDrawTex;
+	
+	public static int getScreenType() {
+		return screenType;
+	}
+	
+	public static float getAspectRatio() {
+		return aspectRatio;
+	}
+	
+	public static boolean isNormalAspect() {
+		return screenType == NORMAL;
+	}
+	
+	public static boolean isWideAspect() {
+		return screenType == WIDE;
+	}
+	
+	public static boolean isFullWidthAspect() {
+		return screenType == FULL_WIDTH;
+	}
 	
 	/**
 	 * Determines several characterstics of the physical device and stores for later usage
@@ -30,6 +58,16 @@ public class Graphics {
 		heightPixels = displayMetrics.heightPixels;
 		halfWidthPixels = widthPixels / 2;
 		halfHeightPixels = heightPixels / 2;
+		aspectRatio = (float)widthPixels / (float)heightPixels;
+		if(aspectRatio == WIDE_RATIO) {
+			screenType = WIDE;
+		}
+		if(aspectRatio < WIDE_RATIO) {
+			screenType = NORMAL;
+		}
+		if(aspectRatio > FULL_WIDTH) {
+			screenType = FULL_WIDTH;
+		}
 	}
 	
 	/**

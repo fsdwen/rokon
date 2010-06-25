@@ -64,8 +64,7 @@ public class DynamicTexture extends Texture {
 	
 	protected void onRefreshTexture(GL10 gl) {
 		GLHelper.removeTextures(new Texture[] { this });
-		TextureManager.removeFromActiveTextures(this);
-		TextureManager.load(this);
+		onLoadTexture(gl);
 	}
 
 }

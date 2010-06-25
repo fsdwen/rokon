@@ -108,6 +108,13 @@ public class Sprite extends GameObject implements Updateable {
 		if(angularVelocity != 0) {
 			rotation += angularVelocity * Time.ticksFraction;
 		}
+		if(modifierCount > 0) {
+			for(int i = 0; i < MAX_MODIFIERS; i++) {
+				if(modifier[i] != null) {
+					modifier[i].onUpdate(this);
+				}
+			}
+		}
 	}
 	
 	/**
@@ -643,6 +650,33 @@ public class Sprite extends GameObject implements Updateable {
 		}
 		setX(moveToStartX + ((moveToFinalX - moveToStartX) * movementFactor));
 		setY(moveToStartY + ((moveToFinalY - moveToStartY) * movementFactor));
+	}
+	
+	public static final int MAX_MODIFIERS = 8;
+	protected int modifierCount = 0;
+	protected Modifier[] modifier = new Modifier[MAX_MODIFIERS];
+	
+	public boolean addModifier(Modifier modifier) {
+		for(int i = 0; i < MAX_MODIFIERS; i++) {
+			if(this.modifier[i] == null) {
+				this.modifier[i] = modifier;
+				modifier.onCreate(this);
+				modifierCount++;
+				return true;
+			}
+		}
+		Debug.warning("Tried addModifier, Sprite is full [" + MAX_MODIFIERS + "]");
+		return false;
+	}
+	
+	public void removeModifier(Modifier modifier) {
+		for(int i = 0; i < MAX_MODIFIERS; i++) {
+			if(this.modifier[i] == modifier) {
+				this.modifier[i] = null;
+				modifierCount--;
+				return;
+			}
+		}
 	}
 
 }

@@ -2,18 +2,15 @@ package com.stickycoding.rokonexamples;
 
 import javax.microedition.khronos.opengles.GL10;
 
-import android.graphics.Paint;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
-import com.stickycoding.rokon.Debug;
 import com.stickycoding.rokon.DrawPriority;
 import com.stickycoding.rokon.DynamicTexture;
 import com.stickycoding.rokon.Font;
-import com.stickycoding.rokon.LineSprite;
 import com.stickycoding.rokon.Movement;
 import com.stickycoding.rokon.PhysicalSprite;
 import com.stickycoding.rokon.Polygon;
@@ -26,6 +23,7 @@ import com.stickycoding.rokon.Texture;
 import com.stickycoding.rokon.TextureAtlas;
 import com.stickycoding.rokon.Window;
 import com.stickycoding.rokon.background.FixedBackground;
+import com.stickycoding.rokon.modifiers.Blink;
 
 public class Launcher extends RokonActivity {
 	
@@ -75,9 +73,9 @@ public class Launcher extends RokonActivity {
 
 		myScene.getLayer(1).ignoreWindow();
 		
-		sprite = new PhysicalSprite(0, 1, 3, 1);
-		sprite.setAlpha(0.3f);
-		myScene.add(1, sprite);
+		aSprite = new PhysicalSprite(0, 1, 3, 1);
+		aSprite.setAlpha(0.3f);
+		myScene.add(1, aSprite);
 		
 		myScene.setDefaultLineWidth(2f);	
 		
@@ -85,18 +83,16 @@ public class Launcher extends RokonActivity {
 		text.setTexture(textTexture);
 		myScene.add(1, text);
 		
-		 lineSprite = new LineSprite(1, 3, 2, 1);
-		myScene.add(1, lineSprite);
-		lineSprite.setLineWidth(1);
 		
 		PolygonSprite polySprite = new PolygonSprite(new Polygon(new float[] {0, 0, 1, 0.5f, 0, 1 }), 1, 1, 1, 1);
 		myScene.add(1, polySprite);
 		
 		setScene(myScene);
 	}
+	
+	PhysicalSprite aSprite;
 
 	
-	LineSprite lineSprite;
 	
 	@Override
 	public void onDestroy() {
@@ -119,24 +115,15 @@ public class Launcher extends RokonActivity {
 			this.y = y;
 			addNew = true;
 		}
-		
-		@Override
-		public void onTouch(float x, float y, MotionEvent event, int pointerId) {
-			if(pointerId == 0) {
-				lineSprite.setLineStart(x, y);
-			}
-			if(pointerId == 1) {
-				lineSprite.setLineEnd(x, y);
-			}
-		}
+
 		
 		boolean tracing = false;
 		int traceCount = 0;
+		
 		@Override
 		public void onKeyDown(int keyCode, KeyEvent event) {
 			if(keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
-				//face.getCanvas().drawLine((float)(Math.random() * 10), (float)(Math.random() * 10), (float)(Math.random() * 30), (float)(Math.random() * 30), new Paint());
-				//face.reload();
+				aSprite.addModifier(new Blink());
 			}
 			if(tracing) {
 				tracing = false;
@@ -154,8 +141,7 @@ public class Launcher extends RokonActivity {
 		
 		public void onPreDraw(GL10 gl) {
 			if(addNew) {
-				face.getCanvas().drawLine((float)(Math.random() * 10), (float)(Math.random() * 10), (float)(Math.random() * 30), (float)(Math.random() * 30), new Paint());
-				face.reload();
+				createBox(x, y, 0.5f, 0.3f);
 				addNew = false;
 			}
 			/*}

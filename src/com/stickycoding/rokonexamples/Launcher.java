@@ -79,11 +79,13 @@ public class Launcher extends RokonActivity {
 		text.setTexture(textTexture);
 		myScene.add(1, text);
 		
-		LineSprite lineSprite = new LineSprite(1, 3, 2, 1);
+		 lineSprite = new LineSprite(1, 3, 2, 1);
 		myScene.add(1, lineSprite);
 		
 		setScene(myScene);
 	}
+	
+	LineSprite lineSprite;
 	
 	@Override
 	public void onDestroy() {
@@ -107,6 +109,17 @@ public class Launcher extends RokonActivity {
 			this.y = y;
 			addNew = true;
 		}
+		
+		@Override
+		public void onTouchMove(float x, float y, MotionEvent event, int pointerId) {
+			if(pointerId == 0) {
+				lineSprite.setLineStart(x, y);
+			}
+			if(pointerId == 1) {
+				lineSprite.setLineEnd(x, y);
+			}
+		}
+		
 		boolean tracing = false;
 		int traceCount = 0;
 		@Override

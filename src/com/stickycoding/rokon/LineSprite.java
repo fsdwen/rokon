@@ -12,15 +12,28 @@ import javax.microedition.khronos.opengles.GL10;
 public class LineSprite extends Sprite {
 
 	protected BufferObject lineBuffer;
+	protected float x1, y1, x2, y2;
 	
 	public LineSprite(float x1, float y1, float x2, float y2) {
 		super(x1, y1, 1, 1);
 		setLine(x1, y1, x2, y2);
 	}
 	
+	public void setLineStart(float x1, float y1) {
+		setLine(x1, y1, x2, y2);
+	}
+	
+	public void setLineEnd(float x2, float y2) {
+		setLine(x1, y1, x2, y2);
+	}
+	
 	public void setLine(float x1, float y1, float x2, float y2) {
 		setXY(x1, y1);
 		setSize(x2 - x1, y2 - y1);
+		this.x1 = x1;
+		this.y1 = y1;
+		this.x2 = x2;
+		this.y2 = y2;
 		if(lineBuffer == null) {
 			lineBuffer = new BufferObject();
 		}

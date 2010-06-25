@@ -17,6 +17,11 @@ public class BufferObject {
 
 	protected ByteBuffer byteBuffer;
 	protected IntBuffer intBuffer;
+	protected int size;
+	
+	public int getSize() {
+		return size;
+	}
 	
 	public BufferObject(int length) {
 		if(Build.VERSION.SDK == "3")
@@ -24,10 +29,17 @@ public class BufferObject {
 		else
 			byteBuffer = ByteBuffer.allocateDirect(length*4);
 		byteBuffer.order(ByteOrder.nativeOrder());	
+		size = length;
 	}
 	
-	public BufferObject() {
-		this(8);
+	public BufferObject(float[] floats) {
+		if(Build.VERSION.SDK == "3")
+			byteBuffer = ByteBuffer.allocate(floats.length * 4);
+		else
+			byteBuffer = ByteBuffer.allocateDirect(floats.length * 4);
+		byteBuffer.order(ByteOrder.nativeOrder());
+		updateRaw(floats);
+		size = floats.length;
 	}
 	
 	public void free() {

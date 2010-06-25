@@ -35,7 +35,7 @@ public class LineSprite extends Sprite {
 		this.x2 = x2;
 		this.y2 = y2;
 		if(lineBuffer == null) {
-			lineBuffer = new BufferObject();
+			lineBuffer = new BufferObject(4);
 		}
 		lineBuffer.updateRaw(new float[] { 0, 0, x2 - x1, y2 - y1 });
 	}
@@ -47,7 +47,7 @@ public class LineSprite extends Sprite {
 	
 	@Override
 	protected void onDrawNormal(GL10 gl) {
-		GLHelper.drawNormal(false, 0, 0, 0, alpha, blendFunction, lineBuffer, getX(), getY(), 1, 1, 0, false, 0, 0, true, red, green, blue, lineWidth, false, null, 0);
+		GLHelper.drawNormal(false, 0, 0, 0, alpha, blendFunction, lineBuffer, getX(), getY(), 1, 1, 0, false, 0, 0, true, lineBuffer, red, green, blue, lineWidth, false, null, 0);
 	}
 	
 

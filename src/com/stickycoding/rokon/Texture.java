@@ -88,7 +88,7 @@ public class Texture {
 			for(int i = 0; i < buffer.length; i++) {
 				float col = i % columns;
 				float row = (i - col) / (float)columns;
-				buffer[i] = new BufferObject();
+				buffer[i] = new BufferObject(8);
 				float x = col * (float)(width / columns);
 				float y = row * (float)(height / rows);
 				buffer[i].update(x / textureWidth, y / textureHeight, (float)(width / columns) / (float)textureWidth, (float)(height / rows) / (float)textureHeight);
@@ -98,7 +98,7 @@ public class Texture {
 			for(int i = 0; i < buffer.length; i++) {
 				float col = i % columns;
 				float row = (i - col) / (float)columns;
-				buffer[i] = new BufferObject();
+				buffer[i] = new BufferObject(8);
 				float x = col * (float)(width / columns);
 				float y = row * (float)(height / rows);
 				
@@ -185,7 +185,7 @@ public class Texture {
 	            gl.glTexSubImage2D(GL10.GL_TEXTURE_2D, 0, 0, 0, width, height, GL10.GL_RGBA, GL10.GL_UNSIGNED_BYTE, buffer[0].get());
 	        } else {
 	            BufferObject bigBuffer;
-	        	bigBuffer = new BufferObject();
+	        	bigBuffer = new BufferObject(8);
 				bigBuffer.update(0, 0, (float)(width / textureWidth), (float)(height / (float)textureHeight));	
 		        gl.glTexSubImage2D(GL10.GL_TEXTURE_2D, 0, 0, 0, width, height, GL10.GL_RGBA, GL10.GL_UNSIGNED_BYTE, bigBuffer.get());
 		        bigBuffer.free();

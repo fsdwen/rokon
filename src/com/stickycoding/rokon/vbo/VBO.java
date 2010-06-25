@@ -23,7 +23,7 @@ public class VBO {
 	
 	public VBO(int drawType) {
 		this.drawType = drawType;
-		bufferObject = new BufferObject();
+		bufferObject = new BufferObject(8);
 	}
 	
 	public void update(float x, float y, float width, float height) {

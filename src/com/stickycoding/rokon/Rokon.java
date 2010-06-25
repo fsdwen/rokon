@@ -13,8 +13,8 @@ import com.stickycoding.rokon.vbo.ElementVBO;
 public class Rokon {
 	
 	protected static BlendFunction blendFunction;
-	protected static BufferObject defaultVertexBuffer;
-	protected static BufferObject boxVertexBuffer;
+	protected static BufferObject triangleStripBoxBuffer;
+	protected static BufferObject lineStripBoxBuffer;
 	protected static BufferObject lineVertexBuffer;
 	
 	protected static RokonActivity currentActivity;
@@ -63,7 +63,7 @@ public class Rokon {
 	 * @return Buffer
 	 */
 	public static BufferObject defaultVertexBuffer() {
-		return defaultVertexBuffer;
+		return triangleStripBoxBuffer;
 	}
 	
 	/**

@@ -109,8 +109,10 @@ public class RokonActivity extends Activity {
 	private void createStatics() {
 		Graphics.determine(this);
 		Rokon.blendFunction = new BlendFunction(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
-		Rokon.defaultVertexBuffer = new BufferObject();
-		Rokon.defaultVertexBuffer.update(0, 0, 1, 1);
+		
+		Rokon.triangleStripBoxBuffer = new BufferObject(new float[] { 0, 0, 1, 0, 0, 1, 1, 1 });
+		Rokon.lineStripBoxBuffer = new BufferObject(new float[] { 0, 0, 1, 0, 1, 1, 0, 1 });
+		
 		Rokon.elementVBO = new ElementVBO(VBO.STATIC);
 		Rokon.elementVBO.getBufferObject().updateRaw(new float[] { 0, 1, 1, 0, 1, 1 });
 		Rokon.arrayVBO = new ArrayVBO(VBO.STATIC);
@@ -119,8 +121,6 @@ public class RokonActivity extends Activity {
 		Rokon.boxArrayVBO = new ArrayVBO(VBO.STATIC);
 		Rokon.boxArrayVBO.updateRaw(new float[] { 0, 0, 1, 0, 1, 1, 0, 1 });
 		
-		Rokon.boxVertexBuffer = new BufferObject();
-		Rokon.boxVertexBuffer.updateRaw(new float[] { 0, 0, 1, 0, 1, 1, 0, 1 });
 		
 		OS.determineAPI();
 	}

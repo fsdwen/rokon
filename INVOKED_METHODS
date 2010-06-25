@@ -2,10 +2,10 @@ This is a list of invoked methods, for my own reference.
 
 These are called by the engine, detailed information on how this works will be come along with the first stable release.
 
-[StaticObject.name]_onTouch(float x, float y, MotionEvent event)
-[StaticObject.name]_onTouchDown(float x, float y, MotionEvent event)
-[StaticObject.name]_onTouchUp(float x, float y, MotionEvent event)
-[StaticObject.name]_onTouchMove(float x, float y, MotionEvent event)
+[StaticObject.name]_onTouch(float x, float y, MotionEvent event, int pointerIndex)
+[StaticObject.name]_onTouchDown(float x, float y, MotionEvent event, int pointerIndex)
+[StaticObject.name]_onTouchUp(float x, float y, MotionEvent event, int pointerIndex)
+[StaticObject.name]_onTouchMove(float x, float y, MotionEvent event, int pointerIndex)
 
 [DynamicObject.name]_onMoveToComplete()
 [DynamicObject.name]_onMoveToCancel()

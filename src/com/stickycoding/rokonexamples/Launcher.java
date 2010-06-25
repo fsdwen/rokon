@@ -81,6 +81,7 @@ public class Launcher extends RokonActivity {
 		
 		 lineSprite = new LineSprite(1, 3, 2, 1);
 		myScene.add(1, lineSprite);
+		lineSprite.setLineWidth(1);
 		
 		setScene(myScene);
 	}
@@ -104,14 +105,13 @@ public class Launcher extends RokonActivity {
 		
 		@Override
 		public void onTouchDown(float x, float y, MotionEvent event, int pointerId) {
-			Debug.print("Touch [" + pointerId + "] x=" + x + " y=" + y);
 			this.x = x;
 			this.y = y;
 			addNew = true;
 		}
 		
 		@Override
-		public void onTouchMove(float x, float y, MotionEvent event, int pointerId) {
+		public void onTouch(float x, float y, MotionEvent event, int pointerId) {
 			if(pointerId == 0) {
 				lineSprite.setLineStart(x, y);
 			}

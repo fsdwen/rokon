@@ -39,12 +39,10 @@ public class RokonRenderer implements GLSurfaceView.Renderer {
 		FPSCounter.onFrame();
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		if(RokonActivity.currentScene != null) {
-			if(!RokonActivity.currentScene.loadedTextures) {
-				RokonActivity.currentScene.onLoadTextures(gl);
-			}
+			TextureManager.execute(gl);
 			if(RokonActivity.reloadToHardware) {
 				Debug.print("Reloading");
-				RokonActivity.currentScene.onReloadTextures(gl);
+				TextureManager.reloadTextures();
 				RokonActivity.reloadToHardware = false;
 			}
 			RokonActivity.currentScene.onDraw(gl);			

@@ -225,5 +225,13 @@ public class GLHelper {
 		gl.glPopMatrix();	
     }
 
+    public static void removeTextures(Texture[] texture) {
+    	for(int i = 0; i < texture.length; i++) {
+    		if(texture[i] != null) {
+    			int[] textureId = new int[] { texture[i].textureIndex };
+    	    	gl.glDeleteTextures(1, textureId, 0);
+    		}
+    	}
+    }
 
 }

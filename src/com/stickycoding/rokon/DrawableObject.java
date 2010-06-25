@@ -357,7 +357,7 @@ public class DrawableObject extends BasicGameObject implements Drawable, Updatea
 	}
 	
 	protected void onDrawNormal(GL10 gl) {
-		GLHelper.drawNormal(fill, red, green, blue, alpha, blendFunction, Rokon.triangleStripBoxBuffer, getX(), getY(), width, height, rotation, rotateAboutPoint, rotationPivotX, rotationPivotY, border, Rokon.lineStripBoxBuffer, borderRed, borderGreen, borderBlue, lineWidth, texture != null, texture, textureTile);
+		GLHelper.drawNormal(fill, red, green, blue, alpha, blendFunction, Rokon.triangleStripBoxBuffer, getX(), getY(), width, height, rotation, rotateAboutPoint, rotationPivotX, rotationPivotY, border, Rokon.lineLoopBoxBuffer, borderRed, borderGreen, borderBlue, lineWidth, texture != null, texture, textureTile);
 	}
 	
 	protected void onDrawTex(GL10 gl) {

@@ -63,7 +63,6 @@ public class TextureAtlas extends Texture {
 		} else {
 			this.texture[slot] = texture;
 			findRightSpot(texture);
-			Debug.print("Inserted at " + texture.atlasX + ", " + texture.atlasY);
 			texture.parentAtlas = this;
 
 		}
@@ -136,7 +135,6 @@ public class TextureAtlas extends Texture {
 
 		for(int i = 0; i < maxTextureCount; i++) {
 			if(texture[i] != null) {
-				Debug.print("Loading texture " + i);
                 texture[i].textureIndex = textureIndex;
 				texture[i].prepareBuffers();
 				bmp = texture[i].getBitmap();

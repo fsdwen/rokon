@@ -2,13 +2,16 @@ package com.stickycoding.rokonexamples;
 
 import javax.microedition.khronos.opengles.GL10;
 
+import android.graphics.Paint;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
+import com.stickycoding.rokon.Debug;
 import com.stickycoding.rokon.DrawPriority;
+import com.stickycoding.rokon.DynamicTexture;
 import com.stickycoding.rokon.Font;
 import com.stickycoding.rokon.LineSprite;
 import com.stickycoding.rokon.Movement;
@@ -28,7 +31,8 @@ public class Launcher extends RokonActivity {
 	
 	public PhysicalSprite sprite;
 	public TextureAtlas atlas;
-	public Texture texture, face;
+	public Texture texture;
+	public DynamicTexture face;
 	public World world;
 
 	public void onCreate() {
@@ -45,7 +49,8 @@ public class Launcher extends RokonActivity {
 	public void onLoadComplete() {
 		atlas = new TextureAtlas();
 		atlas.insert(texture = new Texture("circle.png"));
-		atlas.insert(face = new Texture("face.png", 3, 2));
+		
+		face = new DynamicTexture("face.png", 3, 2);
 		Font font = new Font("fonts/angltrr.ttf");
 		TextTexture textTexture = font.createTexture("This text should split into several lines, finger's crossed!", 600);
 		atlas.insert(textTexture);
@@ -89,6 +94,7 @@ public class Launcher extends RokonActivity {
 		
 		setScene(myScene);
 	}
+
 	
 	LineSprite lineSprite;
 	
@@ -128,6 +134,10 @@ public class Launcher extends RokonActivity {
 		int traceCount = 0;
 		@Override
 		public void onKeyDown(int keyCode, KeyEvent event) {
+			if(keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
+				//face.getCanvas().drawLine((float)(Math.random() * 10), (float)(Math.random() * 10), (float)(Math.random() * 30), (float)(Math.random() * 30), new Paint());
+				//face.reload();
+			}
 			if(tracing) {
 				tracing = false;
 				//android.os.Debug.stopMethodTracing();
@@ -144,7 +154,8 @@ public class Launcher extends RokonActivity {
 		
 		public void onPreDraw(GL10 gl) {
 			if(addNew) {
-				createBox(x, y, 0.5f, 0.5f);
+				face.getCanvas().drawLine((float)(Math.random() * 10), (float)(Math.random() * 10), (float)(Math.random() * 30), (float)(Math.random() * 30), new Paint());
+				face.reload();
 				addNew = false;
 			}
 			/*}

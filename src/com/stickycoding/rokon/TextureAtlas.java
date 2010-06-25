@@ -51,6 +51,11 @@ public class TextureAtlas extends Texture {
 	}
 	
 	public void insert(Texture texture) {
+		if(texture instanceof DynamicTexture) {
+			Debug.error("Tried inserting DynamicTexture into TextureAtlas, not possible");
+			Debug.forceExit();
+			return;
+		}
 		if(complete) {
 			Debug.error("Tried inserting Texture into TextureAtlas after complete()");
 			Debug.forceExit();

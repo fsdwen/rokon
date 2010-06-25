@@ -22,6 +22,39 @@ public class TextureManager {
 	protected static Texture[] loadQueue = new Texture[MAX_TEXTURE_COUNT];
 	protected static int loadQueueCount = 0;
 	
+	protected static DynamicTexture[] refreshQueue = new DynamicTexture[MAX_TEXTURE_COUNT];
+	protected static int refreshQueueCount = 0;
+	
+	public static void refreshTexture(DynamicTexture texture) {
+		if(isRefreshing(texture)) {
+			return;
+		}
+		if(isUnloading(texture)) {
+			removeFromUnloading(texture);
+		} else {
+			if(!isActive(texture) && !isLoading(texture)) {
+				return;
+			}
+		}
+		for(int i = 0; i < MAX_TEXTURE_COUNT; i++) {
+			if(refreshQueue[i] == null) {
+				refreshQueue[i] = texture;
+				refreshQueueCount++;
+				return;
+			}
+		}
+		Debug.error("Reload texture Q is too long");
+	}
+	
+	public static boolean isRefreshing(DynamicTexture texture) {
+		for(int i = 0; i < MAX_TEXTURE_COUNT; i++) {
+			if(refreshQueue[i] != null && (refreshQueue[i] == texture || (refreshQueue[i].parentAtlas != null && refreshQueue[i].parentAtlas == texture.parentAtlas))) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	public static void reloadTextures() {
 		for(int i = 0; i < MAX_TEXTURE_COUNT; i++) {
 			if(activeTexture[i] != null) {
@@ -53,7 +86,7 @@ public class TextureManager {
 	
 	public static boolean isLoading(Texture texture) {
 		for(int i = 0; i < MAX_TEXTURE_COUNT; i++) {
-			if(loadQueue[i] != null && loadQueue[i].textureIndex == texture.textureIndex) {
+			if(loadQueue[i] != null && (loadQueue[i] == texture || (loadQueue[i].parentAtlas != null && loadQueue[i].parentAtlas == texture.parentAtlas))) {
 				return true;
 			}
 		}
@@ -71,6 +104,14 @@ public class TextureManager {
 	}
 	
 	protected static void execute(GL10 gl) {
+		if(refreshQueueCount > 0) {
+			for(int i = 0; i < MAX_TEXTURE_COUNT; i++) {
+				if(refreshQueue[i] != null) {
+					refreshQueue[i].onRefreshTexture(gl);
+					refreshQueue[i] = null;
+				}
+			}
+		}
 		if(unloadQueueCount > 0) {
 			GLHelper.removeTextures(unloadQueue);
 			clearUnloadQueue();
@@ -79,11 +120,11 @@ public class TextureManager {
 			for(int i = 0; i < MAX_TEXTURE_COUNT; i++) {
 				if(loadQueue[i] != null) {
 					loadQueue[i].onLoadTexture(gl);
+					addToActive(loadQueue[i]);
 					loadQueue[i] = null;
 				}
 			}
 			loadQueueCount = 0;
-			Debug.print("LOADED TEXTURES");
 		}
 	}
 	
@@ -123,7 +164,8 @@ public class TextureManager {
 	
 	public static boolean isActive(Texture texture) {
 		for(int i = 0; i < MAX_TEXTURE_COUNT; i++) {
-			if(activeTexture[i] != null && activeTexture[i].textureIndex == texture.textureIndex) {
+			//if(activeTexture[i] != null && (activeTexture[i] == texture || (activeTexture[i].parentAtlas != null && activeTexture[i].parentAtlas == texture.parentAtlas))) {
+			if(activeTexture[i] == texture) {
 				return true;
 			}
 		}
@@ -132,7 +174,7 @@ public class TextureManager {
 	
 	public static boolean isUnloading(Texture texture) {
 		for(int i = 0; i < MAX_TEXTURE_COUNT; i++) {
-			if(unloadQueue[i] != null && unloadQueue[i].textureIndex == texture.textureIndex) {
+			if(unloadQueue[i] != null && (unloadQueue[i] == texture || (unloadQueue[i].parentAtlas != null && unloadQueue[i].parentAtlas == texture.parentAtlas))) {
 				return true;
 			}
 		}

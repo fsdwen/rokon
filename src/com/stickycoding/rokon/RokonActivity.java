@@ -10,6 +10,7 @@ import android.view.MotionEvent;
 import android.view.WindowManager;
 
 import com.stickycoding.rokon.device.Graphics;
+import com.stickycoding.rokon.device.OS;
 import com.stickycoding.rokon.vbo.ArrayVBO;
 import com.stickycoding.rokon.vbo.ElementVBO;
 import com.stickycoding.rokon.vbo.VBO;
@@ -120,6 +121,8 @@ public class RokonActivity extends Activity {
 		
 		Rokon.boxVertexBuffer = new BufferObject();
 		Rokon.boxVertexBuffer.updateRaw(new float[] { 0, 0, 1, 0, 1, 1, 0, 1 });
+		
+		OS.determineAPI();
 	}
 	
 	@Override

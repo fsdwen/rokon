@@ -8,9 +8,11 @@ import android.view.MotionEvent;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
+import com.stickycoding.rokon.Debug;
 import com.stickycoding.rokon.DrawPriority;
 import com.stickycoding.rokon.DynamicTexture;
 import com.stickycoding.rokon.Font;
+import com.stickycoding.rokon.MathHelper;
 import com.stickycoding.rokon.Movement;
 import com.stickycoding.rokon.PhysicalSprite;
 import com.stickycoding.rokon.Polygon;
@@ -57,9 +59,8 @@ public class Launcher extends RokonActivity {
 		myScene.setWorld(world = new World(new Vector2(0f, 6f), true));
 		
 		FixedBackground fb = new FixedBackground(face);
-		myScene.setBackground(fb);
-		
-		window = new Window(0, 0, 4.8f, 8f);
+		//myScene.setBackground(fb);
+
 		
 		sprite = new PhysicalSprite(0, 7.5f, 4.8f, 0.5f);
 		sprite.setTexture(face);
@@ -68,28 +69,18 @@ public class Launcher extends RokonActivity {
 		fixtureDef.friction = 0.2f;
 		sprite.createStaticBox(fixtureDef);
 		sprite.animate(new int[] { 0, 1 }, 500);
-		myScene.add(sprite);
-		myScene.setWindow(window);
+		
+		Polygon polygon = new Polygon(new float[] {0, 0, 1, 0, 1, 1, 0, 1 });
 
-		myScene.getLayer(1).ignoreWindow();
-		
-		aSprite = new PhysicalSprite(0, 1, 3, 1);
-		aSprite.setAlpha(0.3f);
-		myScene.add(1, aSprite);
-		
-		myScene.setDefaultLineWidth(2f);	
-		
-		Sprite text = new Sprite(0, 0, 5, textTexture.getHeight(5));
-		text.setTexture(textTexture);
-		myScene.add(1, text);
-		
-		
-		PolygonSprite polySprite = new PolygonSprite(new Polygon(new float[] {0, 0, 1, 0.5f, 0, 1 }), 1, 1, 1, 1);
-		myScene.add(1, polySprite);
+		polySprite1 = new PolygonSprite(polygon, 1, 1, 1, 1);
+		polySprite2 = new PolygonSprite(polygon, 3, 1, 1, 1);
+		myScene.add(1, polySprite1);
+		myScene.add(1, polySprite2);
 		
 		setScene(myScene);
 	}
 	
+	PolygonSprite polySprite1, polySprite2;
 	PhysicalSprite aSprite;
 
 	
@@ -110,10 +101,13 @@ public class Launcher extends RokonActivity {
 		float x, y;
 		
 		@Override
-		public void onTouchDown(float x, float y, MotionEvent event, int pointerId) {
-			this.x = x;
-			this.y = y;
-			addNew = true;
+		public void onTouch(float x, float y, MotionEvent event, int pointerId) {
+			//this.x = x;
+			//this.y = y;
+			
+			polySprite1.setXY(x, y);
+			
+			//addNew = true;
 		}
 
 		
@@ -123,7 +117,15 @@ public class Launcher extends RokonActivity {
 		@Override
 		public void onKeyDown(int keyCode, KeyEvent event) {
 			if(keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
-				aSprite.addModifier(new Blink());
+				
+				if(MathHelper.intersects(polySprite1, polySprite2)) {
+					polySprite1.setRGBA(1, 0, 0, 1);
+					polySprite2.setRGBA(1, 0, 0, 1);
+				} else {
+					polySprite1.setRGBA(1, 1, 1, 1);
+					polySprite2.setRGBA(1, 1, 1, 1);
+				}
+				
 			}
 			if(tracing) {
 				tracing = false;

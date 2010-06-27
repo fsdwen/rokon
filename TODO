@@ -3,7 +3,6 @@ This todo list sets out what will be completed before a stable release is put ou
 VBO
 DrawTexture
 Use UI over the top
-Tiled layers
 Basic collision detection
 Full documentation
 Audio, optimized for sound effects and music

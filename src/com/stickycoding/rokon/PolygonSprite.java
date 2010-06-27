@@ -33,9 +33,14 @@ public class PolygonSprite extends Sprite {
 		//Empty, no textures allowed
 	}
 	
+	public Polygon getPolygon() {
+		return polygon;
+	}
+	
 	@Override
 	protected void onDrawNormal(GL10 gl) {
-		GLHelper.drawNormal(fill, red, green, blue, alpha, blendFunction, polygonBuffer, getX(), getY(), finishWidth, finishHeight, rotation, rotateAboutPoint, rotationPivotX, rotationPivotY, border, borderBuffer, borderRed, borderGreen, borderBlue, lineWidth, false, null, 0);
+		GLHelper.drawNormal(fill, red, green, blue, alpha, blendFunction, Rokon.triangleStripBoxBuffer, getX(), getY(), width, height, rotation, rotateAboutPoint, rotationPivotX, rotationPivotY, border, borderBuffer, borderRed, borderGreen, borderBlue, lineWidth, false, null, 0);
+		//GLHelper.drawNormal(true, 1, 1, 1, 1, blendFunction, Rokon.triangleStripBoxBuffer, getX(), getY(), width, height, rotation, rotateAboutPoint, rotationPivotX, rotationPivotY, border, borderBuffer, borderRed, borderGreen, borderBlue, lineWidth, false, null, 0);
 	}
 
 }

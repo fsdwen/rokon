@@ -71,5 +71,9 @@ public class Point {
 		this.x += distance * (float)Math.sin(angle);
 		this.y += distance * (float)Math.cos(angle);
 	}
+	
+	public static Point subtract(Point p1, Point p2) {
+		return new Point(p2.x - p1.x, p2.y - p1.y);
+	}
 
 }

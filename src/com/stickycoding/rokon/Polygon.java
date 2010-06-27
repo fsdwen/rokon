@@ -1,5 +1,7 @@
 package com.stickycoding.rokon;
 
+import com.badlogic.gdx.math.Vector2;
+
 
 /**
  * Polygon.java
@@ -16,7 +18,52 @@ public class Polygon {
 	protected Point[] vertex;
 	protected int vertexCount = 0;
 	
+	protected Vector2[] edge;
+	protected Vector2[] normal;
+	
 	protected BufferObject buffer;
+	
+	protected Point[] rotated(float angle) {
+		angle *= MathHelper.DEG_TO_RAD;
+		Point[] rotatedPoint = new Point[vertexCount];
+		for(int i = 0; i < vertexCount; i++) {
+			Point newPoint = MathHelper.rotated(vertex[i], angle);
+			rotatedPoint[i] = newPoint;
+		}
+		return rotatedPoint;
+	}
+	
+	protected float[] rotatedX(float angle, float pivotX, float pivotY) {
+		angle *= MathHelper.DEG_TO_RAD;
+		float[] newX = new float[vertexCount];
+		for(int i = 0; i < vertexCount; i++) {
+			newX[i] = ((vertex[i].getX() - pivotX) * (float)(Math.cos(angle))) - ((vertex[i].getY() - pivotY) * (float)(Math.sin(angle))) + pivotX;
+		}
+		return newX;
+	}
+
+	
+	protected float[] rotatedY(float angle, float pivotX, float pivotY) {
+		angle *= MathHelper.DEG_TO_RAD;
+		float[] newX = new float[vertexCount];
+		for(int i = 0; i < vertexCount; i++) {
+			newX[i] = ((vertex[i].getX() - pivotX) * (float)(Math.sin(angle))) + ((vertex[i].getY() - pivotY) * (float)(Math.cos(angle))) + pivotY;
+		}
+		return newX;
+	}
+	
+	public void findEdges() {
+		edge = new Vector2[vertexCount];
+		normal = new Vector2[vertexCount];
+		for(int i = 0; i < vertexCount; i++) {
+			int nextEdge = i + 1;
+			if(nextEdge == vertexCount) nextEdge = 0;
+			edge[i] = new Vector2(vertex[nextEdge].getX() - vertex[i].getX(), vertex[nextEdge].getY() - vertex[i].getY());
+			normal[i] = MathHelper.findNormal(edge[i]);
+			Debug.print("Found edge = " + edge[i].x + " " + edge[i].y + " norm " + normal[i].x + " " + normal[i].y);
+		}
+		Debug.print("Edges found");
+	}
 	
 	public BufferObject getBufferObject() {
 		if(buffer == null) {
@@ -35,6 +82,7 @@ public class Polygon {
 	public Polygon(Point[] vertices) {
 		this.vertex = vertices;
 		vertexCount = vertices.length;
+		findEdges();
 	}
 	
 	public Polygon(float[] vertices) {
@@ -48,7 +96,8 @@ public class Polygon {
 		for(int i = 0; i < vertices.length / 2; i++) {
 			vertex[i] = new Point(vertices[c++], vertices[c++]);
 		}
-		vertexCount = vertices.length;
+		vertexCount = vertices.length / 2;
+		findEdges();
 	}
 	
 	public Polygon() {
@@ -66,6 +115,10 @@ public class Polygon {
 	
 	public Point getVertex(int index) {
 		return vertex[index];
+	}
+	
+	public void complete() {
+		findEdges();
 	}
 	
 	public int getVertexCount() {

@@ -23,6 +23,10 @@ public class Rokon {
 	protected static ArrayVBO boxArrayVBO;
 	protected static boolean verbose = false;
 	
+	public static RokonActivity getActivity() {
+		return currentActivity;
+	}
+	
 	public static BufferObject lineVertexBuffer() {
 		return lineVertexBuffer;
 	}

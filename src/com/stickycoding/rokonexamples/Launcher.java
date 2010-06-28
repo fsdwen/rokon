@@ -8,7 +8,6 @@ import android.view.MotionEvent;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
-import com.stickycoding.rokon.Debug;
 import com.stickycoding.rokon.DrawPriority;
 import com.stickycoding.rokon.DynamicTexture;
 import com.stickycoding.rokon.Font;
@@ -19,13 +18,14 @@ import com.stickycoding.rokon.Polygon;
 import com.stickycoding.rokon.PolygonSprite;
 import com.stickycoding.rokon.RokonActivity;
 import com.stickycoding.rokon.Scene;
-import com.stickycoding.rokon.Sprite;
 import com.stickycoding.rokon.TextTexture;
 import com.stickycoding.rokon.Texture;
 import com.stickycoding.rokon.TextureAtlas;
 import com.stickycoding.rokon.Window;
+import com.stickycoding.rokon.audio.RokonAudio;
+import com.stickycoding.rokon.audio.RokonMusic;
+import com.stickycoding.rokon.audio.SoundFile;
 import com.stickycoding.rokon.background.FixedBackground;
-import com.stickycoding.rokon.modifiers.Blink;
 
 public class Launcher extends RokonActivity {
 	
@@ -78,12 +78,19 @@ public class Launcher extends RokonActivity {
 		myScene.add(1, polySprite2);
 		
 		setScene(myScene);
+		
+		audio = new RokonAudio();
+		soundFile = audio.createSoundFile("audio/effects/button.mp3");
+		RokonMusic.play("audio/music/music.mp3");
 	}
 	
 	PolygonSprite polySprite1, polySprite2;
 	PhysicalSprite aSprite;
 
+	SoundFile soundFile;
+	RokonAudio audio;
 	
+	RokonMusic music;
 	
 	@Override
 	public void onDestroy() {
@@ -104,8 +111,8 @@ public class Launcher extends RokonActivity {
 		public void onTouch(float x, float y, MotionEvent event, int pointerId) {
 			//this.x = x;
 			//this.y = y;
-			
-			polySprite1.setXY(x, y);
+
+			soundFile.play();
 			
 			//addNew = true;
 		}

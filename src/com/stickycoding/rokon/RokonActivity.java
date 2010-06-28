@@ -9,6 +9,7 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.WindowManager;
 
+import com.stickycoding.rokon.audio.RokonMusic;
 import com.stickycoding.rokon.device.Graphics;
 import com.stickycoding.rokon.device.OS;
 import com.stickycoding.rokon.vbo.ArrayVBO;
@@ -133,6 +134,7 @@ public class RokonActivity extends Activity {
 		if(currentScene != null) {
 			currentScene.onPause();
 		}
+		RokonMusic.onPause();
 	}
 	
 	@Override
@@ -144,6 +146,7 @@ public class RokonActivity extends Activity {
 		if(currentScene != null) {
 			currentScene.onPause();
 		}
+		RokonMusic.onResume();
 	}
 	
 	@Override

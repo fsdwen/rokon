@@ -17,12 +17,15 @@
 package com.badlogic.gdx.math;
 
 /**
+ * Taken from libgdx
+ * Modified to remove final declaration
+ * 
  * Encapsulates a 2D vector. Allows chaining methods by returning a 
  * reference to itself
  * @author badlogicgames@gmail.com
  *
  */
-public final class Vector2 
+public class Vector2 
 {
         /** static temporary vector **/
         private final static Vector2 tmp = new Vector2();

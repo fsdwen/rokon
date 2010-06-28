@@ -12,10 +12,11 @@ import javax.microedition.khronos.opengles.GL10;
 public class Layer {
 	
 	protected Scene parentScene;
-	protected FixedSizeArray<Drawable> gameObjects;	
+	protected FixedSizeArray<Drawable> gameObjects;
+	protected FixedSizeArray<Drawable> gameObjectsSorted;
 	protected int maximumDrawableObjects;
-	protected DrawQueue drawQueue;
 	protected boolean ignoreWindow;
+	protected int drawQueueType = DrawOrder.FASTEST;
 	
 	/**
 	 * Creates a Layer inside a Scene
@@ -26,8 +27,8 @@ public class Layer {
 	public Layer(Scene parentScene, int maximumDrawableObjects) {
 		this.parentScene = parentScene;
 		this.maximumDrawableObjects = maximumDrawableObjects;
-		drawQueue = new DrawQueue();
 		gameObjects = new FixedSizeArray<Drawable>(maximumDrawableObjects);
+		gameObjectsSorted = new FixedSizeArray<Drawable>(maximumDrawableObjects);
 	}
 	
 	/**
@@ -64,24 +65,24 @@ public class Layer {
 	}
 	
 	/**
-	 * @return the current DrawQueue object for this Scene
+	 * @return the current draw queue type for this Layer
 	 */
-	public DrawQueue getDrawQueue() {
-		return drawQueue;
+	public int getDrawQueue() {
+		return drawQueueType;
 	}
 	
 	/**
-	 * Sets the DrawQueue method
-	 * Defaults to DrawQueue.FASTEST if unset
+	 * Sets the DrawOrder method
+	 * Defaults to DrawOrder if unset
 	 * @param type Taken from the constants in DrawQueue
 	 */
-	public void setDrawQueueType(int type) {
+	public void setDrawOrder(int type) {
 		if(type < 0 || type > 4) {
-			Debug.warning("Scene.setDrawQueueType", "Tried setting DrawQueue type to " + type + ", defaulting to 0");
-			drawQueue.method = DrawQueue.FASTEST;
+			Debug.warning("Scene.setDrawOrder", "Tried setting DrawOrder type to " + type + ", defaulting to 0");
+			drawQueueType = 0;
 			return;
 		}
-		drawQueue.method = type;
+		drawQueueType = type; 
 	}
 	
 	/**
@@ -110,6 +111,8 @@ public class Layer {
 	}
 	
 	protected void onDraw(GL10 gl) {
+		DrawOrder.sort(gameObjects, drawQueueType);
+		
 		if(ignoreWindow && parentScene.window != null) {
 			Window.setDefault(gl);
 			gl.glMatrixMode(GL10.GL_MODELVIEW);

@@ -9,6 +9,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.stickycoding.rokon.DrawPriority;
+import com.stickycoding.rokon.DrawOrder;
 import com.stickycoding.rokon.DynamicTexture;
 import com.stickycoding.rokon.Font;
 import com.stickycoding.rokon.MathHelper;
@@ -40,6 +41,7 @@ public class Launcher extends RokonActivity {
 		forceFullscreen();
 		forcePortrait();
 		setGameSize(4.8f, 8.0f);
+		debugMode();
 		setDrawPriority(DrawPriority.PRIORITY_VBO);
 		setGraphicsPath("textures/");
 		createEngine();
@@ -70,6 +72,8 @@ public class Launcher extends RokonActivity {
 		sprite.createStaticBox(fixtureDef);
 		sprite.animate(new int[] { 0, 1 }, 500);
 		myScene.add(sprite);
+		
+		myScene.getLayer(1).setDrawOrder(DrawOrder.Y_ASCENDING);
 
 		Polygon polygon = new Polygon(new float[] {0, 0, 1, 0, 1, 1, 0, 1 });
 		Polygon polygon1 = new Polygon(new float[] {0, 0, 0.5f, 0, 1, 0.5f, 1, 1, 0, 0.7f });

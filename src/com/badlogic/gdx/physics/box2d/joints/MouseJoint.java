@@ -17,7 +17,6 @@ public class MouseJoint extends Joint
 {
 	public MouseJoint(World world, long addr) {
 		super(world, addr);
-		// TODO Auto-generated constructor stub
 	}
 
 	/**

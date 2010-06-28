@@ -47,7 +47,7 @@ public class LineSprite extends Sprite {
 	
 	@Override
 	protected void onDrawNormal(GL10 gl) {
-		GLHelper.drawNormal(false, 0, 0, 0, alpha, blendFunction, lineBuffer, getX(), getY(), 1, 1, 0, false, 0, 0, true, lineBuffer, red, green, blue, lineWidth, false, null, 0);
+		GLHelper.drawNormal(false, 0, 0, 0, alpha, blendFunction, null, 0, getX(), getY(), 1, 1, 0, false, 0, 0, true, lineBuffer, red, green, blue, alpha, lineWidth, false, null, 0);
 	}
 	
 

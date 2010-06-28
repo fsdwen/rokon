@@ -74,6 +74,8 @@ public class Launcher extends RokonActivity {
 
 		polySprite1 = new PolygonSprite(polygon, 1, 1, 1, 1);
 		polySprite2 = new PolygonSprite(polygon, 3, 1, 1, 1);
+		polySprite1.setBorder(0, 0, 0, 1);
+		polySprite1.setBorder(0, 0, 0, 1);
 		myScene.add(1, polySprite1);
 		myScene.add(1, polySprite2);
 		
@@ -183,7 +185,7 @@ public class Launcher extends RokonActivity {
 			fixtureDef.friction = 0.2f;
 			fixtureDef.density = 10f;
 			//sprite.setTexture(face);
-			sprite.border();
+			sprite.setBorder(true);
 			sprite.createDynamicBox(fixtureDef);
 			sprite.setRGB((float)Math.random(), (float)Math.random(), (float)Math.random());
 			sprite.fade(0, 1, 250, Movement.SMOOTH);

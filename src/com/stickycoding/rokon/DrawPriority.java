@@ -8,11 +8,8 @@ package com.stickycoding.rokon;
  */
 public class DrawPriority {
 	
-	public static final int PRIORITY_VBO_DRAWTEX_NORMAL = 0;
-	public static final int PRIORITY_VBO_NORMAL = 1;
-	public static final int PRIORITY_DRAWTEX_VBO_NORMAL = 2;
-	public static final int PRIORITY_DRAWTEX_NORMAL = 3;
-	public static final int PRIORITY_NORMAL = 4;
+	public static final int PRIORITY_VBO = 0;
+	public static final int PRIORITY_NORMAL = 1;
 	
 	public static final int DEFAULT = 0, VBO = 1, DRAWTEX = 2, NORMAL = 3;
 	

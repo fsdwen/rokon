@@ -35,7 +35,7 @@ public class DrawableObject extends BasicGameObject implements Drawable, Updatea
 	
 	protected float lineWidth = -1;
 	protected boolean fill = true;
-	protected float borderRed = 0, borderGreen = 0, borderBlue = 0;
+	protected float borderRed = 0, borderGreen = 0, borderBlue = 0, borderAlpha;
 	
 	protected boolean border;
 	
@@ -53,12 +53,14 @@ public class DrawableObject extends BasicGameObject implements Drawable, Updatea
 	 * @param red
 	 * @param green
 	 * @param blue
+	 * @param alpha
 	 */
-	public void border(float red, float green, float blue) {
-		fill = true;
+	public void setBorder(float red, float green, float blue, float alpha) {
+		border = true;
 		borderRed = red;
 		borderGreen = green;
 		borderBlue = blue;
+		borderAlpha = alpha;
 	}
 	
 	public void setLineWidth(float lineWidth) {
@@ -73,8 +75,8 @@ public class DrawableObject extends BasicGameObject implements Drawable, Updatea
 		lineWidth = -1;
 	}
 	
-	public void border() {
-		border = true;
+	public void setBorder(boolean border) {
+		this.border = border;
 	}
 	
 	public void hide() {
@@ -189,7 +191,7 @@ public class DrawableObject extends BasicGameObject implements Drawable, Updatea
 	}
 	
 	protected void onDrawType() {
-		if(forceDrawType == DrawPriority.VBO || DrawPriority.drawPriority == DrawPriority.PRIORITY_VBO_DRAWTEX_NORMAL || DrawPriority.drawPriority == DrawPriority.PRIORITY_VBO_NORMAL) {
+		if(forceDrawType == DrawPriority.VBO || DrawPriority.drawPriority == DrawPriority.PRIORITY_VBO) {
 			Debug.print("Preparing VBO");
 			prepareVBO();
 		} else {
@@ -298,38 +300,9 @@ public class DrawableObject extends BasicGameObject implements Drawable, Updatea
 		switch(forceDrawType) {
 			case DrawPriority.DEFAULT:
 				switch(DrawPriority.drawPriority) {
-					case DrawPriority.PRIORITY_VBO_DRAWTEX_NORMAL:
+					case DrawPriority.PRIORITY_VBO:
 						if(Graphics.isSupportsVBO()) {
 							onDrawVBO(gl);
-							return;
-						}
-						if(Graphics.isSupportsDrawTex() && rotation == 0) {
-							onDrawTex(gl);
-							return;
-						}
-						onDrawNormal(gl);
-						return;
-					case DrawPriority.PRIORITY_VBO_NORMAL:
-						if(Graphics.isSupportsVBO()) {
-							onDrawVBO(gl);
-							return;
-						}
-						onDrawNormal(gl);
-						return;
-					case DrawPriority.PRIORITY_DRAWTEX_VBO_NORMAL:
-						if(Graphics.isSupportsDrawTex()) {
-							onDrawTex(gl);
-							return; 
-						}
-						if(Graphics.isSupportsVBO()) {
-							onDrawVBO(gl);
-							return;
-						}
-						onDrawNormal(gl);
-						return;
-					case DrawPriority.PRIORITY_DRAWTEX_NORMAL:
-						if(Graphics.isSupportsDrawTex()) {
-							onDrawTex(gl);
 							return;
 						}
 						onDrawNormal(gl);
@@ -347,9 +320,6 @@ public class DrawableObject extends BasicGameObject implements Drawable, Updatea
 			case DrawPriority.VBO:
 				onDrawVBO(gl);
 				return;
-			case DrawPriority.DRAWTEX:
-				onDrawTex(gl);
-				return;
 			default:
 				Debug.warning("DrawableObject.onDraw", "Invalid forced draw priority");
 				return;
@@ -357,18 +327,7 @@ public class DrawableObject extends BasicGameObject implements Drawable, Updatea
 	}
 	
 	protected void onDrawNormal(GL10 gl) {
-		GLHelper.drawNormal(fill, red, green, blue, alpha, blendFunction, Rokon.triangleStripBoxBuffer, getX(), getY(), width, height, rotation, rotateAboutPoint, rotationPivotX, rotationPivotY, border, Rokon.lineLoopBoxBuffer, borderRed, borderGreen, borderBlue, lineWidth, texture != null, texture, textureTile);
-	}
-	
-	protected void onDrawTex(GL10 gl) {
-		if(texture == null) {
-			return;
-		}
-		GLHelper.color4f(red, green, blue, alpha);
-		GLHelper.bindTexture(texture.textureIndex);
-		GLHelper.drawTexCrop(new float[] { 0, 0, texture.width, texture.height} );
-		((GL11Ext)gl).glDrawTexfOES(getX(), Graphics.getHeightPixels() - getY() - height, 0, 100, 100);
-		
+		GLHelper.drawNormal(fill, red, green, blue, alpha, blendFunction, Rokon.triangleStripBoxBuffer, GL10.GL_TRIANGLE_STRIP, getX(), getY(), width, height, rotation, rotateAboutPoint, rotationPivotX, rotationPivotY, border, Rokon.lineLoopBoxBuffer, borderRed, borderGreen, borderBlue, borderAlpha, lineWidth, texture != null, texture, textureTile);
 	}
 	
 	protected void onDrawVBO(GL10 gl) {

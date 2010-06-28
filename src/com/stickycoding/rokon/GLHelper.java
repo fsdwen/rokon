@@ -170,7 +170,7 @@ public class GLHelper {
 		}
     }
     
-    public static void drawNormal(boolean fill, float red, float green, float blue, float alpha, BlendFunction blendFunction, BufferObject vertexBuffer, float x, float y, float width, float height, float rotation, boolean rotateAboutPivot, float rotationPivotX, float rotationPivotY, boolean border, BufferObject borderBuffer, float borderRed, float borderGreen, float borderBlue, float lineWidth, boolean hasTexture, Texture texture, int textureTile) {
+    public static void drawNormal(boolean fill, float red, float green, float blue, float alpha, BlendFunction blendFunction, BufferObject vertexBuffer, int vertexMode, float x, float y, float width, float height, float rotation, boolean rotateAboutPivot, float rotationPivotX, float rotationPivotY, boolean border, BufferObject borderBuffer, float borderRed, float borderGreen, float borderBlue, float borderAlpha, float lineWidth, boolean hasTexture, Texture texture, int textureTile) {
 		if(blendFunction != null) {
 			GLHelper.blendMode(blendFunction);
 		} else {
@@ -202,17 +202,17 @@ public class GLHelper {
 			bindTexture(texture);
 			texCoordPointer(texture.buffer[textureTile], GL10.GL_FLOAT);
 			vertexPointer(vertexBuffer, GL10.GL_FLOAT);
-			gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, vertexBuffer.getSize() / 2);
+			gl.glDrawArrays(vertexMode, 0, vertexBuffer.getSize() / 2);
 		} else {
 			disableTexCoordArray();
 			disableTextures();
 			if(fill) {
 				color4f(red, green, blue, alpha);
 				vertexPointer(vertexBuffer, GL10.GL_FLOAT);
-				gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, vertexBuffer.getSize() / 2);
+				gl.glDrawArrays(vertexMode, 0, vertexBuffer.getSize() / 2);
 			}
 			if(border) {
-				color4f(borderRed, borderGreen, borderBlue, alpha);
+				color4f(borderRed, borderGreen, borderBlue, borderAlpha);
 				vertexPointer(borderBuffer, GL10.GL_FLOAT);
 				if(lineWidth != -1) {
 					lineWidth(lineWidth);

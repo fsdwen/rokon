@@ -39,8 +39,7 @@ public class PolygonSprite extends Sprite {
 	
 	@Override
 	protected void onDrawNormal(GL10 gl) {
-		GLHelper.drawNormal(fill, red, green, blue, alpha, blendFunction, Rokon.triangleStripBoxBuffer, getX(), getY(), width, height, rotation, rotateAboutPoint, rotationPivotX, rotationPivotY, border, borderBuffer, borderRed, borderGreen, borderBlue, lineWidth, false, null, 0);
-		//GLHelper.drawNormal(true, 1, 1, 1, 1, blendFunction, Rokon.triangleStripBoxBuffer, getX(), getY(), width, height, rotation, rotateAboutPoint, rotationPivotX, rotationPivotY, border, borderBuffer, borderRed, borderGreen, borderBlue, lineWidth, false, null, 0);
+		GLHelper.drawNormal(fill, red, green, blue, alpha, blendFunction, polygonBuffer, GL10.GL_TRIANGLE_FAN, getX(), getY(), width, height, rotation, rotateAboutPoint, rotationPivotX, rotationPivotY, border, borderBuffer, borderRed, borderGreen, borderBlue, borderAlpha, lineWidth, false, null, 0);
 	}
 
 }

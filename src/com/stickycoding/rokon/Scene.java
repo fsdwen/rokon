@@ -67,6 +67,8 @@ public class Scene {
 	public void onKeyUp(int keyCode, KeyEvent event) { }
 	public void onTrackballEvent(MotionEvent event) { }
 	
+	public void onCollide(Sprite sprite1, Sprite sprite2) { }
+	
 	/**
 	 * Sets a World for the physics in this Scene
 	 * Automatically flags usePhysics

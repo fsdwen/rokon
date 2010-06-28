@@ -1,6 +1,7 @@
 package com.stickycoding.rokon;
 
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.stickycoding.rokon.vbo.ArrayVBO;
 import com.stickycoding.rokon.vbo.VBO;
 
@@ -26,6 +27,20 @@ public class Polygon {
 	protected BufferObject buffer;
 	protected ArrayVBO vbo;
 	
+	public PolygonShape getPolygonShape() {
+		PolygonShape shape = new PolygonShape();
+		shape.set(vectorVertices());
+		return shape;
+	}
+	
+	public Vector2[] vectorVertices() {
+		Vector2[] vectors = new Vector2[vertexCount];
+		for(int i = 0; i < vertexCount; i++) {
+			vectors[i] = new Vector2(vertex[i].getX(), vertex[i].getY());
+		}
+		return vectors;
+	}
+	
 	public ArrayVBO getVBO() {
 		if(vbo == null) {
 			vbo = new ArrayVBO(buffer, VBO.STATIC);
@@ -33,14 +48,24 @@ public class Polygon {
 		return vbo;
 	}
 	
-	protected Point[] rotated(float angle) {
+	protected float rotatedWidth(float angle, float pivotX, float pivotY) {
 		angle *= MathHelper.DEG_TO_RAD;
-		Point[] rotatedPoint = new Point[vertexCount];
-		for(int i = 0; i < vertexCount; i++) {
-			Point newPoint = MathHelper.rotated(vertex[i], angle);
-			rotatedPoint[i] = newPoint;
-		}
-		return rotatedPoint;
+		return ((1 - pivotX) * (float)(Math.cos(angle))) - ((1 - pivotY) * (float)(Math.sin(angle))) + pivotX;
+	}
+	
+	protected float rotatedHeight(float angle, float pivotX, float pivotY) {
+		angle *= MathHelper.DEG_TO_RAD;
+		return ((1 - pivotX) * (float)(Math.sin(angle))) + ((1 - pivotY) * (float)(Math.cos(angle))) + pivotY;
+	}
+	
+	protected float rotatedX(float angle, float pivotX, float pivotY, int index) {
+		angle *= MathHelper.DEG_TO_RAD;
+		return ((vertex[index].getX() - pivotX) * (float)(Math.cos(angle))) - ((vertex[index].getY() - pivotY) * (float)(Math.sin(angle))) + pivotX;
+	}
+	
+	protected float rotatedY(float angle, float pivotX, float pivotY, int index) {
+		angle *= MathHelper.DEG_TO_RAD;
+		return ((vertex[index].getX() - pivotX) * (float)(Math.sin(angle))) + ((vertex[index].getY() - pivotY) * (float)(Math.cos(angle))) + pivotY;
 	}
 	
 	protected float[] rotatedX(float angle, float pivotX, float pivotY) {
@@ -52,7 +77,6 @@ public class Polygon {
 		return newX;
 	}
 
-	
 	protected float[] rotatedY(float angle, float pivotX, float pivotY) {
 		angle *= MathHelper.DEG_TO_RAD;
 		float[] newX = new float[vertexCount];

@@ -13,12 +13,23 @@ import com.stickycoding.rokon.vbo.VBO;
  * @author Richard
  */
 public class PolygonSprite extends Sprite {
-	
-	//TODO PolygonSprite's with borders
 
 	protected Polygon polygon;
 	protected BufferObject polygonBuffer;
 	protected ArrayVBO polygonVBO;
+
+	public float[] getVertex(int index) {
+		if(rotation != 0) {
+			float x = getX() + (getWidth() * polygon.vertex[index].getX());
+			float y = getY() + (getHeight() * polygon.vertex[index].getY());
+			float pivotX = getX() + (getWidth() * 0.5f);
+			float pivotY = getY() + (getHeight() * 0.5f);
+			float[] f = MathHelper.rotate(rotation, x, y, pivotX, pivotY);
+			return f;
+		} else {
+			return new float[] { getX() + (getWidth() * polygon.vertex[index].getX()), getY() + (getHeight() * polygon.vertex[index].getY()) };
+		}
+	}
 	
 	public PolygonSprite(Polygon polygon, float x, float y, float width, float height) {
 		super(x, y, width, height);

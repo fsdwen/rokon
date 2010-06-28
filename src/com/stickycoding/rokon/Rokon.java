@@ -23,6 +23,8 @@ public class Rokon {
 	protected static ArrayVBO boxArrayVBO;
 	protected static boolean verbose = false;
 	
+	protected static Polygon rectangle;
+	
 	public static RokonActivity getActivity() {
 		return currentActivity;
 	}

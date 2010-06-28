@@ -116,6 +116,8 @@ public class RokonActivity extends Activity {
 		
 		Rokon.arrayVBO = new ArrayVBO(Rokon.triangleStripBoxBuffer, VBO.STATIC);		
 		Rokon.boxArrayVBO = new ArrayVBO(Rokon.lineLoopBoxBuffer, VBO.STATIC);
+		
+		Rokon.rectangle = new Polygon(new float[] { 0, 0, 1, 0, 1, 1, 0, 1 });
 
 		OS.determineAPI();
 	}

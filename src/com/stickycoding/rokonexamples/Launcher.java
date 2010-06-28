@@ -18,6 +18,7 @@ import com.stickycoding.rokon.Polygon;
 import com.stickycoding.rokon.PolygonSprite;
 import com.stickycoding.rokon.RokonActivity;
 import com.stickycoding.rokon.Scene;
+import com.stickycoding.rokon.Sprite;
 import com.stickycoding.rokon.TextTexture;
 import com.stickycoding.rokon.Texture;
 import com.stickycoding.rokon.TextureAtlas;
@@ -69,15 +70,29 @@ public class Launcher extends RokonActivity {
 		sprite.createStaticBox(fixtureDef);
 		sprite.animate(new int[] { 0, 1 }, 500);
 		myScene.add(sprite);
-		
-		Polygon polygon = new Polygon(new float[] {0, 0, 1, 0, 1, 1, 0, 1 });
 
-		polySprite1 = new PolygonSprite(polygon, 1, 1, 1, 1);
-		polySprite2 = new PolygonSprite(polygon, 3, 1, 1, 1);
+		Polygon polygon = new Polygon(new float[] {0, 0, 1, 0, 1, 1, 0, 1 });
+		Polygon polygon1 = new Polygon(new float[] {0, 0, 0.5f, 0, 1, 0.5f, 1, 1, 0, 0.7f });
+
+		polySprite1 = new PolygonSprite(polygon1, 1, 1, 1, 1);
+		polySprite2 = new PolygonSprite(polygon, 1, 2, 1.5f, 1);
 		polySprite1.setBorder(0, 0, 0, 1);
 		polySprite2.setBorder(0, 0, 0, 1);
+		polySprite1.rotate(45);
 		myScene.add(1, polySprite1);
 		myScene.add(1, polySprite2);
+		
+		for(int i = 0; i < xSprite.length; i++) {
+			xSprite[i] = new Sprite(0, 0, 0.05f, 0.05f);
+			xSprite[i].setRGBA(0, 1, 0, 1);
+			myScene.add(1, xSprite[i]);
+		}
+		
+		for(int i = 0; i < vSprite.length; i++) {
+			vSprite[i] = new Sprite(0, 0, 0.05f, 0.05f);
+			vSprite[i].setRGBA(0, 0, 1, 1);
+			myScene.add(1, vSprite[i]);
+		}
 		
 		setScene(myScene);
 		
@@ -85,6 +100,9 @@ public class Launcher extends RokonActivity {
 		soundFile = audio.createSoundFile("audio/effects/button.mp3");
 		RokonMusic.play("audio/music/music.mp3");
 	}
+
+	Sprite[] vSprite = new Sprite[5];
+	Sprite[] xSprite = new Sprite[4];
 	
 	PolygonSprite polySprite1, polySprite2;
 	PhysicalSprite aSprite;
@@ -101,7 +119,7 @@ public class Launcher extends RokonActivity {
 	}
 	
 	public Scene myScene = new Scene(2, 128) {
-		
+
 		int count = 1;		
 		long nextAdd = 0;
 		long nextCheck = 0;
@@ -111,12 +129,16 @@ public class Launcher extends RokonActivity {
 		
 		@Override
 		public void onTouch(float x, float y, MotionEvent event, int pointerId) {
-			this.x = x;
-			this.y = y;
+			//this.x = x;
+			//this.y = y;
+			
+			polySprite1.setXY(x - polySprite1.getWidth() / 2, y - polySprite1.getHeight() / 2);
 
+			updateScr();
+			
 			//soundFile.play();
 			
-			addNew = true;
+			//addNew = true;
 		}
 
 		
@@ -127,14 +149,17 @@ public class Launcher extends RokonActivity {
 		public void onKeyDown(int keyCode, KeyEvent event) {
 			if(keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
 				
-				if(MathHelper.intersects(polySprite1, polySprite2)) {
-					polySprite1.setRGBA(1, 0, 0, 1);
-					polySprite2.setRGBA(1, 0, 0, 1);
-				} else {
-					polySprite1.setRGBA(1, 1, 1, 1);
-					polySprite2.setRGBA(1, 1, 1, 1);
-				}
 				
+			}
+			if(keyCode == KeyEvent.KEYCODE_DPAD_DOWN) {
+				polySprite1.rotate(-5f);
+				
+				updateScr();
+			}
+			if(keyCode == KeyEvent.KEYCODE_DPAD_UP) {
+				polySprite1.rotate(5f);
+
+				updateScr();
 			}
 			if(tracing) {
 				tracing = false;
@@ -148,6 +173,27 @@ public class Launcher extends RokonActivity {
 			//float newWidth = 1f + (float)Math.random() * 4.8f;
 			//float newHeight = newWidth / window.getRatio();
 			//window.move( (float)Math.random() * 4f, (float)Math.random() * 7f, newWidth, newHeight, 2500 );
+		}
+		
+		private void updateScr() {
+
+			if(MathHelper.polySpriteIntersects(polySprite1, polySprite2)) {
+				polySprite1.setRGBA(1, 0, 0, 1);
+				polySprite2.setRGBA(1, 0, 0, 1);
+			} else {
+				polySprite1.setRGBA(1, 1, 1, 1);
+				polySprite2.setRGBA(1, 1, 1, 1);
+			}
+
+			for(int i = 0; i < vSprite.length; i++) {
+				float vertex[] = polySprite1.getVertex(i);
+				vSprite[i].setXY(vertex[0] - 0.025f, vertex[1] - 0.025f);
+			}
+
+			for(int i = 0; i < xSprite.length; i++) {
+				float vertex[] = polySprite2.getVertex(i);
+				xSprite[i].setXY(vertex[0] - 0.025f, vertex[1] - 0.025f);
+			}
 		}
 		
 		public void onPreDraw(GL10 gl) {
@@ -184,6 +230,7 @@ public class Launcher extends RokonActivity {
 			FixtureDef fixtureDef = new FixtureDef();
 			fixtureDef.friction = 0.2f;
 			fixtureDef.density = 10f;
+			sprite.setTexture(face);
 			sprite.setBorder(true);
 			sprite.createDynamicBox(fixtureDef);
 			sprite.setRGB((float)Math.random(), (float)Math.random(), (float)Math.random());

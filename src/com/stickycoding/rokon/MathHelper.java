@@ -28,126 +28,142 @@ public class MathHelper {
 		return rect1X1 < rect2X2 && rect1X2 > rect2X1 && rect1Y1 < rect2Y2 && rect1Y2 > rect2Y1;
 	}
 	
-	public static Point rotated(Point point, float angle) {
-		float pivotX = 0.5f;
-		float pivotY = 0.5f;
-		float cos = (float)(Math.cos(angle));
-		float sin = (float)(Math.sin(angle));
-		float x = point.getX() - pivotX;
-		float y = point.getY() - pivotY;
-		float newX = (x * cos) - (y * sin);
-		float newY = (x * sin) + (y * cos);
-		return new Point(newX + pivotX, newY + pivotY);
-	}
-	
 	public static Vector2 findNormal(Vector2 vector) {
-		return new Vector2(-vector.y, vector.x).nor();
+		return new Vector2(vector.y, -vector.x).nor();
 	}
 	
-	/*public static boolean intersects(PolygonSprite polygon1, PolygonSprite polygon2) {
-		boolean intersects = true;
-		for(int i = 0; i < polygon1.polygon.edge.length; i++) {
-			int posCount = 0, negCount = 0, zeroCount = 0;
-			for(int j = 0; j < polygon2.polygon.vertexCount; j++) {
-				//float dx = scaleX(polygon2.polygon.vertex[i].getX(), polygon2) - scaleX(polygon1.polygon.vertex[i].getX(), polygon1);
-				//float dy = scaleY(polygon2.polygon.vertex[i].getY(), polygon2) - scaleX(polygon1.polygon.vertex[i].getY(), polygon1);
-				
-				float d1 = polygon1.polygon.normal[i].dot(new Vector2(scaleX(polygon1.polygon.vertex[i].getX(), polygon1), scaleY(polygon1.polygon.vertex[i].getY(), polygon1)));
-				float d2 = polygon1.polygon.normal[i].dot(new Vector2(scaleX(polygon2.polygon.vertex[j].getX(), polygon2), scaleY(polygon2.polygon.vertex[j].getY(), polygon2)));
-				float d = d2 - d1;
-				
-				if(d > 0)
-					posCount++;
-				else if(d < 0)
-					negCount++;
-				else
-					zeroCount++;
-				Debug.print("i=" + i + " j=" + j + " d=" + d);
-			}
-			Debug.print("pos=" + posCount + " neg=" + negCount + " zero=" + zeroCount);
-			if((posCount > 0 && negCount > 0) || zeroCount > 0) {
-				Debug.print("Intersects");
-			} else {
-				intersects = false;
-				Debug.print("Does not intersect");
-			}
+	public static boolean intersects(Sprite sprite1, Sprite sprite2) {
+		if(sprite1 instanceof PolygonSprite && sprite2 instanceof PolygonSprite) {
+			return polySpriteIntersects((PolygonSprite)sprite1, (PolygonSprite)sprite2);
 		}
-		Debug.print("############# " + intersects);
-		return intersects;
-	}*/
+		
+		return false;
+	}
 	
-	
-	public static boolean intersects(PolygonSprite polygon1, PolygonSprite polygon2) {//Polygon C0, DimensionalObject O0, Polygon C1, DimensionalObject O1) {
-		Polygon C0 = polygon1.polygon;
-		DimensionalObject O0 = polygon1;
-		Polygon C1 = polygon2.polygon;
-		DimensionalObject O1 = polygon2;
+	public static boolean polySpriteIntersects(PolygonSprite polygon1, PolygonSprite polygon2) {
+		float dotProduct = 0;
+		float minA = 0;
+		float maxA = 0;
+		float minB = 0;
+		float maxB = 0;
 		
-		int i1 = 0;
-		
-		Debug.print("Intersects?");
-		
-		for(int i0 = C0.vertexCount - 1; i1 < C0.vertexCount; i0 = i1++) {
-			Point P = C0.vertex[i1];
-			Vector2 D = C0.normal[i0];
-			Debug.print("Testing v=" + i1 + " n=" + i0);
-			if(whichSide(C1, O1, P, O0, D) > 0) {
-				Debug.print("False at 1");
-				return false;
+		for(int i = 0; i < polygon1.polygon.vertexCount; i++) {
+			int startIndex = i;
+			int endIndex = (i < polygon1.polygon.edge.length - 1 ? i + 1 : 0);
+			float[] startVertex = polygon1.getVertex(startIndex);
+			float[] endVertex = polygon1.getVertex(endIndex);
+			float edgeX = endVertex[0] - startVertex[0];
+			float edgeY = endVertex[1] - startVertex[1];
+			
+			float axisX = edgeY;
+			float axisY = -edgeX;
+			
+			float[] vertex = polygon2.getVertex(0);
+			dotProduct = dot(axisX, axisY, vertex[0], vertex[1]);
+			minA = dotProduct;
+			maxA = dotProduct;			
+			for(int j = 1; j < polygon2.polygon.vertexCount; j++) {
+				vertex = polygon2.getVertex(j);
+				dotProduct = dot(axisX, axisY, vertex[0], vertex[1]);
+				if(dotProduct < minA) {
+					minA = dotProduct;
+				} else if(dotProduct > maxA) {
+					maxA = dotProduct;
+				}
 			}
-		}
-		Debug.print("##");
-		
-		i1 = 0;
-		for(int i0 = C1.vertexCount - 1; i1 < C1.vertexCount; i0 = i1++) {
-			Point P = C1.vertex[i1];
-			Vector2 D = C1.normal[i0];
-			if(whichSide(C0, O0, P, O1, D) > 0) {
-				Debug.print("False at 2");
+
+			vertex = polygon1.getVertex(0);
+			dotProduct = dot(axisX, axisY, vertex[0], vertex[1]);
+			minB = dotProduct;
+			maxB = dotProduct;			
+			for(int j = 1; j < polygon1.polygon.vertexCount; j++) {
+				vertex = polygon1.getVertex(j);
+				dotProduct = dot(axisX, axisY, vertex[0], vertex[1]);
+				if(dotProduct < minB) {
+					minB = dotProduct;
+				} else if(dotProduct > maxB) {
+					maxB = dotProduct;
+				}
+			}
+			
+			if(intervalDistance(minB, maxB, minA, maxA) > 0) {
 				return false;
 			}
 		}
 		
-		Debug.print("True");
-				
+		for(int i = 0; i < polygon2.polygon.vertexCount; i++) {
+			int startIndex = i;
+			int endIndex = (i < polygon2.polygon.edge.length - 1 ? i + 1 : 0);
+			float[] startVertex = polygon2.getVertex(startIndex);
+			float[] endVertex = polygon2.getVertex(endIndex);
+			float edgeX = endVertex[0] - startVertex[0];
+			float edgeY = endVertex[1] - startVertex[1];
+			
+			float axisX = edgeY;
+			float axisY = -edgeX;
+
+			float vertex[] = polygon2.getVertex(0);
+			dotProduct = dot(axisX, axisY, vertex[0], vertex[1]);
+			minA = dotProduct;
+			maxA = dotProduct;			
+			for(int j = 1; j < polygon2.polygon.vertexCount; j++) {
+				vertex = polygon2.getVertex(j);
+				dotProduct = dot(axisX, axisY, vertex[0], vertex[1]);
+				if(dotProduct < minA) {
+					minA = dotProduct;
+				} else if(dotProduct > maxA) {
+					maxA = dotProduct;
+				}
+			}
+
+			vertex = polygon1.getVertex(0);
+			dotProduct = dot(axisX, axisY, vertex[0], vertex[1]);
+			minB = dotProduct;
+			maxB = dotProduct;			
+			for(int j = 1; j < polygon1.polygon.vertexCount; j++) {
+				vertex = polygon1.getVertex(j);
+				dotProduct = dot(axisX, axisY, vertex[0], vertex[1]);
+				if(dotProduct < minB) {
+					minB = dotProduct;
+				} else if(dotProduct > maxB) {
+					maxB = dotProduct;
+				}
+			}
+			
+			if(intervalDistance(minB, maxB, minA, maxA) > 0) {
+				return false;
+			}
+		}
 		return true;
 	}
-		
-	private static Vector2 p = new Vector2(); // Saves destroying object constantly in collision detection
 	
-	private static int whichSide(Polygon C, DimensionalObject O0, Point P, DimensionalObject O1, Vector2 D) {
-		int posCount = 0;
-		int negCount = 0;
-		int zeroCount = 0;
-		
-		for(int i = 0; i < C.vertexCount; i++) {
-			p.x = scaleX(C.vertex[i].getX(), O0) - scaleY(P.getX(), O1);
-			p.y = scaleY(C.vertex[i].getY(), O0) - scaleY(P.getY(), O1);
-			float t = D.dot(p);
-			Debug.print("Test points... " + D.x + " " + D.y + " -- " + p.x + " " + p.y + " ------ " + t);
-			if(t > 0)
-				posCount++;
-			else if(t < 0)
-				negCount++;
-			else
-				zeroCount++;
-			
-			if( (posCount > 0 && negCount > 0) || zeroCount > 0) {
-				Debug.print("posCount=" + posCount + " negCount=" + negCount + " zeroCount=" + zeroCount + " return 0");
-				return 0; 
-			}
-		}
-
-		Debug.print("posCount=" + posCount + " negCount=" + negCount + " zeroCount=" + zeroCount + " return " + (posCount == 1 ? 1 : -1));
-		return posCount > 0 ? 1 : -1;
+	public static float intervalDistance(float minA, float maxA, float minB, float maxB) {
+	    if (minA < minB) {
+	        return minB - maxA;
+	    } else {
+	        return minA - maxB;
+	    }
 	}
 	
-	public static float scaleX(float x, DimensionalObject dimensionalObject) {
-		return dimensionalObject.getX() + (dimensionalObject.getWidth() * x);
+	public static float dot(Vector2 vector1, Vector2 vector2) {
+		return vector1.dot(vector2);
 	}
 	
-	public static float scaleY(float y, DimensionalObject dimensionalObject) {
-		return dimensionalObject.getY() + (dimensionalObject.getHeight() * y);
+	public static float dot(Vector2 vector, float x, float y) {
+		return vector.x * x + vector.y * y;
 	}
+	
+	public static float dot(float x1, float y1, float x2, float y2) {
+		return x1 * x2 + y1 * y2;
+	}
+	
+	public static float[] rotate(float angle, float x, float y, float pivotX, float pivotY) {
+		angle *= DEG_TO_RAD;
+		float[] ret = new float[2];
+		ret[0] = pivotX + ( (float)Math.cos(angle) * (x - pivotX) - (float)Math.sin(angle) * (y - pivotY));
+		ret[1] = pivotY + ( (float)Math.sin(angle) * (x - pivotX) + (float)Math.cos(angle) * (y - pivotY));
+		return ret;
+	}
+	
 
 }

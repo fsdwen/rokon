@@ -13,12 +13,8 @@ import java.util.ArrayList;
  */
 public class ContactList 
 {
-	/** contact pool **/
-	private final ArrayList<Contact> freeContacts = new ArrayList<Contact>( );
 	/** currently active contacts **/
 	private final ArrayList<Contact> contacts = new ArrayList<Contact>( );
-	/** index of the next free contact **/
-	private int freeIdx = 0;
 	
 	protected void add( long addr )
 	{

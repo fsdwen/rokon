@@ -59,7 +59,7 @@ public class Launcher extends RokonActivity {
 		myScene.setWorld(world = new World(new Vector2(0f, 6f), true));
 		
 		FixedBackground fb = new FixedBackground(face);
-		//myScene.setBackground(fb);
+		myScene.setBackground(fb);
 
 		
 		sprite = new PhysicalSprite(0, 7.5f, 4.8f, 0.5f);

@@ -104,6 +104,7 @@ public class TextureManager {
 	}
 	
 	protected static void execute(GL10 gl) {
+		
 		if(refreshQueueCount > 0) {
 			for(int i = 0; i < MAX_TEXTURE_COUNT; i++) {
 				if(refreshQueue[i] != null) {

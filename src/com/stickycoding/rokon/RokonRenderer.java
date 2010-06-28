@@ -83,6 +83,14 @@ public class RokonRenderer implements GLSurfaceView.Renderer {
         Graphics.setOpenGL10(version.contains("1.0"));
         Graphics.setSupportsVBO(!Graphics.isOpenGL10() || extensions.contains("vertex_buffer_object"));
         Graphics.setSupportsDrawTex(extensions.contains("draw_texture"));
+        
+
+		if(DrawPriority.drawPriority == DrawPriority.PRIORITY_VBO) {
+			if(!Graphics.isSupportsVBO()) {
+				Debug.warning("Device does not support VBO's, defaulting back to normal");
+				DrawPriority.drawPriority = DrawPriority.PRIORITY_NORMAL;
+			}
+		}
 
         hackBrokenDevices();
 

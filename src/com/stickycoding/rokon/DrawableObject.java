@@ -17,7 +17,6 @@ public class DrawableObject extends BasicGameObject implements Drawable, Updatea
 	protected float red = 1, green = 1, blue = 1, alpha = 1;
 	protected BufferObject buffer;
 	protected Texture texture;
-	protected ArrayVBO arrayVBO;
 	protected int textureTile = 0;
 	
 	protected boolean invisible;
@@ -35,7 +34,7 @@ public class DrawableObject extends BasicGameObject implements Drawable, Updatea
 	
 	protected float lineWidth = -1;
 	protected boolean fill = true;
-	protected float borderRed = 0, borderGreen = 0, borderBlue = 0, borderAlpha;
+	protected float borderRed = 0, borderGreen = 0, borderBlue = 0, borderAlpha = 1;
 	
 	protected boolean border;
 	
@@ -44,6 +43,10 @@ public class DrawableObject extends BasicGameObject implements Drawable, Updatea
 	 */
 	public void noBorder() {
 		fill = false;
+	}
+	
+	public boolean isVBO() {
+		return forceDrawType == DrawPriority.VBO || DrawPriority.drawPriority == DrawPriority.PRIORITY_VBO;
 	}
 	
 	/**
@@ -131,13 +134,11 @@ public class DrawableObject extends BasicGameObject implements Drawable, Updatea
 	
 	public DrawableObject(float x, float y, float width, float height) {
 		super(x, y, width, height);
-		onDrawType();
 	}
 	
 	public DrawableObject(float x, float y, float width, float height, Texture texture) {
 		super(x, y, width, height);
 		setTexture(texture);
-		onDrawType();
 	}
 	
 	/**
@@ -179,28 +180,15 @@ public class DrawableObject extends BasicGameObject implements Drawable, Updatea
 	public BlendFunction getBlendFunction() {
 		return blendFunction;
 	}
-	
-	protected void prepareVBO() {
-		arrayVBO = new ArrayVBO(VBO.STATIC);
-		arrayVBO.update(getX(), getY(), width, height);
-	}
 
 	public void forceDrawType(int drawType) {
-		forceDrawType = drawType;
-		onDrawType();
-	}
-	
-	protected void onDrawType() {
-		if(forceDrawType == DrawPriority.VBO || DrawPriority.drawPriority == DrawPriority.PRIORITY_VBO) {
-			Debug.print("Preparing VBO");
-			prepareVBO();
-		} else {
-			if(arrayVBO != null) {
-				Debug.print("Destroying VBO, onDrawType change");
-				arrayVBO.destroy();
-				arrayVBO = null;
+		if(drawType == DrawPriority.VBO) {
+			if(Graphics.isSupportsVBO()) {
+				Debug.warning("Tried forcing DrawableObject to VBO, device does not support it");
+				drawType = DrawPriority.NORMAL;
 			}
 		}
+		forceDrawType = drawType;
 	}
 	
 	/**
@@ -331,63 +319,7 @@ public class DrawableObject extends BasicGameObject implements Drawable, Updatea
 	}
 	
 	protected void onDrawVBO(GL10 gl) {
-		//onDrawNormal(gl);
-		if(!Rokon.arrayVBO.isLoaded()) {
-			Debug.print("VBO isn't loaded");
-			Rokon.arrayVBO.load(gl);
-		}
-		if(!Rokon.boxArrayVBO.isLoaded()) {
-			Debug.print("VBO isn't loaded");
-			Rokon.boxArrayVBO.load(gl);
-		}
-		GLHelper.color4f(red, green, blue, alpha);		
-		if(blendFunction != null) {
-			GLHelper.blendMode(blendFunction);
-		} else {
-			GLHelper.blendMode(Rokon.blendFunction);
-		}		
-		gl.glPushMatrix();
-		GLHelper.enableVertexArray();	
-		//GLHelper.bindBuffer(arrayVBO.getBufferIndex());
-		GLHelper.bindBuffer(Rokon.arrayVBO.getBufferIndex());
-		GLHelper.vertexPointer(GL10.GL_FLOAT);
-		gl.glTranslatef(getX(), getY(), 0);		
-		if(rotation != 0) {
-			if(!rotateAboutPoint) {
-				gl.glTranslatef(width / 2, height / 2, 0);
-				gl.glRotatef(rotation, 0, 0, 1);
-				gl.glTranslatef(-width / 2, -height / 2, 0);
-			} else {
-				gl.glTranslatef(rotationPivotX, rotationPivotY, 0);
-				gl.glRotatef(rotation, 0, 0, 1);
-				gl.glTranslatef(-rotationPivotX, -rotationPivotY, 0);
-			}
-		}	
-		gl.glScalef(width, height, 0);		
-		if(texture != null) {
-			GLHelper.enableTextures();
-			GLHelper.enableTexCoordArray();
-			GLHelper.bindTexture(texture.textureIndex);
-			GLHelper.texCoordPointer(texture.buffer[textureTile], GL10.GL_FLOAT);
-			gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
-		} else {
-			GLHelper.disableTexCoordArray();
-			GLHelper.disableTextures();
-			if(fill) {
-				gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
-			}
-			if(border) {
-				GLHelper.bindBuffer(Rokon.boxArrayVBO.getBufferIndex());
-				GLHelper.color4f(borderRed, borderGreen, borderBlue, alpha);
-				if(lineWidth != -1) {
-					GLHelper.lineWidth(lineWidth);
-				} else {
-					GLHelper.lineWidth(parentScene.defaultLineWidth);
-				}
-				gl.glDrawArrays(GL10.GL_LINE_LOOP, 0, 4);
-			}
-		}
-		gl.glPopMatrix();		
+		GLHelper.drawVBO(fill, red, green, blue, alpha, blendFunction, Rokon.arrayVBO, GL10.GL_TRIANGLE_STRIP, getX(), getY(), width, height, rotation, rotateAboutPoint, rotationPivotX, rotationPivotY, border, Rokon.boxArrayVBO, borderRed, borderGreen, borderBlue, borderAlpha, lineWidth, texture != null, texture, textureTile);
 	}
 	
 	/**
@@ -467,7 +399,6 @@ public class DrawableObject extends BasicGameObject implements Drawable, Updatea
 
 	public void onAdd(Layer layer) {
         killNextUpdate = false;
-        onDrawType();
 	}
 
 	public void onRemove() {

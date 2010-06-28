@@ -6,6 +6,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.opengl.GLUtils;
 
+import com.stickycoding.rokon.vbo.ArrayVBO;
+import com.stickycoding.rokon.vbo.VBO;
+
 /**
  * Texture.java
  * An object representing one texture (one image file)
@@ -26,6 +29,8 @@ public class Texture {
 	protected String path;
 	protected BufferObject[] buffer;
 	protected int textureIndex = -1;
+	
+	protected ArrayVBO[] vbo;
 	
 	protected void setUnloaded() {
 		textureIndex = -1;
@@ -118,6 +123,12 @@ public class Texture {
 				float theHeight = finalHeight * realHeight;
 
 				buffer[i].update(theX, theY, theWidth, theHeight);
+			}
+		}
+		if(DrawPriority.drawPriority == DrawPriority.PRIORITY_VBO) {
+			vbo = new ArrayVBO[buffer.length];
+			for(int i = 0; i < buffer.length; i++) {
+				vbo[i] = new ArrayVBO(buffer[i], VBO.STATIC);
 			}
 		}
 	}

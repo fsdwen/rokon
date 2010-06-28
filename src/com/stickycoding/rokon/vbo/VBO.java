@@ -21,9 +21,9 @@ public class VBO {
 	protected int bufferIndex = -1;
 	protected BufferObject bufferObject;
 	
-	public VBO(int drawType) {
+	public VBO(BufferObject bufferObject, int drawType) {
+		this.bufferObject = bufferObject;
 		this.drawType = drawType;
-		bufferObject = new BufferObject(8);
 	}
 	
 	public void update(float x, float y, float width, float height) {

@@ -39,7 +39,7 @@ public class Launcher extends RokonActivity {
 		forceFullscreen();
 		forcePortrait();
 		setGameSize(4.8f, 8.0f);
-		setDrawPriority(DrawPriority.PRIORITY_NORMAL);
+		setDrawPriority(DrawPriority.PRIORITY_VBO);
 		setGraphicsPath("textures/");
 		createEngine();
 	}
@@ -60,7 +60,6 @@ public class Launcher extends RokonActivity {
 		
 		FixedBackground fb = new FixedBackground(face);
 		myScene.setBackground(fb);
-
 		
 		sprite = new PhysicalSprite(0, 7.5f, 4.8f, 0.5f);
 		sprite.setTexture(face);
@@ -69,13 +68,14 @@ public class Launcher extends RokonActivity {
 		fixtureDef.friction = 0.2f;
 		sprite.createStaticBox(fixtureDef);
 		sprite.animate(new int[] { 0, 1 }, 500);
+		myScene.add(sprite);
 		
 		Polygon polygon = new Polygon(new float[] {0, 0, 1, 0, 1, 1, 0, 1 });
 
 		polySprite1 = new PolygonSprite(polygon, 1, 1, 1, 1);
 		polySprite2 = new PolygonSprite(polygon, 3, 1, 1, 1);
 		polySprite1.setBorder(0, 0, 0, 1);
-		polySprite1.setBorder(0, 0, 0, 1);
+		polySprite2.setBorder(0, 0, 0, 1);
 		myScene.add(1, polySprite1);
 		myScene.add(1, polySprite2);
 		
@@ -111,12 +111,12 @@ public class Launcher extends RokonActivity {
 		
 		@Override
 		public void onTouch(float x, float y, MotionEvent event, int pointerId) {
-			//this.x = x;
-			//this.y = y;
+			this.x = x;
+			this.y = y;
 
-			soundFile.play();
+			//soundFile.play();
 			
-			//addNew = true;
+			addNew = true;
 		}
 
 		
@@ -184,7 +184,6 @@ public class Launcher extends RokonActivity {
 			FixtureDef fixtureDef = new FixtureDef();
 			fixtureDef.friction = 0.2f;
 			fixtureDef.density = 10f;
-			//sprite.setTexture(face);
 			sprite.setBorder(true);
 			sprite.createDynamicBox(fixtureDef);
 			sprite.setRGB((float)Math.random(), (float)Math.random(), (float)Math.random());

@@ -1,6 +1,8 @@
 package com.stickycoding.rokon;
 
 import com.badlogic.gdx.math.Vector2;
+import com.stickycoding.rokon.vbo.ArrayVBO;
+import com.stickycoding.rokon.vbo.VBO;
 
 
 /**
@@ -22,6 +24,14 @@ public class Polygon {
 	protected Vector2[] normal;
 	
 	protected BufferObject buffer;
+	protected ArrayVBO vbo;
+	
+	public ArrayVBO getVBO() {
+		if(vbo == null) {
+			vbo = new ArrayVBO(buffer, VBO.STATIC);
+		}
+		return vbo;
+	}
 	
 	protected Point[] rotated(float angle) {
 		angle *= MathHelper.DEG_TO_RAD;

@@ -3,13 +3,14 @@ package com.stickycoding.rokon.vbo;
 import javax.microedition.khronos.opengles.GL10;
 import javax.microedition.khronos.opengles.GL11;
 
+import com.stickycoding.rokon.BufferObject;
 import com.stickycoding.rokon.Debug;
 import com.stickycoding.rokon.GLHelper;
 
 public class ArrayVBO extends VBO {
 	
-	public ArrayVBO(int drawType) {
-		super(drawType);
+	public ArrayVBO(BufferObject bufferObject, int drawType) {
+		super(bufferObject, drawType);
 	}
 
 	public void load(GL10 gl) {

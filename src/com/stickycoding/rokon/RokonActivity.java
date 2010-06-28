@@ -114,13 +114,8 @@ public class RokonActivity extends Activity {
 		Rokon.triangleStripBoxBuffer = new BufferObject(new float[] { 0, 0, 1, 0, 0, 1, 1, 1 });
 		Rokon.lineLoopBoxBuffer = new BufferObject(new float[] { 0, 0, 1, 0, 1, 1, 0, 1 });
 		
-		Rokon.elementVBO = new ElementVBO(VBO.STATIC);
-		Rokon.elementVBO.getBufferObject().updateRaw(new float[] { 0, 1, 1, 0, 1, 1 });
-		Rokon.arrayVBO = new ArrayVBO(VBO.STATIC);
-		Rokon.arrayVBO.update(0, 0, 1, 1);
-		
-		Rokon.boxArrayVBO = new ArrayVBO(VBO.STATIC);
-		Rokon.boxArrayVBO.updateRaw(new float[] { 0, 0, 1, 0, 1, 1, 0, 1 });
+		Rokon.arrayVBO = new ArrayVBO(Rokon.triangleStripBoxBuffer, VBO.STATIC);		
+		Rokon.boxArrayVBO = new ArrayVBO(Rokon.lineLoopBoxBuffer, VBO.STATIC);
 
 		OS.determineAPI();
 	}
@@ -335,11 +330,6 @@ public class RokonActivity extends Activity {
 	 * @param drawPriority
 	 */
 	public static void setDrawPriority(int drawPriority) {
-		if(drawPriority >= 0 && drawPriority <= 5) {
-			DrawPriority.drawPriority = drawPriority;
-		} else {
-			Debug.warning("RokonActivity.setDrawPriotity", "Invalid draw priority (" + drawPriority + ") ... Defaulting to VBO_DRAWTEX_NORMAL");
-			DrawPriority.drawPriority = DrawPriority.PRIORITY_NORMAL;
-		}
+		DrawPriority.drawPriority = drawPriority;
 	}
 }

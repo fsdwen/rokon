@@ -4,6 +4,9 @@ import javax.microedition.khronos.opengles.GL10;
 import javax.microedition.khronos.opengles.GL11;
 import javax.microedition.khronos.opengles.GL11Ext;
 
+import com.stickycoding.rokon.vbo.ArrayVBO;
+import com.stickycoding.rokon.vbo.ElementVBO;
+
 /**
  * GLHelper.java
  * Functions that help minimise and optimise OpenGL calls and state changes 
@@ -95,6 +98,11 @@ public class GLHelper {
 	}
 	
 	public static void bindTexture(Texture texture) {
+		checkTextureValid(texture);
+		bindTexture(texture.textureIndex);
+	}
+	
+	public static void checkTextureValid(Texture texture) {
 		if(texture.textureIndex == -1 && texture.parentAtlas == null) {
 			texture.onLoadTexture(gl);
 		} else {
@@ -102,7 +110,6 @@ public class GLHelper {
 				texture.parentAtlas.onLoadTexture(gl);
 			}
 		}
-		bindTexture(texture.textureIndex);
 	}
 	
 	public static void blendMode(int srcBlendMode, int dstBlendMode) {
@@ -152,6 +159,11 @@ public class GLHelper {
     	lastVertexPointerBuffer = null;
     	((GL11)gl).glVertexPointer(2, type, 0, 0);
     }
+    
+    public static void texCoordPointer(int type) {
+    	lastTexCoordPointerBuffer = null;
+    	((GL11)gl).glTexCoordPointer(2, type, 0, 0);
+    }
 
     public static void vertexPointer(BufferObject buffer, int type) {
         if(lastVertexPointerBuffer != buffer) {
@@ -200,6 +212,7 @@ public class GLHelper {
 			enableTextures();
 			enableTexCoordArray();
 			bindTexture(texture);
+			color4f(red, green, blue, alpha);
 			texCoordPointer(texture.buffer[textureTile], GL10.GL_FLOAT);
 			vertexPointer(vertexBuffer, GL10.GL_FLOAT);
 			gl.glDrawArrays(vertexMode, 0, vertexBuffer.getSize() / 2);
@@ -220,6 +233,84 @@ public class GLHelper {
 					lineWidth(RokonActivity.currentScene.defaultLineWidth);
 				}
 				gl.glDrawArrays(GL10.GL_LINE_LOOP, 0, borderBuffer.getSize() / 2);
+			}
+		}
+		gl.glPopMatrix();	
+    }
+    
+    public static void drawVBO(boolean fill, float red, float green, float blue, float alpha, BlendFunction blendFunction, ArrayVBO arrayVBO, int vertexMode, float x, float y, float width, float height, float rotation, boolean rotateAboutPivot, float rotationPivotX, float rotationPivotY, boolean border, ArrayVBO borderVBO, float borderRed, float borderGreen, float borderBlue, float borderAlpha, float lineWidth, boolean hasTexture, Texture texture, int textureTile) {
+
+		if(!arrayVBO.isLoaded()) {
+			Debug.print("VBO isn't loaded");
+			arrayVBO.load(gl);
+		}
+		if(border && !borderVBO.isLoaded()) {
+			Debug.print("VBO isn't loaded");
+			borderVBO.load(gl);
+		}
+		if(hasTexture) {
+			checkTextureValid(texture);
+			if(!texture.vbo[textureTile].isLoaded()) {
+				Debug.print("VBO isn't loaded");
+				texture.vbo[textureTile].load(gl);
+			}
+		}
+		
+		
+		if(blendFunction != null) {
+			GLHelper.blendMode(blendFunction);
+		} else {
+			GLHelper.blendMode(Rokon.blendFunction);
+		}
+		gl.glPushMatrix();
+		enableVertexArray();
+		if(x != 0 || y != 0) {
+			gl.glTranslatef(x, y, 0);
+		}
+		if(rotation != 0) {
+			if(!rotateAboutPivot) {
+				gl.glTranslatef(width / 2, height / 2, 0);
+				gl.glRotatef(rotation, 0, 0, 1);
+				gl.glTranslatef(-width / 2, -height / 2, 0);
+			} else {
+				gl.glTranslatef(rotationPivotX, rotationPivotY, 0);
+				gl.glRotatef(rotation, 0, 0, 1);
+				gl.glTranslatef(-rotationPivotX, -rotationPivotY, 0);
+			}
+		}
+		if(width != 1 || height != 1) {
+			gl.glScalef(width, height, 0);
+		}
+		if(hasTexture) {
+			enableTextures();
+			enableTexCoordArray();
+			bindTexture(texture);
+			color4f(red, green, blue, alpha);
+			texCoordPointer(texture.buffer[textureTile], GL10.GL_FLOAT);
+			bindBuffer(arrayVBO.getBufferIndex());
+			vertexPointer(GL10.GL_FLOAT);
+			bindBuffer(texture.vbo[textureTile].getBufferIndex());
+			texCoordPointer(GL10.GL_FLOAT);
+			gl.glDrawArrays(vertexMode, 0, arrayVBO.getBufferObject().getSize() / 2);
+		} else {
+			disableTexCoordArray();
+			disableTextures();
+			if(fill) {
+				color4f(red, green, blue, alpha);
+				bindBuffer(arrayVBO.getBufferIndex());
+				vertexPointer(GL10.GL_FLOAT);
+				gl.glDrawArrays(vertexMode, 0, arrayVBO.getBufferObject().getSize() / 2);
+			}
+			if(border) {
+				if(lineWidth != -1) {
+					lineWidth(lineWidth);
+				} else {
+					lineWidth(RokonActivity.currentScene.defaultLineWidth);
+				}
+				color4f(borderRed, borderGreen, borderBlue, borderAlpha);
+				bindBuffer(borderVBO.getBufferIndex());
+				vertexPointer(GL10.GL_FLOAT);
+				gl.glDrawArrays(GL10.GL_LINE_LOOP, 0, borderVBO.getBufferObject().getSize() / 2);
 			}
 		}
 		gl.glPopMatrix();	

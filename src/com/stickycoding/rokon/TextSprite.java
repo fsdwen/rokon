@@ -10,25 +10,47 @@ import javax.microedition.khronos.opengles.GL10;
  */
 public class TextSprite extends Sprite {
 	
-	protected float characterWidth;
+	/**
+	 * The text that this TextSprite contains
+	 */
 	public String text;
+
+	protected float characterWidth;
 	protected int textLength = 0;
 
+	/**
+	 * Creates a TextSprite from given coordinates and dimensions
+	 * 
+	 * @param x x-coordinate
+	 * @param y y-coordinate
+	 * @param characterWidth width for each character
+	 * @param height height the height for each character
+	 */
 	public TextSprite(float x, float y, float characterWidth, float height) {
 		super(x, y, characterWidth, height);
 		this.characterWidth = width;
 	}
 	
+	/**
+	 * @return the current text
+	 */
 	public String getText() {
 		return text;
 	}
 	
+	/**
+	 * Sets the text for this TextSprite
+	 * @param text
+	 */
 	public void setText(String text) {
 		this.text = text;
 		textLength = this.text.length();
 		width = characterWidth * textLength;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.stickycoding.rokon.DrawableObject#setTexture(com.stickycoding.rokon.Texture)
+	 */
 	@Override
 	public void setTexture(Texture texture) {
 		if(!(texture instanceof FontTexture)) {
@@ -38,6 +60,9 @@ public class TextSprite extends Sprite {
 		super.setTexture(texture);
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.stickycoding.rokon.DrawableObject#onDrawNormal(javax.microedition.khronos.opengles.GL10)
+	 */
 	@Override
 	protected void onDrawNormal(GL10 gl) {
 		if(text.length() < 1)

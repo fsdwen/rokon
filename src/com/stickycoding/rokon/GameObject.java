@@ -5,10 +5,8 @@ public class GameObject extends DrawableObject {
 	protected boolean isTouchable = false;
 	protected boolean isOnScene = false;
 	
-	
 	public GameObject(float x, float y, float width, float height) {
 		super(x, y, width, height);
-		// TODO Auto-generated constructor stub
 	}
 	
 	/**
@@ -18,6 +16,9 @@ public class GameObject extends DrawableObject {
 		return isOnScene;
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.stickycoding.rokon.DrawableObject#onRemove()
+	 */
 	@Override
 	public void onRemove() {
 		super.onRemove();
@@ -45,6 +46,9 @@ public class GameObject extends DrawableObject {
 		return isTouchable;
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.stickycoding.rokon.DrawableObject#onAdd(com.stickycoding.rokon.Layer)
+	 */
 	@Override
 	public void onAdd(Layer layer) {
 		super.onAdd(layer);

@@ -4,16 +4,15 @@ import android.util.Log;
 
 /**
  * Debug.java
- * Functions and helpers to aid debugging and engine reports
+ * Functions and helpers to aid debugging and engine reports.
+ * DebugMode can be toggled to avoid using the print command.
+ * 
  * @author Richard
- */
-/**
- * @author Richard
- *
  */
 public class Debug {
 	
 	private static String tag = "Rokon";
+	protected static boolean debugMode = false;
 	
 	public static String getDebugTag() {
 		return tag;
@@ -36,6 +35,7 @@ public class Debug {
 	 * @param message The message to be passed on
 	 */
 	public static void warning(String source, String message) {
+		if(!debugMode) return;
 		Log.w(tag, source + " - " + message);
 		Exception e = new Exception(source + " - " + message);
 		e.printStackTrace();
@@ -47,6 +47,7 @@ public class Debug {
 	 * @param message The message to be passed on
 	 */
 	public static void warning(String message) {
+		if(!debugMode) return;
 		Log.w(tag, message);
 	}
 	
@@ -56,6 +57,7 @@ public class Debug {
 	 * @param message The message to be passed on
 	 */
 	public static void print(String message) {
+		if(!debugMode) return;
 		Log.v(tag, message);
 	}
 	
@@ -77,7 +79,9 @@ public class Debug {
 	 * @param message
 	 */
 	public static void verbose(String method, String message) {
+		if(!debugMode) return;
 		Log.v(tag, method + " - " + message);
+		if(!debugMode) return;
 	}
 	
 	/**
@@ -86,6 +90,7 @@ public class Debug {
 	 * @param message
 	 */
 	public static void verbose(String message) {
+		if(!debugMode) return;
 		Log.v(tag, message);
 	}
 	

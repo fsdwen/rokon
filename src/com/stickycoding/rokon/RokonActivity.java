@@ -13,12 +13,12 @@ import com.stickycoding.rokon.audio.RokonMusic;
 import com.stickycoding.rokon.device.Graphics;
 import com.stickycoding.rokon.device.OS;
 import com.stickycoding.rokon.vbo.ArrayVBO;
-import com.stickycoding.rokon.vbo.ElementVBO;
 import com.stickycoding.rokon.vbo.VBO;
 
 /**
  * RokonActivity.java
  * The base Activity for the graphics engine to work from
+ * 
  * @author Richard
  */
 public class RokonActivity extends Activity {
@@ -32,6 +32,21 @@ public class RokonActivity extends Activity {
 	protected static String graphicsPath;
 	protected static boolean reloadToHardware;
 	protected static boolean isOnPause;
+
+
+	/**
+	 * Flags debugMode as true, Debug.print will output to LogCat
+	 */
+	public static void debugMode() {
+		Debug.debugMode = true;
+	}
+	
+	/**
+	 * Flags debugMode as false (default state), Debug.print will not output to LogCat
+	 */
+	public static void normalMode() {
+		Debug.debugMode = false;
+	}
 	
 	public static float getGameWidth() {
 		return gameWidth;
@@ -41,6 +56,9 @@ public class RokonActivity extends Activity {
 		return gameHeight;
 	}
 	
+	/* (non-Javadoc)
+	 * @see android.app.Activity#onKeyDown(int, android.view.KeyEvent)
+	 */
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if(currentScene != null) {
@@ -49,6 +67,9 @@ public class RokonActivity extends Activity {
 		return super.onKeyDown(keyCode, event);
 	}
 
+	/* (non-Javadoc)
+	 * @see android.app.Activity#onTrackballEvent(android.view.MotionEvent)
+	 */
 	@Override
 	public boolean onTrackballEvent(MotionEvent event) {
 		if(currentScene != null) {
@@ -57,6 +78,9 @@ public class RokonActivity extends Activity {
 		return super.onTrackballEvent(event);
 	}
 	
+	/* (non-Javadoc)
+	 * @see android.app.Activity#onKeyUp(int, android.view.KeyEvent)
+	 */
 	@Override
 	public boolean onKeyUp(int keyCode, KeyEvent event) {
 		if(currentScene != null) {
@@ -66,7 +90,6 @@ public class RokonActivity extends Activity {
 	}
 	
 	protected void dispose() {
-		//TODO Properly remove all things from memory
 		isOnPause = false;
 		engineLoaded = false;
 		engineCreated = false;
@@ -78,9 +101,19 @@ public class RokonActivity extends Activity {
 		finish();
 	}
 	
+	/**
+	 * Called when RokonActivity is created
+	 */
 	public void onCreate() {};
+	
+	/**
+	 * Called when the loading is completed, and OpenGL is ready to draw 
+	 */
 	public void onLoadComplete() { };
 	
+	/* (non-Javadoc)
+	 * @see android.app.Activity#onCreate(android.os.Bundle)
+	 */
 	@Override
 	public void onCreate(Bundle savedState) {
 		super.onCreate(savedState);
@@ -98,6 +131,9 @@ public class RokonActivity extends Activity {
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see android.app.Activity#onDestroy()
+	 */
 	@Override
 	public void onDestroy() {
 		if(isFinishing()) {
@@ -122,6 +158,9 @@ public class RokonActivity extends Activity {
 		OS.determineAPI();
 	}
 	
+	/* (non-Javadoc)
+	 * @see android.app.Activity#onPause()
+	 */
 	@Override
 	public void onPause() {
 		super.onPause();
@@ -134,6 +173,9 @@ public class RokonActivity extends Activity {
 		RokonMusic.onPause();
 	}
 	
+	/* (non-Javadoc)
+	 * @see android.app.Activity#onResume()
+	 */
 	@Override
 	public void onResume() {
 		super.onResume();
@@ -141,11 +183,14 @@ public class RokonActivity extends Activity {
 		isOnPause = false;
 		Debug.print("Engine Activity received onResume()");
 		if(currentScene != null) {
-			currentScene.onPause();
+			currentScene.onResume();
 		}
 		RokonMusic.onResume();
 	}
 	
+	/* (non-Javadoc)
+	 * @see android.app.Activity#onTouchEvent(android.view.MotionEvent)
+	 */
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 		if(currentScene == null)

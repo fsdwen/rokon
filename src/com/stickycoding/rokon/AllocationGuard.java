@@ -18,6 +18,7 @@ package com.stickycoding.rokon;
 
 /**
  * This was taken from ReplicaIsland, another useful class to ease our troubles
+ * No good for end-user
  * 
  * AllocationGuard is a utility class for tracking down memory leaks.  It implements a 
  * "checkpoint" memory scheme.  After the static sGuardActive flag has been set, any further
@@ -26,8 +27,8 @@ package com.stickycoding.rokon;
  */
 
 public class AllocationGuard {
-    public static boolean sGuardActive = false;
-    public AllocationGuard() {
+    protected static boolean sGuardActive = false;
+    protected AllocationGuard() {
         if (sGuardActive) {
             // An allocation has occurred while the guard is active!  Report it.
             Debug.warning("AllocGuard", "An allocation of type " + this.getClass().getName() + " occurred while the AllocGuard is active.");

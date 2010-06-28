@@ -19,10 +19,11 @@ import java.util.Comparator;
 
 /**
  * QuickSorter.java
- * Borrowed from ReplicaIsland
+ * Borrowed from ReplicaIsland.
+ * No good for end-user
  */
 public class QuickSorter<Type> extends Sorter<Type> {
-    public void sort(Type[] array, int count, Comparator<Type> comparator) {
+    protected void sort(Type[] array, int count, Comparator<Type> comparator) {
         quicksort(array, 0, count - 1, comparator);
     }
     
@@ -45,7 +46,7 @@ public class QuickSorter<Type> extends Sorter<Type> {
      ***********************************************************************/
      
         // quicksort a[left] to a[right]
-    public void quicksort(Type[] a, int left, int right, Comparator<Type> comparator) {
+    protected void quicksort(Type[] a, int left, int right, Comparator<Type> comparator) {
         if (right <= left) return;
         int i = partition(a, left, right, comparator);
         quicksort(a, left, i - 1, comparator);

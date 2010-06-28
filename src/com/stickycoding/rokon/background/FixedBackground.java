@@ -2,10 +2,10 @@ package com.stickycoding.rokon.background;
 
 import javax.microedition.khronos.opengles.GL10;
 
+import com.stickycoding.rokon.Background;
 import com.stickycoding.rokon.DrawableObject;
 import com.stickycoding.rokon.RokonActivity;
 import com.stickycoding.rokon.Texture;
-import com.stickycoding.rokon.Window;
 
 /**
  * FixedBackground.java
@@ -22,7 +22,7 @@ public class FixedBackground extends Background {
 	}
 	
 	public void onDraw(GL10 gl) {
-		Window.setDefault(gl);
+		super.onDraw(gl);
 		bg.onDraw(gl);
 	}
 

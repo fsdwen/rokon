@@ -10,21 +10,35 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 
 /**
  * PhysicalObject.java
- * An object which can undergo basic collisions
+ * An object which can undergo collisions through Box2D
  * 
  * @author Richard
  *
  */
 public class PhysicalSprite extends Sprite implements Updateable {
 	
+	/**
+	 * The Body associated with this Sprite, for Box2D
+	 */
 	public Body body;
+	
+	/**
+	 * The BodyDef associated with this Sprite, for Box2D
+	 */
 	public BodyDef bodyDef;
+	
 	protected boolean usePhysics;
 
 	public PhysicalSprite(float x, float y, float width, float height) {
 		super(x, y, width, height);
 	}
 	
+	/**
+	 * Creates a Body for Box2D collisions
+	 * 
+	 * @param bodyDef valid BodyDef object
+	 * @param fixture valid FixtureDef object
+	 */
 	public void createBody(BodyDef bodyDef, FixtureDef fixture) {
 		body = Physics.world.createBody(bodyDef);
 		body.createFixture(fixture);
@@ -32,6 +46,12 @@ public class PhysicalSprite extends Sprite implements Updateable {
 		usePhysics = true;
 	}
 	
+	/**
+	 * Creates a Body for Box2D collisions, given by a Shape
+	 * 
+	 * @param bodyDef valid BodyDef object
+	 * @param shape valid Shape object
+	 */
 	public void createBody(BodyDef bodyDef, Shape shape) {
 		body = Physics.world.createBody(bodyDef);
 		body.createFixture(shape, 1f);
@@ -39,18 +59,31 @@ public class PhysicalSprite extends Sprite implements Updateable {
 		usePhysics = true;
 	}
 	
+	/**
+	 * Creates and applies a circular Body for this PhysicalSprite
+	 * @return
+	 */
 	public CircleShape createCircleShape() {
 		CircleShape circle = new CircleShape();
 		circle.setRadius(width / 2f);
 		return circle;
 	}
 	
+	/**
+	 * Creates and applies a rectangular Body for this PhysicalSprite
+	 * @return
+	 */
 	public PolygonShape createBoxShape() {
 		PolygonShape poly = new PolygonShape();
 		poly.setAsBox(width / 2f, height / 2f);
 		return poly;
 	}
 	
+	/**
+	 * Creates and applies a dynamic Body from a FixtureDef
+	 * 
+	 * @param fixture valid FixtureDef object
+	 */
 	public void createDynamicBody(FixtureDef fixture) {
 		bodyDef = new BodyDef();
 		bodyDef.type = BodyType.DynamicBody;
@@ -59,6 +92,11 @@ public class PhysicalSprite extends Sprite implements Updateable {
 		createBody(bodyDef, fixture);
 	}
 	
+	/**
+	 * Creates and applies a dynamic Body from a Shape
+	 * 
+	 * @param shape valid Shape object
+	 */
 	public void createDynamicBody(Shape shape) {
 		bodyDef = new BodyDef();
 		bodyDef.type = BodyType.DynamicBody;
@@ -67,6 +105,11 @@ public class PhysicalSprite extends Sprite implements Updateable {
 		createBody(bodyDef, shape);
 	}
 	
+	/**
+	 * Creates and applies a static Body from a FixtureDef
+	 * 
+	 * @param fixture valid FixtureDef object
+	 */
 	public void createStaticBody(FixtureDef fixture) {
 		bodyDef = new BodyDef();
 		bodyDef.type = BodyType.StaticBody;
@@ -75,6 +118,11 @@ public class PhysicalSprite extends Sprite implements Updateable {
 		createBody(bodyDef, fixture);
 	}
 	
+	/**
+	 * Creates and applies a static Body from a Shape
+	 * 
+	 * @param shape valid Shape object
+	 */
 	public void createStaticBody(Shape shape) {
 		bodyDef = new BodyDef();
 		bodyDef.type = BodyType.StaticBody;
@@ -83,6 +131,11 @@ public class PhysicalSprite extends Sprite implements Updateable {
 		createBody(bodyDef, shape);
 	}
 	
+	/**
+	 * Creates and applies a kinematic Body from a FixtureDef
+	 * 
+	 * @param fixture valid FixtureDef object
+	 */
 	public void createKinematicBody(FixtureDef fixture) {
 		bodyDef = new BodyDef();
 		bodyDef.type = BodyType.KinematicBody;
@@ -91,6 +144,11 @@ public class PhysicalSprite extends Sprite implements Updateable {
 		createBody(bodyDef, fixture);
 	}
 	
+	/**
+	 * Creates and applies a kinematic Body from a Shape
+	 * 
+	 * @param shape valid Shape object
+	 */
 	public void createKinematicBody(Shape shape) {
 		bodyDef = new BodyDef();
 		bodyDef.type = BodyType.KinematicBody;
@@ -99,6 +157,11 @@ public class PhysicalSprite extends Sprite implements Updateable {
 		createBody(bodyDef, shape);
 	}
 	
+	/**
+	 * Creates and applies a circular dynamic Body from a FixtureDef
+	 * 
+	 * @param fixtureDef valid FixtureDef object
+	 */
 	public void createDynamicCircle(FixtureDef fixtureDef) {
 		CircleShape circle = new CircleShape();
 		circle.setRadius(width / 2f);
@@ -107,6 +170,9 @@ public class PhysicalSprite extends Sprite implements Updateable {
 		circle.dispose();
 	}
 	
+	/**
+	 * Creates and applies a dynamic circular Body
+	 */
 	public void createDynamicCircle() {
 		CircleShape circle = new CircleShape();
 		circle.setRadius(width / 2f);
@@ -114,6 +180,11 @@ public class PhysicalSprite extends Sprite implements Updateable {
 		circle.dispose();
 	}
 	
+	/**
+	 * Creates and applies a static circular Body from a FixtureDef
+	 * 
+	 * @param fixtureDef valid FixtureDef object
+	 */
 	public void createStaticCircle(FixtureDef fixtureDef) {
 		CircleShape circle = new CircleShape();
 		circle.setRadius(width / 2f);
@@ -122,6 +193,9 @@ public class PhysicalSprite extends Sprite implements Updateable {
 		circle.dispose();
 	}
 	
+	/**
+	 * Creates and applies a static circular Body
+	 */
 	public void createStaticCircle() {
 		CircleShape circle = new CircleShape();
 		circle.setRadius(width / 2f);
@@ -129,6 +203,11 @@ public class PhysicalSprite extends Sprite implements Updateable {
 		circle.dispose();
 	}
 	
+	/**
+	 * Creates and applies a kinematic circular Body from a FixtureDef
+	 * 
+	 * @param fixtureDef valid FixtureDef object
+	 */
 	public void createKinematicCircle(FixtureDef fixtureDef) {
 		CircleShape circle = new CircleShape();
 		circle.setRadius(width / 2f);
@@ -137,6 +216,9 @@ public class PhysicalSprite extends Sprite implements Updateable {
 		circle.dispose();
 	}
 	
+	/**
+	 * Creates and applies a kinematic circular Body
+	 */
 	public void createKinematicCircle() {
 		CircleShape circle = new CircleShape();
 		circle.setRadius(width / 2f);
@@ -144,6 +226,11 @@ public class PhysicalSprite extends Sprite implements Updateable {
 		circle.dispose();
 	}
 	
+	/**
+	 * Creates and applies a dynamic rectangular Body from a FixtureDef
+	 * 
+	 * @param fixtureDef valid FixtureDef object
+	 */
 	public void createDynamicBox(FixtureDef fixtureDef) {
 		PolygonShape boxPoly = new PolygonShape();
 		boxPoly.setAsBox(width / 2f, height / 2f);
@@ -152,6 +239,9 @@ public class PhysicalSprite extends Sprite implements Updateable {
 		boxPoly.dispose();
 	}
 	
+	/**
+	 * Creates and applies a dynamic rectangular Body
+	 */
 	public void createDynamicBox() {
 		PolygonShape boxPoly = new PolygonShape();
 		boxPoly.setAsBox(width / 2f, height / 2f);
@@ -159,6 +249,11 @@ public class PhysicalSprite extends Sprite implements Updateable {
 		boxPoly.dispose();
 	}
 	
+	/**
+	 * Creates and applies a static rectangular Body from a FixtureDef
+	 * 
+	 * @param fixtureDef valid FixtureDef object
+	 */
 	public void createStaticBox(FixtureDef fixtureDef) {
 		PolygonShape boxPoly = new PolygonShape();
 		boxPoly.setAsBox(width / 2f, height / 2f);
@@ -167,6 +262,9 @@ public class PhysicalSprite extends Sprite implements Updateable {
 		boxPoly.dispose();
 	}
 	
+	/**
+	 * Creates and applies a static rectangular Body
+	 */
 	public void createStaticBox() {
 		PolygonShape boxPoly = new PolygonShape();
 		boxPoly.setAsBox(width / 2, height / 2f);
@@ -174,6 +272,11 @@ public class PhysicalSprite extends Sprite implements Updateable {
 		boxPoly.dispose();	
 	}
 	
+	/**
+	 * Creates and applies a kinematic rectangular Body from a FixtureDef
+	 * 
+	 * @param fixtureDef valid FixtureDef object
+	 */
 	public void createKinematicBox(FixtureDef fixtureDef) {
 		PolygonShape boxPoly = new PolygonShape();
 		boxPoly.setAsBox(width / 2, height / 2f);
@@ -182,6 +285,9 @@ public class PhysicalSprite extends Sprite implements Updateable {
 		boxPoly.dispose();
 	}
 	
+	/**
+	 * Creates and applies a kinematic rectangular Body
+	 */
 	public void createKinematicBox() {
 		PolygonShape boxPoly = new PolygonShape();
 		boxPoly.setAsBox(width / 2, height / 2f);
@@ -228,6 +334,9 @@ public class PhysicalSprite extends Sprite implements Updateable {
 		usePhysics = false;
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.stickycoding.rokon.Sprite#onUpdate()
+	 */
 	@Override
 	public void onUpdate() {
 		super.onUpdate();
@@ -238,6 +347,9 @@ public class PhysicalSprite extends Sprite implements Updateable {
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.stickycoding.rokon.Sprite#onRemove()
+	 */
 	@Override
 	public void onRemove() {
 		super.onRemove();

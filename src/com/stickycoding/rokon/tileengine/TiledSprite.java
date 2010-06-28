@@ -1,6 +1,5 @@
 package com.stickycoding.rokon.tileengine;
 
-import com.stickycoding.rokon.Debug;
 import com.stickycoding.rokon.Sprite;
 
 /**

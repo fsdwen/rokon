@@ -7,17 +7,22 @@ import com.stickycoding.rokon.BufferObject;
 import com.stickycoding.rokon.Debug;
 import com.stickycoding.rokon.GLHelper;
 
+/**
+ * ElementVBO.java
+ * An element VBO, defined by BufferObject.
+ * Currently unused, but may be introduced for vertex-colouring
+ * 
+ * @author Richard
+ */
 public class ElementVBO extends VBO {
 	
-	//public ElementVBO(int drawType) {
-		//super(drawType);
-	//}
-
 	public ElementVBO(BufferObject bufferObject, int drawType) {
 		super(bufferObject, drawType);
-		// TODO Auto-generated constructor stub
 	}
 
+	/* (non-Javadoc)
+	 * @see com.stickycoding.rokon.vbo.VBO#load(javax.microedition.khronos.opengles.GL10)
+	 */
 	public void load(GL10 gl) {
 		GL11 gl11 = (GL11)gl;
 		int[] nameArray = new int[1];

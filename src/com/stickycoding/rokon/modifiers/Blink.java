@@ -19,12 +19,18 @@ public class Blink extends Modifier {
 	private long nextFlash;
 	private long end;
 	
+	/* (non-Javadoc)
+	 * @see com.stickycoding.rokon.Modifier#onStart()
+	 */
 	@Override
 	public void onStart() {
 		nextFlash = Time.getTicks() + 500;
 		end = Time.getTicks() + 10000;
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.stickycoding.rokon.Modifier#onUpdate(com.stickycoding.rokon.Sprite)
+	 */
 	@Override
 	public void onUpdate(Sprite sprite) {
 		if(Time.getTicks() > end) {

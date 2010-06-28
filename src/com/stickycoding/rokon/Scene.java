@@ -9,10 +9,8 @@ import javax.microedition.khronos.opengles.GL10;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
-import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.World;
-import com.stickycoding.rokon.background.Background;
 import com.stickycoding.rokon.device.Graphics;
 import com.stickycoding.rokon.device.OS;
 
@@ -24,16 +22,20 @@ import com.stickycoding.rokon.device.OS;
  */
 public class Scene {
 	
-	public static final int SCENE_TEXTURE_COUNT = 32;
+	/**
+	 * The default number of layers if no number is passed
+	 */
 	public static final int DEFAULT_LAYER_COUNT = 1;
+	
+	/**
+	 * The default number of objects per layer, if no number is passed 
+	 */
 	public static final int DEFAULT_LAYER_OBJECT_COUNT = 32;
 
 	protected Layer[] layer;
 	protected boolean loadedTextures;
 	protected int layerCount;
 	protected Window window = null;
-	//protected Texture[] texturesToLoad;
-	//protected Texture[] texturesOnHardware;
 	protected boolean useInvoke;
 	protected World world;
 	protected boolean usePhysics = false;
@@ -43,11 +45,33 @@ public class Scene {
 	
 	protected float defaultLineWidth = 1;
 
+	/**
+	 * Called before each render loop
+	 * 
+	 * @param gl GL10 object
+	 */
 	public void onPreDraw(GL10 gl) { }
+	
+	/**
+	 * Called after each render loop
+	 * @param gl GL10 object
+	 */
 	public void onPostDraw(GL10 gl) { }
 	
+	/**
+	 * Called when the RokonActivity is hidden (usually with home button) 
+	 */
 	public void onPause() { }
+	
+	/**
+	 * Called when the RokonActivity is resumed  
+	 */
 	public void onResume() { }
+	
+	/**
+	 * Called at every loop
+	 */
+	public void onGameLoop() { }
 	
 	public void onTouchDown(Drawable object, float x, float y, MotionEvent event, int pointerId) { }
 	public void onTouchUp(Drawable object, float x, float y, MotionEvent event, int pointerId) { }
@@ -66,8 +90,6 @@ public class Scene {
 	public void onKeyDown(int keyCode, KeyEvent event) { }
 	public void onKeyUp(int keyCode, KeyEvent event) { }
 	public void onTrackballEvent(MotionEvent event) { }
-	
-	public void onCollide(Sprite sprite1, Sprite sprite2) { }
 	
 	/**
 	 * Sets a World for the physics in this Scene
@@ -819,14 +841,6 @@ public class Scene {
 		drawableObject.remove();
 	}
 	
-	protected void onUpdate() {
-		
-	}
-	
-	protected void onGameLoop() {
-		
-	}
-	
 	protected void onSetScene() {
 		loadedTextures = false;
 	}
@@ -836,6 +850,7 @@ public class Scene {
 	}
 	
 	protected void onDraw(GL10 gl) {
+		onGameLoop();
 		onPreDraw(gl);
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		if(background != null) {
@@ -857,63 +872,53 @@ public class Scene {
 	
 	protected boolean pausePhysics = false;
 	
+	/**
+	 * Pause the Box2D physics, but continue drawing
+	 */
 	public void pausePhysics() {
 		pausePhysics = true;
 	}
 	
+	/**
+	 * Resumes the Box2D physics
+	 */
 	public void resumePhysics() {
 		pausePhysics = false;
 	}
 	
+	/**
+	 * Sets the Background for this Scene
+	 * 
+	 * @param background valid Background object
+	 */
 	public void setBackground(Background background) {
 		this.background = background;
 		background.parentScene = this;
 	}
 	
+	/**
+	 * Gets the current Background of the Scene
+	 * 
+	 * @return NULL if none set
+	 */
 	public Background getBackground() {
 		return this.background;
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	protected class SceneContactListener implements ContactListener {
-
-		public void beginContact(Contact contact) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		public void endContact(Contact contact) {
-			// TODO Auto-generated method stub
-			
-		}
-		
-	}
-	
-	public void useContactListener() {
-		if(contactListener == null) {
-			contactListener = new SceneContactListener();
-		}
-		useContactListener = true;
-	}
-	
-	public void stopContactListener() {
-		useContactListener = false;
-	}
-	
-	public void setContactListener(ContactListener contactListener) {
-		this.contactListener = contactListener;
-	}
-	
+	/**
+	 * Sets the default line width for this Scene, by default, 1f
+	 * 
+	 * @param lineWidth float > 0f
+	 */
 	public void setDefaultLineWidth(float lineWidth) {
 		defaultLineWidth = lineWidth;
 	}
-	
+
+	/**
+	 * Gets the current default line width in this Scene
+	 * 
+	 * @return 1f by default
+	 */
 	public float getDefaultLineWidth() {
 		return defaultLineWidth;
 	}

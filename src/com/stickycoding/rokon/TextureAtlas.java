@@ -3,7 +3,6 @@ package com.stickycoding.rokon;
 import javax.microedition.khronos.opengles.GL10;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.opengl.GLUtils;
 
 /**
@@ -15,14 +14,28 @@ import android.opengl.GLUtils;
 
 public class TextureAtlas extends Texture {
 
-	public static final int DEFAULT_MAX_TEXTURE_COUNT = 32;
+	/**
+	 * The maximum number of textures able to be loaded onto one TextureAtlas, by default
+	 */
+	public static final int DEFAULT_MAX_TEXTURE_COUNT = 64;
+	
+	/**
+	 * The default width of a TextureAtlas
+	 */
 	public static final int DEFAULT_TEXTURE_ATLAS_WIDTH = 1024;
+	
+	/**
+	 * The default height of a TextureAtlas 
+	 */
 	public static final int DEFAULT_TEXTURE_ATLAS_HEIGHT = 1024;
 	
 	protected int atlasWidth, atlasHeight, maxTextureCount;	
 	protected Texture[] texture;
 	protected boolean complete;
 
+	/**
+	 * Creates a TextureAtlas with default configuration
+	 */
 	public TextureAtlas() {
 		super();
 		maxTextureCount = DEFAULT_MAX_TEXTURE_COUNT;
@@ -32,10 +45,18 @@ public class TextureAtlas extends Texture {
 		
 	}
 	
+	/**
+	 * Marks this TextureAtlas as complete. No more Textures can be added, and it can be loaded onto the hardware.
+	 */
 	public void complete() {
 		complete = true;
 	}
 	
+	/**
+	 * Creates a TextureAtlas width default dimensions, but a given maximum number of Textures
+	 * 
+	 * @param maxTextureCount maximum number of Textures on this TextureAtlas
+	 */
 	public TextureAtlas(int maxTextureCount) {
 		super();
 		this.maxTextureCount = maxTextureCount;
@@ -44,12 +65,25 @@ public class TextureAtlas extends Texture {
 		atlasHeight = DEFAULT_TEXTURE_ATLAS_WIDTH;
 	}
 	
+	/**
+	 * Creates a TextureAtlas from a given configuration
+	 * 
+	 * @param maxTextureCount maximum number of Textures on this TextureAtlas
+	 * @param textureAtlasWidth width of this TextureAtlas, in pixels
+	 * @param textureAtlasHeight height of this TextureAtlas, in pixels
+	 */
 	public TextureAtlas(int maxTextureCount, int textureAtlasWidth, int textureAtlasHeight) {
 		this(maxTextureCount);
 		atlasWidth = textureAtlasWidth;
 		atlasHeight = textureAtlasHeight;
 	}
 	
+	/**
+	 * Inserts a Texture onto the TextureAtlas, finds the next best spot.
+	 * To optimize, this should be done from largest to smallest.
+	 * 
+	 * @param texture valid Texture object
+	 */
 	public void insert(Texture texture) {
 		if(texture instanceof DynamicTexture) {
 			Debug.error("Tried inserting DynamicTexture into TextureAtlas, not possible");
@@ -74,7 +108,6 @@ public class TextureAtlas extends Texture {
 	}
 	
 	private void findRightSpot(Texture texture) {
-		//TODO Must be a better way of doing this!
 		boolean foundSpot = false;
 		int checkX = 0, checkY = 0;
 		while(!foundSpot) {
@@ -117,6 +150,9 @@ public class TextureAtlas extends Texture {
 		return -1;
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.stickycoding.rokon.Texture#onLoadTexture(javax.microedition.khronos.opengles.GL10)
+	 */
 	protected void onLoadTexture(GL10 gl) {
 		if(!complete) {
 			Debug.error("Tried loading TextureAtlas without calling complete() first");

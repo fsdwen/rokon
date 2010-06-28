@@ -2,28 +2,32 @@ package com.stickycoding.rokon;
 
 import javax.microedition.khronos.opengles.GL10;
 import javax.microedition.khronos.opengles.GL11;
-import javax.microedition.khronos.opengles.GL11Ext;
 
 import com.stickycoding.rokon.vbo.ArrayVBO;
-import com.stickycoding.rokon.vbo.ElementVBO;
 
 /**
  * GLHelper.java
- * Functions that help minimise and optimise OpenGL calls and state changes 
+ * Contains various functions that help minimize and optimize OpenGL calls and state changes.
+ * The aim is to have all OpenGL calls were made from this class.
+ * 
  * @author Richard
  */
+
 public class GLHelper {
 	
 	private static GL10 gl;
 	private static boolean glVertexArray, glTexCoordArray, glTexture2D;
 	private static int textureIndex = -1, arrayBuffer = -1, elementBuffer = -1, srcBlendMode = -1, dstBlendMode = -1;
 	private static float glColor4fRed = -1, glColor4fGreen = -1, glColor4fBlue = -1, glColor4fAlpha = -1;
-	private static float glColorRed = -1, glColorGreen = -1, glColorBlue = -1, glColorAlpha = -1;
-    private static float drawTexCrop0 = -1, drawTexCrop1 = -1, drawTexCrop2 = -1, drawTexCrop3 = -1;
     private static BufferObject lastVertexPointerBuffer;
     private static BufferObject lastTexCoordPointerBuffer;
     private static float lineWidth;
     
+    /**
+     * Sets the line width
+     * 
+     * @param lineWidth float value, > 0
+     */
     public static void lineWidth(float lineWidth) {
     	if(lineWidth == GLHelper.lineWidth) return;
     	GLHelper.lineWidth = lineWidth;
@@ -34,6 +38,9 @@ public class GLHelper {
 		GLHelper.gl = gl;
 	}
 	
+	/**
+	 * Enables the GL_VERTEX_ARRAY state
+	 */
 	public static void enableVertexArray() {
 		if(!glVertexArray) {
 			gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
@@ -41,6 +48,9 @@ public class GLHelper {
 		}
 	}
 	
+	/**
+	 * Disables the GL_VERTEX_ARRAY state
+	 */
 	public static void disableVertexArray() {
 		if(glVertexArray) {
 			gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
@@ -48,6 +58,9 @@ public class GLHelper {
 		}
 	}
 	
+	/**
+	 * Enables the GL_TEXTURE_COORD_ARRAY state
+	 */
 	public static void enableTexCoordArray() {
 		if(!glTexCoordArray) {
 			gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
@@ -55,6 +68,9 @@ public class GLHelper {
 		}
 	}
 	
+	/**
+	 * Disables the GL_TEXTURE_COORD_ARRAY state
+	 */
 	public static void disableTexCoordArray() {
 		if(glTexCoordArray) {
 			gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
@@ -62,6 +78,9 @@ public class GLHelper {
 		}
 	}
 	
+	/**
+	 * Enables the GL_TEXTURE_2D state
+	 */
 	public static void enableTextures() {
 		if(!glTexture2D) {
 			gl.glEnable(GL10.GL_TEXTURE_2D);
@@ -69,6 +88,9 @@ public class GLHelper {
 		}
 	}
 	
+	/**
+	 * Disables the GL_TEXTURE_2D state
+	 */
 	public static void disableTextures() {
 		if(glTexture2D) {
 			gl.glDisable(GL10.GL_TEXTURE_2D);
@@ -76,6 +98,11 @@ public class GLHelper {
 		}
 	}
 	
+	/**
+	 * Binds a GL_ARRAY_BUFFER
+	 * 
+	 * @param bufferIndex index of the buffer to bind
+	 */
 	public static void bindBuffer(int bufferIndex) {
 		if(bufferIndex != arrayBuffer) {
 			((GL11)gl).glBindBuffer(GL11.GL_ARRAY_BUFFER, bufferIndex);
@@ -83,6 +110,11 @@ public class GLHelper {
 		}
 	}
 	
+	/**
+	 * Binds a GL_ELEMENT_ARRAY_BUFFER
+	 * 
+	 * @param elementBufferIndex index of the buffer to bind
+	 */
 	public static void bindElementBuffer(int elementBufferIndex) {
 		if(elementBufferIndex != elementBuffer) {
 			((GL11)gl).glBindBuffer(GL11.GL_ELEMENT_ARRAY_BUFFER, elementBufferIndex);
@@ -90,6 +122,11 @@ public class GLHelper {
 		}
 	}
 	
+	/**
+	 * Binds a texture, given by texture index
+	 * 
+	 * @param textureIndex index of the texture to bind
+	 */
 	public static void bindTexture(int textureIndex) {
 		if(GLHelper.textureIndex != textureIndex) {
 			gl.glBindTexture(GL10.GL_TEXTURE_2D, textureIndex);
@@ -97,11 +134,22 @@ public class GLHelper {
 		}
 	}
 	
+	/**
+	 * Binds a Texture
+	 * 
+	 * @param texture valid Texture object
+	 */
 	public static void bindTexture(Texture texture) {
 		checkTextureValid(texture);
 		bindTexture(texture.textureIndex);
 	}
 	
+	/**
+	 * Checks whether a Texture has been loaded onto the hardware
+	 * If it hasn't, it loads
+	 * 
+	 * @param texture valid Texture object
+	 */
 	public static void checkTextureValid(Texture texture) {
 		if(texture.textureIndex == -1 && texture.parentAtlas == null) {
 			texture.onLoadTexture(gl);
@@ -112,6 +160,12 @@ public class GLHelper {
 		}
 	}
 	
+	/**
+	 * Sets the glBlendFunc, by custom parameters
+	 * 
+	 * @param srcBlendMode
+	 * @param dstBlendMode
+	 */
 	public static void blendMode(int srcBlendMode, int dstBlendMode) {
 		if(GLHelper.srcBlendMode != srcBlendMode || GLHelper.dstBlendMode != dstBlendMode) {
 			gl.glBlendFunc(srcBlendMode, dstBlendMode);
@@ -120,6 +174,11 @@ public class GLHelper {
 		}
 	}
 	
+	/**
+	 * Sets the glBlendFunc
+	 * 
+	 * @param blendFunction valid BlendFunction object
+	 */
 	public static void blendMode(BlendFunction blendFunction) {
 		if(blendFunction.getSrc() != srcBlendMode || blendFunction.getDst() != dstBlendMode) {
 			gl.glBlendFunc(blendFunction.getSrc(), blendFunction.getDst());
@@ -128,6 +187,14 @@ public class GLHelper {
 		}
 	}
 
+    /**
+     * Sets the colour and alpha values
+     * 
+     * @param red 0f to 1f
+     * @param green 0f to 1f
+     * @param blue 0f to 1f
+     * @param alpha 0f to 1f
+     */
     public static void color4f(float red, float green, float blue, float alpha) {
         if(alpha != glColor4fAlpha || red != glColor4fRed || green != glColor4fGreen || blue != glColor4fBlue) {
             gl.glColor4f(red, green, blue, alpha);
@@ -137,17 +204,13 @@ public class GLHelper {
             glColor4fAlpha = alpha;
         }
     }
-    
-    public static void color(int red, int green, int blue, int alpha) {
-        if(alpha != glColorAlpha || red != glColorRed || green != glColorGreen || blue != glColorBlue) {
-            gl.glColor4x(red, green, blue, alpha);
-            glColorRed = red;
-            glColorGreen = green;
-            glColorBlue = blue;
-            glColorAlpha = alpha;
-        }
-    }
 
+    /**
+     * Passes a buffer for drawing textures
+     * 
+     * @param buffer valid BufferObject
+     * @param type coordinate type, eg GL_FLOAT
+     */
     public static void texCoordPointer(BufferObject buffer, int type) {
         if(lastTexCoordPointerBuffer != buffer) {
         	gl.glTexCoordPointer(2, type, 0, buffer.get());
@@ -155,16 +218,32 @@ public class GLHelper {
         }
     }
     
+    /**
+     * Passes an empty buffer for vertices, for use with VBO
+     * 
+     * @param type coordinate type, eg GL_FLOAT
+     */
     public static void vertexPointer(int type) {
     	lastVertexPointerBuffer = null;
     	((GL11)gl).glVertexPointer(2, type, 0, 0);
     }
     
+    /**
+     * Passes an empty buffer for textures, for use with VBO
+     * 
+     * @param type coordinate type, eg GL_FLOAT
+     */
     public static void texCoordPointer(int type) {
     	lastTexCoordPointerBuffer = null;
     	((GL11)gl).glTexCoordPointer(2, type, 0, 0);
     }
 
+    /**
+     * Passes a buffer for vertices
+     * 
+     * @param buffer valid BufferObject
+     * @param type coordinate type, eg GL_FLOAT
+     */
     public static void vertexPointer(BufferObject buffer, int type) {
         if(lastVertexPointerBuffer != buffer) {
         	gl.glVertexPointer(2, type, 0, buffer.get());
@@ -172,17 +251,38 @@ public class GLHelper {
         }
     }
     
-    public static void drawTexCrop(float[] buffer) {
-		if(drawTexCrop0 != buffer[0] || drawTexCrop1 != buffer[1] || drawTexCrop2 != buffer[2] || drawTexCrop3 != buffer[3]) {
-	        ((GL11Ext)gl).glTexParameterfv(GL10.GL_TEXTURE_2D, GL11Ext.GL_TEXTURE_CROP_RECT_OES, buffer, 0);
-	        drawTexCrop0 = buffer[0];
-	        drawTexCrop1 = buffer[1];
-	        drawTexCrop2 = buffer[2];
-	        drawTexCrop3 = buffer[3];
-		}
-    }
-    
+    /**
+     * Draws a polygon, with optional border using standard vertex techniques
+     * 
+     * @param fill TRUE if drawing with a fill, FALSE otherwise
+     * @param red red value for fill, 0f to 1f
+     * @param green green value for fill, 0f to 1f
+     * @param blue blue value for fill, 0f to 1f
+     * @param alpha alpha value for fill, 0f to 1f
+     * @param blendFunction valid BlendFunction object
+     * @param vertexBuffer valid BufferObject
+     * @param vertexMode method for drawing vertices, eg GL_TRIANGLE_STRIP 
+     * @param x x-coordinate to draw from, top left
+     * @param y y-coordinate to draw from, top left
+     * @param width width of the shape to draw
+     * @param height height of the shape to draw
+     * @param rotation rotation, in degrees
+     * @param rotateAboutPivot TRUE if rotating about a given pivot, FALSE if central
+     * @param rotationPivotX x-coordinate of rotation pivot, if rotateAboutPivot TRUE
+     * @param rotationPivotY y-coordinate of rotation pivot, if rotateAboutPivot FALSE
+     * @param border TRUE if drawing a border, FALSE otherwise
+     * @param borderBuffer valid BufferObject for the border shape, if border TRUE
+     * @param borderRed red value for border, 0f to 1f, if border TRUE
+     * @param borderGreen green value for border, 0f to 1f, if border TRUE
+     * @param borderBlue blue value for border, 0f to 1f, if border TRUE
+     * @param borderAlpha alpha value for border, 0f to 1f, if border TRUE
+     * @param lineWidth -1 to use default
+     * @param hasTexture TRUE if a Texture is being passed, FALSE otherwise
+     * @param texture valid Texture object to be rendered
+     * @param textureTile the index of the tile inside the Texture
+     */
     public static void drawNormal(boolean fill, float red, float green, float blue, float alpha, BlendFunction blendFunction, BufferObject vertexBuffer, int vertexMode, float x, float y, float width, float height, float rotation, boolean rotateAboutPivot, float rotationPivotX, float rotationPivotY, boolean border, BufferObject borderBuffer, float borderRed, float borderGreen, float borderBlue, float borderAlpha, float lineWidth, boolean hasTexture, Texture texture, int textureTile) {
+    	if(!fill && !border) return;
 		if(blendFunction != null) {
 			GLHelper.blendMode(blendFunction);
 		} else {
@@ -209,13 +309,27 @@ public class GLHelper {
 			gl.glScalef(width, height, 0);
 		}
 		if(texture != null) {
-			enableTextures();
-			enableTexCoordArray();
-			bindTexture(texture);
-			color4f(red, green, blue, alpha);
-			texCoordPointer(texture.buffer[textureTile], GL10.GL_FLOAT);
-			vertexPointer(vertexBuffer, GL10.GL_FLOAT);
-			gl.glDrawArrays(vertexMode, 0, vertexBuffer.getSize() / 2);
+			if(fill) {
+				enableTextures();
+				enableTexCoordArray();
+				bindTexture(texture);
+				color4f(red, green, blue, alpha);
+				texCoordPointer(texture.buffer[textureTile], GL10.GL_FLOAT);
+				vertexPointer(vertexBuffer, GL10.GL_FLOAT);
+				gl.glDrawArrays(vertexMode, 0, vertexBuffer.getSize() / 2);
+			}
+			if(border) {
+				disableTexCoordArray();
+				disableTextures();
+				color4f(borderRed, borderGreen, borderBlue, borderAlpha);
+				vertexPointer(borderBuffer, GL10.GL_FLOAT);
+				if(lineWidth != -1) {
+					lineWidth(lineWidth);
+				} else {
+					lineWidth(RokonActivity.currentScene.defaultLineWidth);
+				}
+				gl.glDrawArrays(GL10.GL_LINE_LOOP, 0, borderBuffer.getSize() / 2);
+			}
 		} else {
 			disableTexCoordArray();
 			disableTextures();
@@ -237,7 +351,35 @@ public class GLHelper {
 		}
 		gl.glPopMatrix();	
     }
-    
+
+    /** Draws a polygon, using VBOs
+    * @param fill TRUE if drawing with a fill, FALSE otherwise
+    * @param red red value for fill, 0f to 1f
+    * @param green green value for fill, 0f to 1f
+    * @param blue blue value for fill, 0f to 1f
+    * @param alpha alpha value for fill, 0f to 1f
+    * @param blendFunction valid BlendFunction object
+    * @param arrayVBO valid ArrayVBO for the shape
+    * @param vertexMode method for drawing vertices, eg GL_TRIANGLE_STRIP 
+    * @param x x-coordinate to draw from, top left
+    * @param y y-coordinate to draw from, top left
+    * @param width width of the shape to draw
+    * @param height height of the shape to draw
+    * @param rotation rotation, in degrees
+    * @param rotateAboutPivot TRUE if rotating about a given pivot, FALSE if central
+    * @param rotationPivotX x-coordinate of rotation pivot, if rotateAboutPivot TRUE
+    * @param rotationPivotY y-coordinate of rotation pivot, if rotateAboutPivot FALSE
+    * @param border TRUE if drawing a border, FALSE otherwise
+    * @param borderVBO valid ArrayVBO for the border shape, if border TRUE
+    * @param borderRed red value for border, 0f to 1f, if border TRUE
+    * @param borderGreen green value for border, 0f to 1f, if border TRUE
+    * @param borderBlue blue value for border, 0f to 1f, if border TRUE
+    * @param borderAlpha alpha value for border, 0f to 1f, if border TRUE
+    * @param lineWidth -1 to use default
+    * @param hasTexture TRUE if a Texture is being passed, FALSE otherwise
+    * @param texture valid Texture object to be rendered
+    * @param textureTile the index of the tile inside the Texture
+    */
     public static void drawVBO(boolean fill, float red, float green, float blue, float alpha, BlendFunction blendFunction, ArrayVBO arrayVBO, int vertexMode, float x, float y, float width, float height, float rotation, boolean rotateAboutPivot, float rotationPivotX, float rotationPivotY, boolean border, ArrayVBO borderVBO, float borderRed, float borderGreen, float borderBlue, float borderAlpha, float lineWidth, boolean hasTexture, Texture texture, int textureTile) {
 
 		if(!arrayVBO.isLoaded()) {
@@ -316,6 +458,11 @@ public class GLHelper {
 		gl.glPopMatrix();	
     }
 
+    /**
+     * Removes a set of Textures from the hardware
+     * 
+     * @param texture an array of Texture objects
+     */
     public static void removeTextures(Texture[] texture) {
     	for(int i = 0; i < texture.length; i++) {
     		if(texture[i] != null) {

@@ -4,7 +4,8 @@ import android.graphics.Bitmap;
 
 /**
  * TextTexture.java
- * 
+ * A Texture specifically designed for TTF text
+ * These are created through Font.createTexture
  * 
  * @author Richard
  */
@@ -23,10 +24,16 @@ public class TextTexture extends Texture {
 		textureHeight = nextPowerOfTwo(height);
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.stickycoding.rokon.Texture#getBitmap()
+	 */
 	protected Bitmap getBitmap() {
 		return bmp;
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.stickycoding.rokon.Texture#clearBitmap()
+	 */
 	protected void clearBitmap() {
 		//Empty
 	}

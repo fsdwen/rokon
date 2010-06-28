@@ -13,9 +13,16 @@ import com.stickycoding.rokon.vbo.VBO;
  * @author Richard
  */
 
+/**
+ * @author Richard
+ *
+ */
 public class Polygon {
 	
-	public static final int MAX_VERTEX_COUNT = 128;
+	/**
+	 * The maximum number of vertices allowed in the array of vertices
+	 */
+	public static int MAX_VERTEX_COUNT = 128;
 
 	protected boolean building;
 	protected Point[] vertex;
@@ -27,20 +34,23 @@ public class Polygon {
 	protected BufferObject buffer;
 	protected ArrayVBO vbo;
 	
+	/**
+	 * Creates a PolygonShape (for Box2D) from this Polygon
+	 * 
+	 * @return valid PolygonShape
+	 */
 	public PolygonShape getPolygonShape() {
 		PolygonShape shape = new PolygonShape();
-		shape.set(vectorVertices());
+		shape.set(vertex);
 		return shape;
 	}
 	
-	public Vector2[] vectorVertices() {
-		Vector2[] vectors = new Vector2[vertexCount];
-		for(int i = 0; i < vertexCount; i++) {
-			vectors[i] = new Vector2(vertex[i].getX(), vertex[i].getY());
-		}
-		return vectors;
-	}
-	
+	/**
+	 * Returns the VBO associated with this Polygon, if one isn't ready, calculates a new one.
+	 * The ArrayVBO is stored in memory, so only one copy is produced.
+	 * 
+	 * @return ArrayVBO for this Polygon shape
+	 */
 	public ArrayVBO getVBO() {
 		if(vbo == null) {
 			vbo = new ArrayVBO(buffer, VBO.STATIC);
@@ -48,44 +58,11 @@ public class Polygon {
 		return vbo;
 	}
 	
-	protected float rotatedWidth(float angle, float pivotX, float pivotY) {
-		angle *= MathHelper.DEG_TO_RAD;
-		return ((1 - pivotX) * (float)(Math.cos(angle))) - ((1 - pivotY) * (float)(Math.sin(angle))) + pivotX;
-	}
-	
-	protected float rotatedHeight(float angle, float pivotX, float pivotY) {
-		angle *= MathHelper.DEG_TO_RAD;
-		return ((1 - pivotX) * (float)(Math.sin(angle))) + ((1 - pivotY) * (float)(Math.cos(angle))) + pivotY;
-	}
-	
-	protected float rotatedX(float angle, float pivotX, float pivotY, int index) {
-		angle *= MathHelper.DEG_TO_RAD;
-		return ((vertex[index].getX() - pivotX) * (float)(Math.cos(angle))) - ((vertex[index].getY() - pivotY) * (float)(Math.sin(angle))) + pivotX;
-	}
-	
-	protected float rotatedY(float angle, float pivotX, float pivotY, int index) {
-		angle *= MathHelper.DEG_TO_RAD;
-		return ((vertex[index].getX() - pivotX) * (float)(Math.sin(angle))) + ((vertex[index].getY() - pivotY) * (float)(Math.cos(angle))) + pivotY;
-	}
-	
-	protected float[] rotatedX(float angle, float pivotX, float pivotY) {
-		angle *= MathHelper.DEG_TO_RAD;
-		float[] newX = new float[vertexCount];
-		for(int i = 0; i < vertexCount; i++) {
-			newX[i] = ((vertex[i].getX() - pivotX) * (float)(Math.cos(angle))) - ((vertex[i].getY() - pivotY) * (float)(Math.sin(angle))) + pivotX;
-		}
-		return newX;
-	}
-
-	protected float[] rotatedY(float angle, float pivotX, float pivotY) {
-		angle *= MathHelper.DEG_TO_RAD;
-		float[] newX = new float[vertexCount];
-		for(int i = 0; i < vertexCount; i++) {
-			newX[i] = ((vertex[i].getX() - pivotX) * (float)(Math.sin(angle))) + ((vertex[i].getY() - pivotY) * (float)(Math.cos(angle))) + pivotY;
-		}
-		return newX;
-	}
-	
+	/**
+	 * Calculates the edges for this Polygon. There should be no need 
+	 * to call this unless you directly modified/added vertices after 
+	 * creating Polygon object.
+	 */
 	public void findEdges() {
 		edge = new Vector2[vertexCount];
 		normal = new Vector2[vertexCount];
@@ -99,6 +76,12 @@ public class Polygon {
 		Debug.print("Edges found");
 	}
 	
+	/**
+	 * Fetches the BufferObject for this Polygon. If one is not already created, produces another.
+	 * Stored in the memory, so only one ever created per Polygon.
+	 * 
+	 * @return BufferObject
+	 */
 	public BufferObject getBufferObject() {
 		if(buffer == null) {
 			buffer = new BufferObject(vertexCount * 2);
@@ -113,12 +96,22 @@ public class Polygon {
 		return buffer;
 	}
 	
+	/**
+	 * Creates a 2D Polygon based on an array of Point objects
+	 * 
+	 * @param vertices array of Point
+	 */
 	public Polygon(Point[] vertices) {
 		this.vertex = vertices;
 		vertexCount = vertices.length;
 		findEdges();
 	}
 	
+	/**
+	 * Creates a 2D Polygon based on an array of floating points
+	 * 
+	 * @param vertices array of floats
+	 */
 	public Polygon(float[] vertices) {
 		if(vertices.length % 2 != 0) {
 			Debug.error("Tried creating Polygon with odd number of vertices");
@@ -134,27 +127,57 @@ public class Polygon {
 		findEdges();
 	}
 	
+	/**
+	 * Creates a 2D Polygon, with no vertices 
+	 */
 	public Polygon() {
 		vertex = new Point[MAX_VERTEX_COUNT];
 		vertexCount = 0;
 	}
 	
+	/**
+	 * Adds a vertex to the Polygon by passing a Point
+	 * 
+	 * @param location a valid Point
+	 */
 	public void addVertex(Point location) {
 		vertex[vertexCount++] = location;
 	}
 	
+	/**
+	 * Adds a vertex to the Polygon by passing floats
+	 * 
+	 * @param x x-coordinate
+	 * @param y y-coordinate
+	 */
 	public void addVertex(float x, float y) {
 		addVertex(new Point(x, y));
 	}
 	
+	/**
+	 * Fetches the Point of a specific vertex
+	 * 
+	 * @param index index of the vertex
+	 * 
+	 * @return Point object, NULL if invalid index
+	 */
 	public Point getVertex(int index) {
 		return vertex[index];
 	}
 	
+	/**
+	 * Completes the Polygon, this should be called after all vertices are added through addVertex.
+	 * No need to call this if defining the vertices through Polygon()
+	 */
 	public void complete() {
 		findEdges();
 	}
 	
+	/**
+	 * Returns the number of active vertices in this Polygon
+	 * 
+	 * @return number of vertices, >= 0
+	 */
 	public int getVertexCount() {
 		return vertexCount;
 	}

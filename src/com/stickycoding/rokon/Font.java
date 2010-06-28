@@ -16,19 +16,40 @@ import android.graphics.Typeface;
 
 public class Font {
 	
+	/**
+	 * The maximum numebr of lines when producing a TextTexture
+	 */
 	public static final int MAX_LINES = 64;
+	
+	/**
+	 * The default font size to use when producing TextTexture
+	 */
 	public static final float DEFAULT_FONT_SIZE = 64f;
 
 	protected Rect bounds;
 	protected FontMetrics fontMetrics;
 	protected Typeface typeface;
+	
+	/**
+	 * The Paint object used to draw text, this can be manipulated to produce the desired colours / styles
+	 */
 	public Paint paint;
 	
+	/**
+	 * Creates a Font from a Typeface object
+	 * 
+	 * @param typeface valid Typeface object
+	 */
 	public Font(Typeface typeface) {
 		this.typeface = typeface;
 		init();
 	}
 	
+	/**
+	 * Creates a Font from a TTF font in assets
+	 * 
+	 * @param assetPath path to a valid .TTF file in assets
+	 */
 	public Font(String assetPath) {
 		this.typeface = Typeface.createFromAsset(Rokon.currentActivity.getAssets(), assetPath);
 		init();
@@ -42,11 +63,22 @@ public class Font {
 		bounds = new Rect();
 	}
 	
+	/**
+	 * Sets the font size to be used when creating TextTextures, otherwise DEFAULT_FONT_SIZE will be used.
+	 * 
+	 * @param fontSize valid float, > 0
+	 */
 	public void setFontSize(float fontSize) {
 		paint.setTextSize(fontSize);
 		fontMetrics = paint.getFontMetrics();
 	}
 	
+	/**
+	 * Creates a TextTexture without wrapping
+	 * 
+	 * @param text valid String
+	 * @return valid TextTexture, NULL if error in processing
+	 */
 	public TextTexture createTexture(String text) {
 		int bitmapWidth, bitmapHeight;
 		paint.getTextBounds(text, 0, text.length(), bounds);
@@ -58,6 +90,13 @@ public class Font {
 		return new TextTexture(bmp);
 	}
 	
+	/**
+	 * Creates a TextTexture with wrapping
+	 * 
+	 * @param text valid String
+	 * @param width an integer width, in pixels, for the TextTexture produced
+	 * @return valid TextTexture, NULL if error in processing
+	 */
 	public TextTexture createTexture(String text, int width) {
 		int bitmapWidth, bitmapHeight;
 		bitmapWidth = width;

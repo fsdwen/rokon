@@ -12,6 +12,26 @@ package com.stickycoding.rokon;
  */
 
 public class Sprite extends GameObject implements Updateable {
+
+	
+	/**
+	 * Constants used for rotateTo
+	 */
+	public static final int ROTATE_TO_AUTOMATIC = 0, ROTATE_TO_CLOCKWISE = 1, ROTATE_TO_ANTI_CLOCKWISE = 2;
+
+	/**
+	 * The maximum number of Modifiers which can be active on a Sprite
+	 */
+	public static final int MAX_MODIFIERS = 8;
+	
+	protected int modifierCount = 0;
+	protected Modifier[] modifier = new Modifier[MAX_MODIFIERS];
+	
+	protected boolean isRotateTo = false;
+	protected float rotateToAngleStart, rotateToAngle;
+	protected long rotateToStartTime;
+	protected int rotateToTime, rotateToType, rotateToDirection;
+	protected Callback rotateToCallback;
 	
 	protected float accelerationX, accelerationY, speedX, speedY, terminalSpeedX, terminalSpeedY;
 	protected boolean useTerminalSpeedX, useTerminalSpeedY;
@@ -22,14 +42,31 @@ public class Sprite extends GameObject implements Updateable {
 	
 	protected Polygon polygon = Rokon.rectangle;
 	
-	public void setShape(Polygon polygon) {
+	/**
+	 * Sets a Polygon for this Sprite
+	 * 
+	 * @param polygon valid Polygon
+	 */
+	public void setPolygon(Polygon polygon) {
 		this.polygon = polygon;
 	}
 	
-	public Polygon getShape() {
+	/**
+	 * Fetches the Polygon associated with this Sprite. If none is set, it defaults to Rokon.rectangle
+	 * 
+	 * @return Polygon object
+	 */
+	public Polygon getPolygon() {
 		return polygon;
 	}
 
+	/**
+	 * Returns a specific vertex of this Sprite, as it is drawn. Taking into account scaling and rotations.
+	 * 
+	 * @param index vertex position
+	 * 
+	 * @return float array, contains two elements, 0=X 1=Y 
+	 */
 	public float[] getVertex(int index) {
 		if(rotation != 0) {
 			float x = getX() + (getWidth() * polygon.vertex[index].getX());
@@ -43,6 +80,14 @@ public class Sprite extends GameObject implements Updateable {
 		}
 	}
 	
+	/**
+	 * Creates a Sprite with given dimensions
+	 * 
+	 * @param x x coordinate
+	 * @param y y coordinate
+	 * @param width width
+	 * @param height height
+	 */
 	public Sprite(float x, float y, float width, float height) {
 		super(x, y, width, height);
 	}
@@ -471,14 +516,14 @@ public class Sprite extends GameObject implements Updateable {
 		this.angularAcceleration = acceleration;
 	}
 	
-	protected boolean isRotateTo = false;
-	protected float rotateToAngleStart, rotateToAngle;
-	protected long rotateToStartTime;
-	protected int rotateToTime, rotateToType, rotateToDirection;
-	protected Callback rotateToCallback;
-	
-	public static final int ROTATE_TO_AUTOMATIC = 0, ROTATE_TO_CLOCKWISE = 1, ROTATE_TO_ANTI_CLOCKWISE = 2;
-	
+	/**
+	 * Rotates the Sprite to a specific angle, over a given time
+	 * 
+	 * @param angle angle, in radians, to rotate to
+	 * @param direction the direction (using ROTATE_TO_ constants)
+	 * @param time time (in milliseconds) 
+	 * @param type movement type, as defined in Movement
+	 */
 	public void rotateTo(float angle, int direction, int time, int type) {
 		if(isRotateTo) {
 			if(parentScene.useInvoke) attemptInvoke("onRotateToCancel");
@@ -500,8 +545,6 @@ public class Sprite extends GameObject implements Updateable {
 		
 		rotation = rotation % Movement.TWO_PI;
 
-		
-		//TODO Fix this rubbish, there has to be a better way
 		if(rotateToDirection == ROTATE_TO_AUTOMATIC) {
 			if(rotation > 180f) {
 				if(angle > 180f) {
@@ -675,10 +718,13 @@ public class Sprite extends GameObject implements Updateable {
 		setY(moveToStartY + ((moveToFinalY - moveToStartY) * movementFactor));
 	}
 	
-	public static final int MAX_MODIFIERS = 8;
-	protected int modifierCount = 0;
-	protected Modifier[] modifier = new Modifier[MAX_MODIFIERS];
-	
+	/**
+	 * Adds a Modifier to this Sprite
+	 * 
+	 * @param modifier valid Modifier object
+	 * 
+	 * @return TRUE if there was room to add the Modifier, FALSE if it failed
+	 */
 	public boolean addModifier(Modifier modifier) {
 		for(int i = 0; i < MAX_MODIFIERS; i++) {
 			if(this.modifier[i] == null) {
@@ -692,6 +738,11 @@ public class Sprite extends GameObject implements Updateable {
 		return false;
 	}
 	
+	/**
+	 * Removes a Modifier from a Sprite (if it exists)
+	 * 
+	 * @param modifier valid Modifier object
+	 */
 	public void removeModifier(Modifier modifier) {
 		for(int i = 0; i < MAX_MODIFIERS; i++) {
 			if(this.modifier[i] == modifier) {

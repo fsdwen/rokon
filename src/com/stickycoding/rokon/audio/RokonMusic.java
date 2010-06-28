@@ -30,10 +30,21 @@ public class RokonMusic {
 		}
 	}
 	
+	/**
+	 * Plays a file from assets, no looping
+	 * 
+	 * @param file valid path to a file in assets
+	 */
 	public static void play(String file) {
 		play(file, false);
 	}
 
+	/**
+	 * Plays a file from assets
+	 * 
+	 * @param file valid path to a file in assets
+	 * @param loop TRUE to loop the file, FALSE to play once
+	 */
 	public static void play(String file, boolean loop) {
 		prepareMediaPlayer();
 		mediaPlayer.setLooping(loop);
@@ -67,21 +78,33 @@ public class RokonMusic {
 		mediaPlayer.start();
 	}
 	
+	/**
+	 * Plays the current music file, if paused or stopped
+	 */
 	public static void play() {
 		if(mediaPlayer == null) return;
 		mediaPlayer.start();
 	}
 	
+	/**
+	 * Stops the current music file from playing
+	 */
 	public static void stop() {
 		if(mediaPlayer == null) return;
 		mediaPlayer.stop();
 	}
 	
+	/**
+	 * Pauses the current music file, resume with start()
+	 */
 	public static void pause() {
 		if(mediaPlayer == null) return;
 		mediaPlayer.pause();
 	}
 	
+	/**
+	 * Call when RokonActivity is paused
+	 */
 	public static void onPause() {
 		if(mediaPlayer == null) return;
 		if(mediaPlayer.isPlaying()) {
@@ -90,6 +113,9 @@ public class RokonMusic {
 		}
 	}
 	
+	/**
+	 * Call when RokonActivity is resumed
+	 */
 	public static void onResume() {
 		if(mediaPlayer == null) return;
 		if(mustResume) {
@@ -98,7 +124,11 @@ public class RokonMusic {
 		}
 	}
 	
-	
+	/**
+	 * Fetches the associated MediaPlayer object, so you can make your own changes or hook your own Listeners
+	 * 
+	 * @return MediaPlayer object, NULL if none used
+	 */
 	public static MediaPlayer getMediaPlayer() {
 		return mediaPlayer;
 	}

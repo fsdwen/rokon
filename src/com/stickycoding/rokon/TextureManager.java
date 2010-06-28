@@ -2,15 +2,18 @@ package com.stickycoding.rokon;
 
 import javax.microedition.khronos.opengles.GL10;
 
-
 /**
  * TextureManager.java
  * Handles queues for loading/unloading textures from the hardware, does not interfere with actual Texture objects
  * 
  * @author Richard
  */
+
 public class TextureManager {
 	
+	/**
+	 * Maximum number of Texture objects that TextureManager can handle
+	 */
 	public static final int MAX_TEXTURE_COUNT = 256;
 	
 	protected static Texture[] activeTexture = new Texture[MAX_TEXTURE_COUNT];
@@ -25,6 +28,11 @@ public class TextureManager {
 	protected static DynamicTexture[] refreshQueue = new DynamicTexture[MAX_TEXTURE_COUNT];
 	protected static int refreshQueueCount = 0;
 	
+	/**
+	 * Refreshes a DynamicTexture on the hardware
+	 * 
+	 * @param texture valid DynamicTexture
+	 */
 	public static void refreshTexture(DynamicTexture texture) {
 		if(isRefreshing(texture)) {
 			return;
@@ -46,7 +54,7 @@ public class TextureManager {
 		Debug.error("Reload texture Q is too long");
 	}
 	
-	public static boolean isRefreshing(DynamicTexture texture) {
+	protected static boolean isRefreshing(DynamicTexture texture) {
 		for(int i = 0; i < MAX_TEXTURE_COUNT; i++) {
 			if(refreshQueue[i] != null && (refreshQueue[i] == texture || (refreshQueue[i].parentAtlas != null && refreshQueue[i].parentAtlas == texture.parentAtlas))) {
 				return true;
@@ -55,6 +63,9 @@ public class TextureManager {
 		return false;
 	}
 	
+	/** 
+	 * Reloads all active Textures
+	 */
 	public static void reloadTextures() {
 		for(int i = 0; i < MAX_TEXTURE_COUNT; i++) {
 			if(activeTexture[i] != null) {
@@ -66,6 +77,11 @@ public class TextureManager {
 		}
 	}
 	
+	/**
+	 * Queues a Texture to be loaded onto the hardware
+	 * 
+	 * @param texture valid Texture object
+	 */
 	public static void load(Texture texture) {
 		if(isLoading(texture) || isActive(texture)) {
 			return;
@@ -84,7 +100,7 @@ public class TextureManager {
 		Debug.error("Unable to load texture into the queue, queue is full");
 	}
 	
-	public static boolean isLoading(Texture texture) {
+	protected static boolean isLoading(Texture texture) {
 		for(int i = 0; i < MAX_TEXTURE_COUNT; i++) {
 			if(loadQueue[i] != null && (loadQueue[i] == texture || (loadQueue[i].parentAtlas != null && loadQueue[i].parentAtlas == texture.parentAtlas))) {
 				return true;
@@ -93,6 +109,9 @@ public class TextureManager {
 		return false;
 	}
 	
+	/**
+	 * Unloads all currently active Texture objects from the hardware
+	 */
 	public static void unloadActiveTextures() {
 		for(int i = 0; i < MAX_TEXTURE_COUNT; i++) {
 			if(activeTexture[i] != null) {
@@ -104,7 +123,6 @@ public class TextureManager {
 	}
 	
 	protected static void execute(GL10 gl) {
-		
 		if(refreshQueueCount > 0) {
 			for(int i = 0; i < MAX_TEXTURE_COUNT; i++) {
 				if(refreshQueue[i] != null) {
@@ -129,14 +147,14 @@ public class TextureManager {
 		}
 	}
 	
-	public static void clearUnloadQueue() {
+	protected static void clearUnloadQueue() {
 		for(int i = 0; i < MAX_TEXTURE_COUNT; i++) {
 			unloadQueue[i] = null;
 		}
 		unloadQueueCount = 0;
 	}
 	
-	public static void addToActive(Texture textureId) {
+	protected static void addToActive(Texture textureId) {
 		if(isActive(textureId)) {
 			return;
 		}
@@ -148,7 +166,7 @@ public class TextureManager {
 		}
 	}
 	
-	public static void unload(Texture textureId) {
+	protected static void unload(Texture textureId) {
 		if(isUnloading(textureId)) {
 			return;
 		}
@@ -163,7 +181,7 @@ public class TextureManager {
 		Debug.warning("TRIED ADDING TO UNLOAD QUEUE, BUT FULL");
 	}
 	
-	public static boolean isActive(Texture texture) {
+	protected static boolean isActive(Texture texture) {
 		for(int i = 0; i < MAX_TEXTURE_COUNT; i++) {
 			//if(activeTexture[i] != null && (activeTexture[i] == texture || (activeTexture[i].parentAtlas != null && activeTexture[i].parentAtlas == texture.parentAtlas))) {
 			if(activeTexture[i] == texture) {
@@ -173,7 +191,7 @@ public class TextureManager {
 		return false;
 	}
 	
-	public static boolean isUnloading(Texture texture) {
+	protected static boolean isUnloading(Texture texture) {
 		for(int i = 0; i < MAX_TEXTURE_COUNT; i++) {
 			if(unloadQueue[i] != null && (unloadQueue[i] == texture || (unloadQueue[i].parentAtlas != null && unloadQueue[i].parentAtlas == texture.parentAtlas))) {
 				return true;
@@ -182,7 +200,7 @@ public class TextureManager {
 		return false;
 	}
 	
-	public static void removeFromUnloading(Texture texture) {
+	protected static void removeFromUnloading(Texture texture) {
 		for(int i = 0 ; i < MAX_TEXTURE_COUNT; i++) {
 			if(unloadQueue[i] != null && unloadQueue[i].textureIndex == texture.textureIndex) {
 				unloadQueue[i] = null;
@@ -191,7 +209,7 @@ public class TextureManager {
 		}
 	}
 	
-	public static void removeFromActiveTextures(Texture texture) {
+	protected static void removeFromActiveTextures(Texture texture) {
 		for(int i = 0; i < MAX_TEXTURE_COUNT; i++) {
 			if(activeTexture[i] != null && activeTexture[i].textureIndex == texture.textureIndex) {
 				activeTexture[i] = null;

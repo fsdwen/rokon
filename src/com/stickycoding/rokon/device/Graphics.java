@@ -3,8 +3,6 @@ package com.stickycoding.rokon.device;
 import android.app.Activity;
 import android.util.DisplayMetrics;
 
-import com.stickycoding.rokon.Debug;
-
 /**
  * Device.java
  * Discovers and retrieves information about the devices hardware
@@ -13,34 +11,57 @@ import com.stickycoding.rokon.Debug;
  */
 public class Graphics {
 	
+	/**
+	 * The aspect ratio of the device screen
+	 */
 	public static int NORMAL = 0, WIDE = 1, FULL_WIDTH = 2;
 	
+	/**
+	 * The aspect ratio as defined for wide screen (eg 800x480)
+	 */
 	public static final float WIDE_RATIO = 0.60037524f;
 	
 	private static DisplayMetrics displayMetrics;	
 	private static int widthPixels, heightPixels, halfWidthPixels, halfHeightPixels;
 	private static float aspectRatio;
 	private static int screenType;
-	private static boolean isOpenGL10;
 	private static boolean supportsVBO;
-	private static boolean supportsDrawTex;
 	
+	/**
+	 * Fetches the screen type, as per Graphics constants
+	 * 
+	 * @return NORMAL, WIDE, FULL_WIDTH
+	 */
 	public static int getScreenType() {
 		return screenType;
 	}
 	
+	/**
+	 * Fetches the actual aspect ratio for the device screen
+	 * 
+	 * @return aspect ratio
+	 */
 	public static float getAspectRatio() {
 		return aspectRatio;
 	}
 	
+	/**
+	 * @return TRUE if device is normal aspect ratio, FALSE otherwise
+	 */
 	public static boolean isNormalAspect() {
 		return screenType == NORMAL;
 	}
 	
+	/**
+	 * @return TRUE if device is widescreen, FALSE otherwise
+	 */
 	public static boolean isWideAspect() {
 		return screenType == WIDE;
 	}
 	
+	/**
+	 * @return TRUE if device is full width, FALSE otherwise
+	 */
 	public static boolean isFullWidthAspect() {
 		return screenType == FULL_WIDTH;
 	}
@@ -126,35 +147,21 @@ public class Graphics {
 	public static boolean supportsVBO() {
 		return isSupportsVBO();
 	}
-	
+
 	/**
-	 * @return TRUE if the device supports the draw_tex extension
+	 * Sets whether the device can support VBOs or not, do not use this unless you are aware of new bugged devices
+	 * 
+	 * @param supportsVBO TRUE if supports VBOs, FALSE otherwise
 	 */
-	public static boolean supportsDrawTex() {
-		return isSupportsDrawTex();
-	}
-
-	public static void setSupportsDrawTex(boolean supportsDrawTex) {
-		Graphics.supportsDrawTex = supportsDrawTex;
-	}
-
-	public static boolean isSupportsDrawTex() {
-		return supportsDrawTex;
-	}
-
 	public static void setSupportsVBO(boolean supportsVBO) {
 		Graphics.supportsVBO = supportsVBO;
 	}
 
+	/**
+	 * @return TRUE if the device supports VBOs, FALSE otherwise
+	 */
 	public static boolean isSupportsVBO() {
 		return supportsVBO;
 	}
-
-	public static void setOpenGL10(boolean isOpenGL10) {
-		Graphics.isOpenGL10 = isOpenGL10;
-	}
-
-	public static boolean isOpenGL10() {
-		return isOpenGL10;
-	}
+	
 }

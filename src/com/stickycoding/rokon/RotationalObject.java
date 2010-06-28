@@ -58,7 +58,7 @@ public class RotationalObject extends DimensionalObject {
 		return rotateAboutPoint;
 	}
 	
-	public void onUpdate() {
+	protected void onUpdate() {
 		super.onUpdate();
 	}
 

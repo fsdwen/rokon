@@ -4,9 +4,9 @@ import com.stickycoding.rokon.vbo.ArrayVBO;
 import com.stickycoding.rokon.vbo.ElementVBO;
 
 /**
- * BlendFunction.java
+ * Rokon.java
  * Various static methods and fields, used by the engine
-(
+ * 
  * @author Richard
  */
 
@@ -25,24 +25,22 @@ public class Rokon {
 	
 	protected static Polygon rectangle;
 	
+	/**
+	 * Fetches the current Activity associated with Rokon
+	 * 
+	 * @return RokonActivity object, NULL if unset
+	 */
 	public static RokonActivity getActivity() {
 		return currentActivity;
 	}
 	
+	/**
+	 * Fetches a default straight line BufferObject
+	 * 
+	 * @return valid BufferObject
+	 */
 	public static BufferObject lineVertexBuffer() {
 		return lineVertexBuffer;
-	}
-	
-	public static void verboseMode() {
-		verbose = true;
-	}
-	
-	public static void disableVerboseMode() {
-		verbose = false;
-	}
-	
-	public static boolean isVerboseMode() {
-		return verbose;
 	}
 	
 	/**

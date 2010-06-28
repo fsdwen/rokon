@@ -1,13 +1,13 @@
 package com.stickycoding.rokon;
 
 import javax.microedition.khronos.opengles.GL10;
-import javax.microedition.khronos.opengles.GL11;
-import javax.microedition.khronos.opengles.GL11Ext;
 
 import com.stickycoding.rokon.device.Graphics;
-import com.stickycoding.rokon.vbo.ArrayVBO;
-import com.stickycoding.rokon.vbo.VBO;
 
+/**
+ * @author Richard
+ *
+ */
 public class DrawableObject extends BasicGameObject implements Drawable, Updateable {
 
 	protected boolean killNextUpdate = false;
@@ -45,6 +45,11 @@ public class DrawableObject extends BasicGameObject implements Drawable, Updatea
 		fill = false;
 	}
 	
+	/**
+	 * Determines whether this DrawableObject is using VBOs
+	 * 
+	 * @return TRUE if using VBO, FALSE otherwise
+	 */
 	public boolean isVBO() {
 		return forceDrawType == DrawPriority.VBO || DrawPriority.drawPriority == DrawPriority.PRIORITY_VBO;
 	}
@@ -66,43 +71,92 @@ public class DrawableObject extends BasicGameObject implements Drawable, Updatea
 		borderAlpha = alpha;
 	}
 	
+	/**
+	 * Sets the line width for this object, if not set the default line width set in Scene will be used
+	 *  
+	 * @param lineWidth float
+	 */
 	public void setLineWidth(float lineWidth) {
 		this.lineWidth = lineWidth;
 	}
 	
+	/**
+	 * Fetches the line width for this object, if a custom line width is being used
+	 * 
+	 * @return custom line width, -1 if not set
+	 */
 	public float getLineWidth() {
 		return lineWidth;
 	}
 	
+	/**
+	 * Removes the custom line width for this object, and goes back to using the default
+	 */
 	public void useDefaultLineWidth() {
 		lineWidth = -1;
 	}
 	
+	/**
+	 * Sets whether or not to show a border
+	 * 
+	 * @param border TRUE if border in use, FALSE otherwise
+	 */
 	public void setBorder(boolean border) {
 		this.border = border;
 	}
 	
+	/**
+	 * Prevents this DrawableObject from being rendered 
+	 */
 	public void hide() {
 		invisible = true;
 	}
 	
+	/**
+	 * Shows this DrawableObject, only needs to be called after hide()
+	 */
 	public void show() {
 		invisible = false;
 	}
 	
+	/**
+	 * Determines whether ot not the DrawableObject has been told to hide
+	 * 
+	 * @return TRUE if visible, FALSE if hide() has been called 
+	 */
 	public boolean isVisible() {
 		return !invisible;
 	}
 	
+	/**
+	 * Fades this DrawableObject to a given alpha value over time
+	 * 
+	 * @param alpha target alpha value, between 0f and 1f
+	 * @param time the time (in milliseconds) to take while fading
+	 * @param movementType valid movement type, see constants in Movement
+	 */
 	public void fade(float alpha, int time, int movementType) {
 		fade(this.alpha, alpha, time, movementType);
 	}
 	
+	/**
+	 * Fades this DrawableObject to a given alpha value over time, using a linear movement type
+	 * 
+	 * @param alpha target alpha value, between 0f and 1f
+	 * @param time the time (in milliseconds) to take while fading
+	 */
 	public void fade(float alpha, int time) {
 		fade(this.alpha, alpha, time, Movement.LINEAR);
 	}
-
 	
+	/**
+	 * Fades this DrawableObject to a given alpha value over time, starting at a specific alpha
+	 * 
+	 * @param startAlpha start alpha value, between 0f and 1f
+	 * @param alpha target alpha value, between 0f and 1f
+	 * @param time the time (in milliseconds) to take while fading
+	 * @param movementType valid movement type, see constants in Movement
+	 */
 	public void fade(float startAlpha, float alpha, int time, int movementType) {
 		if(alpha == startAlpha) return;
 		this.alpha = startAlpha;
@@ -149,7 +203,6 @@ public class DrawableObject extends BasicGameObject implements Drawable, Updatea
 	public void setTexture(Texture texture) {
 		this.texture = texture;
 	}
-
 	
 	/**
 	 * Uses a Texture rather than a blank square
@@ -181,6 +234,11 @@ public class DrawableObject extends BasicGameObject implements Drawable, Updatea
 		return blendFunction;
 	}
 
+	/**
+	 * Forces this DrawableObject to use a specific DrawType
+	 * 
+	 * @param drawType valid draw type, see constants in DrawPriority
+	 */
 	public void forceDrawType(int drawType) {
 		if(drawType == DrawPriority.VBO) {
 			if(Graphics.isSupportsVBO()) {
@@ -380,7 +438,6 @@ public class DrawableObject extends BasicGameObject implements Drawable, Updatea
 		float col = textureTile % texture.columns;
 		return (int)((textureTile - col) / texture.columns);
 	}
-
 	
 	/**
 	 * Returns the current row of the Texture which this DrawableObject is using
@@ -391,19 +448,26 @@ public class DrawableObject extends BasicGameObject implements Drawable, Updatea
 		return textureTile % texture.columns;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.stickycoding.rokon.RotationalObject#onUpdate()
+	 */
 	public void onUpdate() {
 		super.onUpdate();
 		updateFadeTo();
 		updateAnimation();
 	}
 
+	/* (non-Javadoc)
+	 * @see com.stickycoding.rokon.Drawable#onAdd(com.stickycoding.rokon.Layer)
+	 */
 	public void onAdd(Layer layer) {
         killNextUpdate = false;
 	}
 
-	public void onRemove() {
-
-	}
+	/* (non-Javadoc)
+	 * @see com.stickycoding.rokon.Drawable#onRemove()
+	 */
+	public void onRemove() { }
 
 	/**
 	 * Removes this DrawableObject from the Scene
@@ -412,6 +476,9 @@ public class DrawableObject extends BasicGameObject implements Drawable, Updatea
 		killNextUpdate = true;
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.stickycoding.rokon.Drawable#isAlive()
+	 */
 	public boolean isAlive() {
 		if(killNextUpdate) {
 			onRemove();
@@ -534,6 +601,9 @@ public class DrawableObject extends BasicGameObject implements Drawable, Updatea
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see com.stickycoding.rokon.Drawable#isTouchable()
+	 */
 	public boolean isTouchable() {
 		return isTouchable();
 	}

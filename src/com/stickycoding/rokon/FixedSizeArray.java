@@ -22,6 +22,7 @@ import java.util.Comparator;
 /**
  * FixedSizeArray.java
  * This was ripped straight from ReplicaIsland, it's a great way of making arrays a little easier without having to manage memory alloacations
+ * No good for end-user
  * 
  * FixedSizeArray is an alternative to a standard Java collection like ArrayList.  It is designed
  * to provide a contiguous array of fixed length which can be accessed, sorted, and searched without
@@ -41,7 +42,8 @@ public class FixedSizeArray<T> extends AllocationGuard {
     private boolean mSorted;
     private Sorter<T> mSorter;
     
-    public FixedSizeArray(int size) {
+    @SuppressWarnings("unchecked")
+	protected FixedSizeArray(int size) {
         super();
         assert size > 0;
         // Ugh!  No generic array construction in Java.
@@ -52,7 +54,8 @@ public class FixedSizeArray<T> extends AllocationGuard {
         mSorter = new StandardSorter<T>();        
     }
     
-    public FixedSizeArray(int size, Comparator<T> comparator) {
+    @SuppressWarnings("unchecked")
+	protected FixedSizeArray(int size, Comparator<T> comparator) {
         super();
         assert size > 0;
         mContents = (T[])new Object[size];
@@ -67,7 +70,7 @@ public class FixedSizeArray<T> extends AllocationGuard {
      * Inserts a new object into the array.  If the array is full, an assert is thrown and the
      * object is ignored.
      */
-    public final void add(T object) {
+    protected final void add(T object) {
         assert mCount < mContents.length : "Array exhausted!";
         if (mCount < mContents.length) {
             mContents[mCount] = object;
@@ -82,7 +85,7 @@ public class FixedSizeArray<T> extends AllocationGuard {
      * ignoreComparator is set to true, a linear search of object references will be performed.
      * Otherwise, the comparator set on this array (if any) will be used to find the object.
      */
-    public void remove(T object, boolean ignoreComparator) {
+    protected void remove(T object, boolean ignoreComparator) {
         final int index = find(object, ignoreComparator);
         if (index != -1) {
             remove(index);
@@ -93,7 +96,7 @@ public class FixedSizeArray<T> extends AllocationGuard {
      * Removes the specified index from the array.  Subsequent entries in the array are shifted up
      * to fill the space.
      */
-    public void remove(int index) {
+    protected void remove(int index) {
         assert index < mCount;
         // ugh
         if (index < mCount) {
@@ -113,7 +116,7 @@ public class FixedSizeArray<T> extends AllocationGuard {
      * remove(count -1);
      * @return The contents of the last element in the array.
      */
-    public T removeLast() {
+    protected T removeLast() {
         T object = null;
         if (mCount > 0) {
             object = mContents[mCount - 1];
@@ -127,7 +130,7 @@ public class FixedSizeArray<T> extends AllocationGuard {
      * Swaps the element at the passed index with the element at the end of the array.  When
      * followed by removeLast(), this is useful for quickly removing array elements.
      */
-    public void swapWithLast(int index) {
+    protected void swapWithLast(int index) {
         if (mCount > 0 && index < mCount - 1) {
             T object = mContents[mCount - 1];
             mContents[mCount - 1] = mContents[index];
@@ -140,7 +143,7 @@ public class FixedSizeArray<T> extends AllocationGuard {
      * Sets the value of a specific index in the array.  An object must have already been added to
      * the array at that index for this command to complete.
      */
-    public void set(int index, T object) {
+    protected void set(int index, T object) {
         assert index < mCount;
         if (index < mCount) {
             mContents[index] = object; 
@@ -151,7 +154,7 @@ public class FixedSizeArray<T> extends AllocationGuard {
      * Clears the contents of the array, releasing all references to objects it contains and 
      * setting its count to zero.
      */
-    public void clear() {
+    protected void clear() {
         for (int x = 0; x < mCount; x++) {
             mContents[x] = null;
         }
@@ -162,7 +165,7 @@ public class FixedSizeArray<T> extends AllocationGuard {
     /**
      * Returns an entry from the array at the specified index.
      */
-    public T get(int index) {
+    protected T get(int index) {
         assert index < mCount;
         T result = null;
         if (index < mCount && index >= 0) {
@@ -178,7 +181,7 @@ public class FixedSizeArray<T> extends AllocationGuard {
      * and should be used in read-only cases.
      * @return The internal storage array.
      */
-    public final Object[] getArray() {
+    protected final Object[] getArray() {
         return mContents;
     }
     
@@ -195,7 +198,8 @@ public class FixedSizeArray<T> extends AllocationGuard {
      * @param object  The object to search for.
      * @return  The index of the object in the array, or -1 if the object is not found.
      */
-    public int find(T object, boolean ignoreComparator) {
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	protected int find(T object, boolean ignoreComparator) {
         int index = -1;
         final int count = mCount;
         final boolean sorted = mSorted;
@@ -246,7 +250,7 @@ public class FixedSizeArray<T> extends AllocationGuard {
      * @param forceResort  If set to true, the array will be resorted even if the order of the
      * objects in the array has not changed since the last sort.
      */
-    public void sort(boolean forceResort) {
+    protected void sort(boolean forceResort) {
         if (!mSorted || forceResort) {
            if (mComparator != null) {
                mSorter.sort(mContents, mCount, mComparator);
@@ -260,22 +264,22 @@ public class FixedSizeArray<T> extends AllocationGuard {
     }
     
     /** Returns the number of objects in the array. */
-    public int getCount() {
+    protected int getCount() {
         return mCount;
     }
     
     /** Returns the maximum number of objects that can be inserted inot this array. */
-    public int getCapacity() {
+    protected int getCapacity() {
         return mContents.length;
     }
     
     /** Sets a comparator to use for sorting and searching. */
-    public void setComparator(Comparator<T> comparator) {
+    protected void setComparator(Comparator<T> comparator) {
         mComparator = comparator;
         mSorted = false;
     }
     
-    public void setSorter(Sorter<T> sorter) {
+    protected void setSorter(Sorter<T> sorter) {
         mSorter = sorter;
     }
 }

@@ -7,12 +7,21 @@ import com.stickycoding.rokon.BufferObject;
 import com.stickycoding.rokon.Debug;
 import com.stickycoding.rokon.GLHelper;
 
+/**
+ * ArrayVBO.java
+ * An array VBO, defined by a BufferObject
+ * 
+ * @author Richard
+ */
 public class ArrayVBO extends VBO {
 	
 	public ArrayVBO(BufferObject bufferObject, int drawType) {
 		super(bufferObject, drawType);
 	}
 
+	/* (non-Javadoc)
+	 * @see com.stickycoding.rokon.vbo.VBO#load(javax.microedition.khronos.opengles.GL10)
+	 */
 	public void load(GL10 gl) {
 		GL11 gl11 = (GL11)gl;
 		int[] nameArray = new int[1];

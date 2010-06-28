@@ -2,13 +2,14 @@ package com.stickycoding.rokon;
 
 /**
  * FPSCounter.java
- * Contains static methods used to count frame rate, and profile the performance of the engine
+ * Contains protected static methods used to count frame rate, and profile the performance of the engine
+ * No good for end-user
  * 
  * @author Richard
  */
 public class FPSCounter {
 	
-	public static final int FPS_AVG = 5;
+	protected static final int FPS_AVG = 5;
 	
 	protected static int frameCount = 0;
 	protected static long secondStart = 0;

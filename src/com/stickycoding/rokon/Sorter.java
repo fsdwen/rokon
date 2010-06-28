@@ -22,5 +22,5 @@ import java.util.Comparator;
  * This is another class borrowed from the ReplicaIsland project
  */
 public abstract class Sorter<Type> {
-    public abstract void sort(Type[] array, int count, Comparator<Type> comparator);
+    protected abstract void sort(Type[] array, int count, Comparator<Type> comparator);
 }

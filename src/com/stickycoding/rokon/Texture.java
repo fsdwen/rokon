@@ -23,7 +23,6 @@ public class Texture {
 	protected int atlasX, atlasY;
 	protected Bitmap bmp;
 	
-	
 	protected int textureWidth, textureHeight;
 	protected int width, height, columns, rows, tileCount;
 	protected String path;
@@ -36,14 +35,31 @@ public class Texture {
 		textureIndex = -1;
 	}
 	
+	/**
+	 * Returns the texture index of the Texture on the hardware
+	 * 
+	 * @return -1 if not loaded
+	 */
 	public int getTextureIndex() {
 		return textureIndex;
 	}
 	
+	/**
+	 * Returns an array of BufferObjects relating to each tile on the Texture
+	 * 
+	 * @return BufferObject array
+	 */
 	public BufferObject[] getBuffer() {
 		return buffer;
 	}
 	
+	/**
+	 * Returns the BufferObject relating to a specific tile on the Texture
+	 * 
+	 * @param index the index of the tile
+	 * 
+	 * @return
+	 */
 	public BufferObject getBuffer(int index) {
 		return buffer[index];
 	}
@@ -218,34 +234,78 @@ public class Texture {
 		bmp = null;
 	}
 	
+	/**
+	 * Gets the width of this Texture
+	 * 
+	 * @return Texture width
+	 */
 	public int getWidth() {
 		return width;
 	}
 	
+	/**
+	 * Gets the height of this Texture
+	 * 
+	 * @return Texture height
+	 */
 	public int getHeight() {
 		return height;
 	}
 	
+	/**
+	 * Gets the width of one tile on this Texture
+	 * 
+	 * @return Texture tile width
+	 */
 	public int getTileWidth() {
 		return width / columns;
 	}
 	
+	/**
+	 * Gets the height of one tile on this Texture
+	 * 
+	 * @return Texture tile height
+	 */
 	public int getTileHeight() {
 		return height / rows;
 	}
 	
+	/**
+	 * Gets the ratio of height to width for the Texture
+	 * 
+	 * @return Texture aspect ratio
+	 */
 	public float getRatio() {
 		return (float)height / (float)width / columns;
 	}
 	
+	/**
+	 * Gets the ratio of height to width for one tile in the Texture
+	 * 
+	 * @return Texture tile aspect ratio
+	 */
 	public float getTileRatio() {
 		return ((float)height / rows) / ((float)width / columns);
 	}
 	
+	/**
+	 * Calculates the height of one tile, based on the aspect ratio and given width
+	 * 
+	 * @param width width value
+	 * 
+	 * @return a height, matching width at a fixed aspect ratio
+	 */
 	public float getTileHeight(float width) {
 		return (width / columns) * getRatio();
 	}
 	
+	/**
+	 * Calculates the height of the Texture, based on the aspect ratio and given width
+	 * 
+	 * @param width width value
+	 * 
+	 * @return a height, matching width at a fixed aspect ratio
+	 */
 	public float getHeight(float width) {
 		return width * getRatio();
 	}

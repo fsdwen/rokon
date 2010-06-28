@@ -21,10 +21,22 @@ public class DynamicTexture extends Texture {
 	protected Bitmap bmpCopy;
 	protected Canvas canvas;
 
+	/**
+	 * Creates a DynamicTexture, based from a file in assets
+	 * 
+	 * @param filename valid file in assets
+	 */
 	public DynamicTexture(String filename) {
 		super(filename);
 	}
 	
+	/**
+	 * Creates a DynamicTexture, based from a file in assets, split into columns and rows
+	 * 
+	 * @param filename valid file in assets
+	 * @param columns number of columns in the image
+	 * @param rows number of rows in the image
+	 */
 	public DynamicTexture(String filename, int columns, int rows) {
 		super(filename, columns, rows);
 	}
@@ -49,16 +61,23 @@ public class DynamicTexture extends Texture {
 		// Intentionally empty, Bitmap needs to be kept in memory
 	}
 	
+	/**
+	 * Fetches the Canvas for this Bitmap, can be drawn on to update the texture
+	 * When work is done, call reload()
+	 * 
+	 * @return valid Canvas object
+	 */
 	public Canvas getCanvas() {
 		if(canvas == null) {
-			//bmpCopy = bmp.copy(bmp.getConfig(), true);
 			canvas = new Canvas(bmp);
 		}
 		return canvas;
 	}
 	
+	/**
+	 * Informs the TextureManager to reload the texture from the Bitmap, any updates in Canvas will be drawn in here
+	 */
 	public void reload() {
-		//bmp = bmpCopy;
 		TextureManager.refreshTexture(this);
 	}
 	

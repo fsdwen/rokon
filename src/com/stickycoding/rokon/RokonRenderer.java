@@ -20,12 +20,15 @@ public class RokonRenderer implements GLSurfaceView.Renderer {
 	
 	private RokonActivity rokonActivity;
 	
-	public RokonRenderer(RokonActivity rokonActivity) {
+	protected RokonRenderer(RokonActivity rokonActivity) {
 		this.rokonActivity = rokonActivity;
 	}
 	
+	/* (non-Javadoc)
+	 * @see android.opengl.GLSurfaceView.Renderer#onDrawFrame(javax.microedition.khronos.opengles.GL10)
+	 */
 	public void onDrawFrame(GL10 gl) {
-		if(rokonActivity.isOnPause) {
+		if(RokonActivity.isOnPause) {
 			return;
 		}
 		Time.update();
@@ -49,15 +52,21 @@ public class RokonRenderer implements GLSurfaceView.Renderer {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see android.opengl.GLSurfaceView.Renderer#onSurfaceChanged(javax.microedition.khronos.opengles.GL10, int, int)
+	 */
 	public void onSurfaceChanged(GL10 gl, int w, int h) {
 		Debug.print("Surface Size Changed: " + w + " " + h);
 		gl.glViewport(0, 0, w, h);
 		gl.glMatrixMode(GL10.GL_PROJECTION);
 		gl.glLoadIdentity();
-		Debug.print("gluOrtho2D : " + rokonActivity.gameWidth + "x" + rokonActivity.gameHeight);
-        GLU.gluOrtho2D(gl, 0, rokonActivity.gameWidth, rokonActivity.gameHeight, 0);
+		Debug.print("gluOrtho2D : " + RokonActivity.gameWidth + "x" + RokonActivity.gameHeight);
+        GLU.gluOrtho2D(gl, 0, RokonActivity.gameWidth, RokonActivity.gameHeight, 0);
 	}
 
+	/* (non-Javadoc)
+	 * @see android.opengl.GLSurfaceView.Renderer#onSurfaceCreated(javax.microedition.khronos.opengles.GL10, javax.microedition.khronos.egl.EGLConfig)
+	 */
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
 		gl.glHint(GL10.GL_PERSPECTIVE_CORRECTION_HINT, GL10.GL_FASTEST);
 		
@@ -80,9 +89,7 @@ public class RokonRenderer implements GLSurfaceView.Renderer {
 
         String extensions = gl.glGetString(GL10.GL_EXTENSIONS);
         String version = gl.glGetString(GL10.GL_VERSION);
-        Graphics.setOpenGL10(version.contains("1.0"));
-        Graphics.setSupportsVBO(!Graphics.isOpenGL10() || extensions.contains("vertex_buffer_object"));
-        Graphics.setSupportsDrawTex(extensions.contains("draw_texture"));
+        Graphics.setSupportsVBO(!version.contains("1.0") || extensions.contains("vertex_buffer_object"));
         
 
 		if(DrawPriority.drawPriority == DrawPriority.PRIORITY_VBO) {
@@ -94,18 +101,18 @@ public class RokonRenderer implements GLSurfaceView.Renderer {
 
         hackBrokenDevices();
 
-        Debug.print("Graphics Support - " + version + ": " +(Graphics.isSupportsDrawTex() ?  "draw texture," : "") + (Graphics.isSupportsVBO() ? "vbos" : ""));
+        Debug.print("Graphics Support - " + version + " - " + (Graphics.isSupportsVBO() ? "vbos" : ""));
         
-        GLU.gluOrtho2D(gl, 0, rokonActivity.gameWidth, rokonActivity.gameHeight, 0);
+        GLU.gluOrtho2D(gl, 0, RokonActivity.gameWidth, RokonActivity.gameHeight, 0);
 	}
 
 	 /**
 	 * Stolen from Replica Island, a cheeky little hack 
 	 */
 	private void hackBrokenDevices() {
-	        if (Build.PRODUCT.contains("morrison")) {
-	                Graphics.setSupportsVBO(false);
-	        }
-	    }
+        if (Build.PRODUCT.contains("morrison")) {
+        	Graphics.setSupportsVBO(false);
+        }
+    }
 
 }

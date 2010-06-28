@@ -6,10 +6,6 @@ package com.stickycoding.rokon;
  * 
  * @author Richard
  */
-/**
- * @author Richard
- *
- */
 public class Movement {
 	
 	public static final float PI = 3.14159265f;
@@ -48,6 +44,14 @@ public class Movement {
 	 */
 	public static final int SLOWING = 3;
 	
+	/**
+	 * Calculates a relative position along a 'path'
+	 * 
+	 * @param position position in the path
+	 * @param method type of path used, see Movement constants for explanations
+	 * 
+	 * @return position on the path, between 0f and 1f
+	 */
 	public static float getPosition(float position, int method) {
 		switch(method) {
 			case SMOOTH:

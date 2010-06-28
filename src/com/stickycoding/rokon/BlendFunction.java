@@ -10,7 +10,7 @@ package com.stickycoding.rokon;
 
 public class BlendFunction {
 
-    private int _blendFunctionSrc, _blendFunctionDst;
+    protected int blendFunctionSrc, blendFunctionDst;
     
     /**
      * Creates a BlendFunction object with given parameters
@@ -19,8 +19,8 @@ public class BlendFunction {
      * @param blendFunctionDst blend function destination parameter
      */
     public BlendFunction(int blendFunctionSrc, int blendFunctionDst) {
-            _blendFunctionSrc = blendFunctionSrc;
-            _blendFunctionDst = blendFunctionDst;
+            this.blendFunctionSrc = blendFunctionSrc;
+            this.blendFunctionDst = blendFunctionDst;
     }
 
     /**
@@ -29,7 +29,7 @@ public class BlendFunction {
      * @return source parameter
      */
     public int getSrc() {
-            return _blendFunctionSrc;
+            return blendFunctionSrc;
     }
     
     /**
@@ -38,7 +38,7 @@ public class BlendFunction {
      * @param blendFunctionSrc source parameter
      */
     public void setSrc(int blendFunctionSrc) {
-            _blendFunctionSrc = blendFunctionSrc;
+            this.blendFunctionSrc = blendFunctionSrc;
     }
     
     /**
@@ -47,7 +47,7 @@ public class BlendFunction {
      * @return
      */
     public int getDst() {
-            return _blendFunctionDst;
+            return blendFunctionDst;
     }
     
     /**
@@ -56,6 +56,6 @@ public class BlendFunction {
      * @param blendFunctionDst destination parameter
      */
     public void setDst(int blendFunctionDst) {
-            _blendFunctionDst = blendFunctionDst;
+            this.blendFunctionDst = blendFunctionDst;
     }
 }

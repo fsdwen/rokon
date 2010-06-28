@@ -22,10 +22,12 @@ import java.util.Comparator;
  * StandardSorter.java
  * Borrowed from ReplicaIsland
  */
+@SuppressWarnings("rawtypes")
 public class StandardSorter<T> extends Sorter {
 
-    @Override
-    public void sort(Object[] array, int count, Comparator comparator) {
+    @SuppressWarnings("unchecked")
+	@Override
+    protected void sort(Object[] array, int count, Comparator comparator) {
         Arrays.sort(array, 0, count, comparator);
     }
 

@@ -1,7 +1,5 @@
 package com.stickycoding.rokon.vbo;
 
-import java.nio.Buffer;
-
 import javax.microedition.khronos.opengles.GL10;
 
 import com.stickycoding.rokon.BufferObject;
@@ -26,10 +24,23 @@ public class VBO {
 		this.drawType = drawType;
 	}
 	
+	/**
+	 * Updates the VBO as a rectangle
+	 * 
+	 * @param x x-coordinate
+	 * @param y y-coordinate
+	 * @param width width of rectangle
+	 * @param height height of rectangle
+	 */
 	public void update(float x, float y, float width, float height) {
 		bufferObject.update(x, y, width, height);
 	}
 	
+	/**
+	 * Updates the VBO through a given array of floats
+	 * 
+	 * @param floats array of floats containing x and y coordinates of each vertex
+	 */
 	public void updateRaw(float[] floats) {
 		bufferObject.updateRaw(floats);
 	}
@@ -55,13 +66,6 @@ public class VBO {
 	 */
 	protected void setUnloaded() {
 		bufferIndex = -1;
-	}
-	
-	/**
-	 * Removes the VBO from memory and hardware
-	 */
-	public void destroy() {
-		//TODO Remove
 	}
 	
 	/**

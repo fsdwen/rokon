@@ -17,6 +17,12 @@ public class Layer {
 	protected DrawQueue drawQueue;
 	protected boolean ignoreWindow;
 	
+	/**
+	 * Creates a Layer inside a Scene
+	 * 
+	 * @param parentScene parent Scene for the Layer
+	 * @param maximumDrawableObjects the size of array for Drawables in this Layer
+	 */
 	public Layer(Scene parentScene, int maximumDrawableObjects) {
 		this.parentScene = parentScene;
 		this.maximumDrawableObjects = maximumDrawableObjects;

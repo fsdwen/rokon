@@ -178,7 +178,7 @@ public class Launcher extends RokonActivity {
 		
 		private void updateScr() {
 
-			if(MathHelper.polySpriteIntersects(polySprite1, polySprite2)) {
+			if(MathHelper.intersects(polySprite1, polySprite2)) {
 				polySprite1.setRGBA(1, 0, 0, 1);
 				polySprite2.setRGBA(1, 0, 0, 1);
 			} else {

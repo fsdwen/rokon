@@ -1,8 +1,7 @@
-package com.stickycoding.rokon.background;
+package com.stickycoding.rokon;
 
 import javax.microedition.khronos.opengles.GL10;
 
-import com.stickycoding.rokon.Scene;
 
 
 /**
@@ -20,6 +19,8 @@ public class Background {
 		return parentScene;
 	}
 	
-	public void onDraw(GL10 gl) { } 
+	public void onDraw(GL10 gl) { 
+		Window.setDefault(gl);
+	} 
 
 }

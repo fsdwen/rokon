@@ -124,7 +124,7 @@ public class RokonAudio {
          * @param masterVolume the volume at which all future AudioStream's will play
          */
         public void setMasterVolume(float masterVolume) {
-                masterVolume = masterVolume;
+                this.masterVolume = masterVolume;
         }
         
         /**

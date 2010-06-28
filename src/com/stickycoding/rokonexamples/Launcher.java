@@ -75,7 +75,7 @@ public class Launcher extends RokonActivity {
 		Polygon polygon1 = new Polygon(new float[] {0, 0, 0.5f, 0, 1, 0.5f, 1, 1, 0, 0.7f });
 
 		polySprite1 = new PolygonSprite(polygon1, 1, 1, 1, 1);
-		polySprite2 = new PolygonSprite(polygon, 1, 2, 1.5f, 1);
+		polySprite2 = new Sprite(1, 2, 1.5f, 1);
 		polySprite1.setBorder(0, 0, 0, 1);
 		polySprite2.setBorder(0, 0, 0, 1);
 		polySprite1.rotate(45);
@@ -104,7 +104,8 @@ public class Launcher extends RokonActivity {
 	Sprite[] vSprite = new Sprite[5];
 	Sprite[] xSprite = new Sprite[4];
 	
-	PolygonSprite polySprite1, polySprite2;
+	PolygonSprite polySprite1;
+	Sprite polySprite2;
 	PhysicalSprite aSprite;
 
 	SoundFile soundFile;

@@ -40,7 +40,7 @@ public class MathHelper {
 		return false;
 	}
 	
-	public static boolean polySpriteIntersects(PolygonSprite polygon1, PolygonSprite polygon2) {
+	public static boolean polySpriteIntersects(Sprite polygon1, Sprite polygon2) {
 		float dotProduct = 0;
 		float minA = 0;
 		float maxA = 0;

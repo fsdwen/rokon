@@ -14,7 +14,6 @@ import com.stickycoding.rokon.vbo.VBO;
  */
 public class PolygonSprite extends Sprite {
 
-	protected Polygon polygon;
 	protected BufferObject polygonBuffer;
 	protected ArrayVBO polygonVBO;
 

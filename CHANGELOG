@@ -1,2 +1,10 @@
+2.0.1
+	New Features
+	
+	Changes
+	
+	Bug Fixes
+		* Compatability with pre-FroYo, it was a bug with how MotionEvent was used
+
 29/06/10 - 2.0.0
 	Initial release of Rokon 2.0.0

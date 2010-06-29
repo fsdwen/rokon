@@ -273,22 +273,22 @@ public class Scene {
 	}
 	
 	protected void handleSDK8MultiTouch(MotionEvent event) {
-		for(int idx = 0; idx < event.getPointerCount(); idx++) {
-			int id = event.getPointerId(idx);
-			final float realX = event.getX(idx) * (RokonActivity.gameWidth / Graphics.getWidthPixels());
-			final float realY = event.getY(idx) * (RokonActivity.gameHeight / Graphics.getHeightPixels());
+		for(int idx = 0; idx < Rokon.motionEvent8.getPointerCount(event); idx++) {
+			int id = Rokon.motionEvent8.getPointerId(event, idx);
+			final float realX = Rokon.motionEvent8.getX(event, idx) * (RokonActivity.gameWidth / Graphics.getWidthPixels());
+			final float realY = Rokon.motionEvent8.getY(event, idx) * (RokonActivity.gameHeight / Graphics.getHeightPixels());
 			float gameX = realX;
 			float gameY = realY;
 			if(window != null) {
-				float xFraction = event.getX(idx) / Graphics.getWidthPixels();
-				float yFraction = event.getY(idx) / Graphics.getHeightPixels();
+				float xFraction = Rokon.motionEvent8.getX(event, idx) / Graphics.getWidthPixels();
+				float yFraction = Rokon.motionEvent8.getY(event, idx) / Graphics.getHeightPixels();
 				gameX = window.getX() + (window.width * xFraction);
 				gameY = window.getY() + (window.height * yFraction);
 			}
 			onTouch(gameX, gameY, event, id);
 			onTouchReal(realX, realY, event, id);
 			final int action = event.getAction();
-			switch(action & MotionEvent.ACTION_MASK) {
+			switch(action & MotionEventWrapper8.ACTION_MASK) {
 				case MotionEvent.ACTION_DOWN:
 					onTouchDown(gameX, gameY, event, id);
 					onTouchDownReal(realX, realY, event, id);
@@ -301,14 +301,14 @@ public class Scene {
 					onTouchMove(gameX, gameY, event, id);
 					onTouchMoveReal(realX, realY, event, id);
 					break;
-				case MotionEvent.ACTION_POINTER_DOWN:
-					if((action & MotionEvent.ACTION_POINTER_INDEX_MASK) >> MotionEvent.ACTION_POINTER_INDEX_SHIFT == idx) {
+				case MotionEventWrapper8.ACTION_POINTER_DOWN:
+					if((action & MotionEventWrapper8.ACTION_POINTER_INDEX_MASK) >> MotionEventWrapper8.ACTION_POINTER_INDEX_SHIFT == idx) {
 						onTouchDown(gameX, gameY, event, id);
 						onTouchDownReal(realX, realY, event, id);
 					}
 					break;
-				case MotionEvent.ACTION_POINTER_UP:
-					if((action & MotionEvent.ACTION_POINTER_INDEX_MASK) >> MotionEvent.ACTION_POINTER_INDEX_SHIFT == idx) {
+				case MotionEventWrapper8.ACTION_POINTER_UP:
+					if((action & MotionEventWrapper8.ACTION_POINTER_INDEX_MASK) >> MotionEventWrapper8.ACTION_POINTER_INDEX_SHIFT == idx) {
 						onTouchUp(gameX, gameY, event, id);
 						onTouchUpReal(realX, realY, event, id);
 					}
@@ -330,7 +330,7 @@ public class Scene {
 							if(object.getName() != null) {
 								invoke(object.getName() + "_onTouch", new Class[] { float.class, float.class, MotionEvent.class, int.class }, new Object[] { gameX, gameY, event, id });
 							}
-							switch(action & MotionEvent.ACTION_MASK) {
+							switch(action & MotionEventWrapper8.ACTION_MASK) {
 								case MotionEvent.ACTION_DOWN:
 									onTouchDown(object, checkX, checkY, event, id);
 									if(object.getName() != null) {
@@ -349,16 +349,16 @@ public class Scene {
 										invoke(object.getName() + "_onTouchMove", new Class[] { float.class, float.class, MotionEvent.class, int.class }, new Object[] { gameX, gameY, event, id });
 									}
 									break;
-								case MotionEvent.ACTION_POINTER_DOWN:
-									if((action & MotionEvent.ACTION_POINTER_INDEX_MASK) >> MotionEvent.ACTION_POINTER_INDEX_SHIFT == idx) {
+								case MotionEventWrapper8.ACTION_POINTER_DOWN:
+									if((action & MotionEventWrapper8.ACTION_POINTER_INDEX_MASK) >> MotionEventWrapper8.ACTION_POINTER_INDEX_SHIFT == idx) {
 										onTouchDown(object, checkX, checkY, event, id);
 										if(object.getName() != null) {
 											invoke(object.getName() + "_onTouchDown", new Class[] { float.class, float.class, MotionEvent.class, int.class }, new Object[] { gameX, gameY, event, id });
 										}
 									}
 									break;
-								case MotionEvent.ACTION_POINTER_UP:
-									if((action & MotionEvent.ACTION_POINTER_INDEX_MASK) >> MotionEvent.ACTION_POINTER_INDEX_SHIFT == idx) {
+								case MotionEventWrapper8.ACTION_POINTER_UP:
+									if((action & MotionEventWrapper8.ACTION_POINTER_INDEX_MASK) >> MotionEventWrapper8.ACTION_POINTER_INDEX_SHIFT == idx) {
 										onTouchUp(object, checkX, checkY, event, id);
 										if(object.getName() != null) {
 											invoke(object.getName() + "_onTouchUp", new Class[] { float.class, float.class, MotionEvent.class, int.class }, new Object[] { gameX, gameY, event, id });
@@ -375,15 +375,15 @@ public class Scene {
 	
 	protected void handleMultiTouch(MotionEvent event) {
 		final int action = event.getAction();
-		for(int idx = 0; idx < event.getPointerCount(); idx++) {
-			int id = event.getPointerId(idx);
-			final float realX = event.getX(idx) * (RokonActivity.gameWidth / Graphics.getWidthPixels());
-			final float realY = event.getY(idx) * (RokonActivity.gameHeight / Graphics.getHeightPixels());
+		for(int idx = 0; idx < Rokon.motionEvent5.getPointerCount(event); idx++) {
+			int id = Rokon.motionEvent5.getPointerId(event, idx);
+			final float realX = Rokon.motionEvent5.getX(event, idx) * (RokonActivity.gameWidth / Graphics.getWidthPixels());
+			final float realY = Rokon.motionEvent5.getY(event, idx) * (RokonActivity.gameHeight / Graphics.getHeightPixels());
 			float gameX = realX;
 			float gameY = realY;
 			if(window != null) {
-				float xFraction = event.getX(idx) / Graphics.getWidthPixels();
-				float yFraction = event.getY(idx) / Graphics.getHeightPixels();
+				float xFraction = Rokon.motionEvent5.getX(event, idx) / Graphics.getWidthPixels();
+				float yFraction = Rokon.motionEvent5.getY(event, idx) / Graphics.getHeightPixels();
 				gameX = window.getX() + (window.width * xFraction);
 				gameY = window.getY() + (window.height * yFraction);
 			}
@@ -402,37 +402,37 @@ public class Scene {
 					onTouchMove(gameX, gameY, event, id);
 					onTouchMoveReal(realX, realY, event, id);
 					break;
-				case MotionEvent.ACTION_POINTER_1_DOWN:
+				case MotionEventWrapper5.ACTION_POINTER_1_DOWN:
 					if(idx == 0) {
 						onTouchDown(gameX, gameY, event, id);
 						onTouchDownReal(realX, realY, event, id);
 					}
 					break;
-				case MotionEvent.ACTION_POINTER_1_UP:
+				case MotionEventWrapper5.ACTION_POINTER_1_UP:
 					if(idx == 0) {
 						onTouchUp(gameX, gameY, event, id);
 						onTouchUpReal(realX, realY, event, id);
 					}
 					break;
-				case MotionEvent.ACTION_POINTER_2_DOWN:
+				case MotionEventWrapper5.ACTION_POINTER_2_DOWN:
 					if(idx == 1) {
 						onTouchDown(gameX, gameY, event, id);
 						onTouchDownReal(realX, realY, event, id);
 					}
 					break;
-				case MotionEvent.ACTION_POINTER_2_UP:
+				case MotionEventWrapper5.ACTION_POINTER_2_UP:
 					if(idx == 1) {
 						onTouchUp(gameX, gameY, event, id);
 						onTouchUpReal(realX, realY, event, id);
 					}
 					break;
-				case MotionEvent.ACTION_POINTER_3_DOWN:
+				case MotionEventWrapper5.ACTION_POINTER_3_DOWN:
 					if(idx == 2) {
 						onTouchDown(gameX, gameY, event, id);
 						onTouchDownReal(realX, realY, event, id);
 					}
 					break;
-				case MotionEvent.ACTION_POINTER_3_UP:
+				case MotionEventWrapper5.ACTION_POINTER_3_UP:
 					if(idx == 2) {
 						onTouchUp(gameX, gameY, event, id);
 						onTouchUpReal(realX, realY, event, id);
@@ -474,7 +474,7 @@ public class Scene {
 										invoke(object.getName() + "_onTouchMove", new Class[] { float.class, float.class, MotionEvent.class, int.class }, new Object[] { gameX, gameY, event, id });
 									}
 									break;
-								case MotionEvent.ACTION_POINTER_1_DOWN:
+								case MotionEventWrapper5.ACTION_POINTER_1_DOWN:
 									if(idx == 0) {
 										onTouchDown(object, checkX, checkY, event, id);
 										if(object.getName() != null) {
@@ -482,7 +482,7 @@ public class Scene {
 										}
 									}
 									break;
-								case MotionEvent.ACTION_POINTER_1_UP:
+								case MotionEventWrapper5.ACTION_POINTER_1_UP:
 									if(idx == 0) {
 										onTouchUp(object, checkX, checkY, event, id);
 										if(object.getName() != null) {
@@ -490,7 +490,7 @@ public class Scene {
 										}
 									}
 									break;
-								case MotionEvent.ACTION_POINTER_2_DOWN:
+								case MotionEventWrapper5.ACTION_POINTER_2_DOWN:
 									if(idx == 1) {
 										onTouchDown(object, checkX, checkY, event, id);
 										if(object.getName() != null) {
@@ -498,7 +498,7 @@ public class Scene {
 										}
 									}
 									break;
-								case MotionEvent.ACTION_POINTER_2_UP:
+								case MotionEventWrapper5.ACTION_POINTER_2_UP:
 									if(idx == 1) {
 										onTouchUp(object, checkX, checkY, event, id);
 										if(object.getName() != null) {
@@ -506,7 +506,7 @@ public class Scene {
 										}
 									}
 									break;
-								case MotionEvent.ACTION_POINTER_3_DOWN:
+								case MotionEventWrapper5.ACTION_POINTER_3_DOWN:
 									if(idx == 2) {
 										onTouchDown(object, checkX, checkY, event, id);
 										if(object.getName() != null) {
@@ -514,7 +514,7 @@ public class Scene {
 										}
 									}
 									break;
-								case MotionEvent.ACTION_POINTER_3_UP:
+								case MotionEventWrapper5.ACTION_POINTER_3_UP:
 									if(idx == 2) {
 										onTouchUp(object, checkX, checkY, event, id);
 										if(object.getName() != null) {

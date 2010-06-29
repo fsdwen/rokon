@@ -11,6 +11,9 @@ import com.stickycoding.rokon.vbo.ElementVBO;
  */
 
 public class Rokon {
+
+	protected static MotionEventWrapper5 motionEvent5;
+	protected static MotionEventWrapper8 motionEvent8;
 	
 	protected static BlendFunction blendFunction;
 	protected static BufferObject triangleStripBoxBuffer;

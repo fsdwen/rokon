@@ -117,6 +117,23 @@ public class RokonActivity extends Activity {
 	@Override
 	public void onCreate(Bundle savedState) {
 		super.onCreate(savedState);
+
+		try {
+			MotionEventWrapper5.checkAvailable();
+			Rokon.motionEvent5 = new MotionEventWrapper5();
+			Debug.print("5 IS AVAILABLE");
+		} catch (VerifyError e) {
+			Debug.print("5 NOT AVAILBLE");
+		}
+		
+		try {
+			MotionEventWrapper8.checkAvailable();
+			Rokon.motionEvent8 = new MotionEventWrapper8();
+			Debug.print("8 IS AVAILABLE");
+		} catch (VerifyError e) {
+			Debug.print("8 NOT AVAILBLE");
+		}
+		
 		if(isOnPause) {
 			Debug.print("Engine Activity created, loading previous state");
 			finish();//initEngine();

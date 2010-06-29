@@ -1,4 +1,7 @@
-2.0.2
+30/06/10 - 2.0.2
+	Another quick minor update, sorry for having so many packed together - obviously with the new release came a few unexpected bugs.
+	The Droid/Milestone bug seems to have been fixed now.
+	
 	New Features
 		* Vibrator class, for vibrating the device
 		* Accelerometer and OnAccelerometerChange classes, for handling accelerometer changes and recognising device shakes

@@ -43,7 +43,26 @@ public class Scene {
 	protected boolean useContactListener;
 	protected Background background;
 	
+	protected boolean useNewClearColor;
+	protected float[] newClearColor = new float[4];
+	
 	protected float defaultLineWidth = 1;
+	
+	/**
+	 * Sets the clear colour (the colour behind the background)
+	 * 
+	 * @param red
+	 * @param green
+	 * @param blue
+	 * @param alpha
+	 */
+	public void setClearColour(float red, float green, float blue, float alpha) {
+		newClearColor[0] = red;
+		newClearColor[1] = green;
+		newClearColor[2] = blue;
+		newClearColor[3] = alpha;
+		useNewClearColor = true;
+	}
 
 	/**
 	 * Called before each render loop
@@ -852,6 +871,10 @@ public class Scene {
 	protected void onDraw(GL10 gl) {
 		onGameLoop();
 		onPreDraw(gl);
+		if(useNewClearColor) {
+			gl.glClearColor(newClearColor[0], newClearColor[1], newClearColor[2], newClearColor[3]);
+			useNewClearColor = false;
+		}
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		if(background != null) {
 			background.onDraw(gl);
@@ -922,7 +945,6 @@ public class Scene {
 	public float getDefaultLineWidth() {
 		return defaultLineWidth;
 	}
-	
 	
 	
 }

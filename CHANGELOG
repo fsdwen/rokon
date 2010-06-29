@@ -1,3 +1,15 @@
+2.0.2
+	New Features
+		* Vibrator class, for vibrating the device
+		* Accelerometer and OnAccelerometerChange classes, for handling accelerometer changes and recognising device shakes
+		* Scene.setClearColour changes glClearColor to your own values
+		
+	Changes
+		* Default glClearColor is now black, instead of blue
+		
+	Bug Fixes
+		* Fixed issue with Droid/Milestone. It seems they don't really support VBOs, and hackBrokenDevices wasn't picking that up
+
 29/06/10 - 2.0.1
 	A small update, released quickly, it seems the engine wasn't compatable with anything pre-2.2
 	Should be fixed now, my bad!

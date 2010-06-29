@@ -5,9 +5,9 @@ import javax.microedition.khronos.opengles.GL10;
 
 import android.opengl.GLSurfaceView;
 import android.opengl.GLU;
-import android.os.Build;
 
 import com.stickycoding.rokon.device.Graphics;
+import com.stickycoding.rokon.device.OS;
 
 /**
  * RokonRenderer.java
@@ -70,7 +70,7 @@ public class RokonRenderer implements GLSurfaceView.Renderer {
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
 		gl.glHint(GL10.GL_PERSPECTIVE_CORRECTION_HINT, GL10.GL_FASTEST);
 		
-		gl.glClearColor(0, 0, 1, 1);
+		gl.glClearColor(0, 0, 0, 1);
 		gl.glShadeModel(GL10.GL_FLAT);
 		gl.glDisable(GL10.GL_DEPTH_TEST);
 		gl.glEnable(GL10.GL_TEXTURE_2D);
@@ -99,20 +99,11 @@ public class RokonRenderer implements GLSurfaceView.Renderer {
 			}
 		}
 
-        hackBrokenDevices();
+        OS.hackBrokenDevices();
 
         Debug.print("Graphics Support - " + version + " - " + (Graphics.isSupportsVBO() ? "vbos" : ""));
         
         GLU.gluOrtho2D(gl, 0, RokonActivity.gameWidth, RokonActivity.gameHeight, 0);
 	}
-
-	 /**
-	 * Stolen from Replica Island, a cheeky little hack 
-	 */
-	private void hackBrokenDevices() {
-        if (Build.PRODUCT.contains("morrison")) {
-        	Graphics.setSupportsVBO(false);
-        }
-    }
 
 }

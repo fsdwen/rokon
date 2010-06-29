@@ -1,10 +1,9 @@
-2.0.1
-	New Features
-	
-	Changes
+29/06/10 - 2.0.1
+	A small update, released quickly, it seems the engine wasn't compatable with anything pre-2.2
+	Should be fixed now, my bad!
 	
 	Bug Fixes
-		* Compatability with pre-FroYo, it was a bug with how MotionEvent was used
+		* Compatability with pre-FroYo, it was a bug with how MotionEvent was used.
 
 29/06/10 - 2.0.0
 	Initial release of Rokon 2.0.0

@@ -1,3 +1,12 @@
+2.0.3
+	New Features
+		* Drawable now has onTouch events within itself
+	
+	Changes
+	
+	Bug Fixes
+		* Drawable is now public, previously was not. This prevented 'onTouch(Drawable' methods from being used.
+
 30/06/10 - 2.0.2
 	Another quick minor update, sorry for having so many packed together - obviously with the new release came a few unexpected bugs.
 	The Droid/Milestone bug seems to have been fixed now.
@@ -12,6 +21,7 @@
 		
 	Bug Fixes
 		* Fixed issue with Droid/Milestone. It seems they don't really support VBOs, and hackBrokenDevices wasn't picking that up
+		* Texture paths would be incorrectly modified if RokonActivity.setGraphicsPath wasn't called
 
 29/06/10 - 2.0.1
 	A small update, released quickly, it seems the engine wasn't compatable with anything pre-2.2

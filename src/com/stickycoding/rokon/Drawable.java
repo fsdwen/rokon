@@ -2,6 +2,8 @@ package com.stickycoding.rokon;
 
 import javax.microedition.khronos.opengles.GL10;
 
+import android.view.MotionEvent;
+
 /**
  * Drawable.java
  * An interface for objects which are to be in the render queue 
@@ -9,7 +11,7 @@ import javax.microedition.khronos.opengles.GL10;
  *  
  * @author Richard
  */
-abstract interface Drawable {
+public abstract interface Drawable {
 	
 	/**
 	 * Called each time the Drawable must be rendered
@@ -89,5 +91,46 @@ abstract interface Drawable {
 	 * @return height of Drawable
 	 */
 	float getHeight();
+	
+
+	/**
+	 * Triggered when a touch is pressed down on this Drawable
+	 * 
+	 * @param x x coordinate (in game terms)
+	 * @param y y coordinate (in game terms)
+	 * @param event the MotionEvent associated with the touch
+	 * @param pointerId id of the pointer, always 0 if no multitouch present
+	 */
+	void onTouchDown(float x, float y, MotionEvent event, int pointerId);
+
+	/**
+	 * Triggered when a touch is released on this Drawable
+	 * 
+	 * @param x x coordinate (in game terms)
+	 * @param y y coordinate (in game terms)
+	 * @param event the MotionEvent associated with the touch
+	 * @param pointerId id of the pointer, always 0 if no multitouch present
+	 */
+	void onTouchUp(float x, float y, MotionEvent event, int pointerId);
+
+	/**
+	 * Triggered on all touch events on the Drawable
+	 * 
+	 * @param x x coordinate (in game terms)
+	 * @param y y coordinate (in game terms)
+	 * @param event the MotionEvent associated with the touch
+	 * @param pointerId id of the pointer, always 0 if no multitouch present
+	 */
+	void onTouch(float x, float y, MotionEvent event, int pointerId);
+	
+	/**
+	 * Triggered when a touch is moved on this Drawable
+	 * 
+	 * @param x x coordinate (in game terms)
+	 * @param y y coordinate (in game terms)
+	 * @param event the MotionEvent associated with the touch
+	 * @param pointerId id of the pointer, always 0 if no multitouch present
+	 */
+	void onTouchMove(float x, float y, MotionEvent event, int pointerId);
 
 }

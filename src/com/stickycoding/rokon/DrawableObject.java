@@ -2,6 +2,8 @@ package com.stickycoding.rokon;
 
 import javax.microedition.khronos.opengles.GL10;
 
+import android.view.MotionEvent;
+
 import com.stickycoding.rokon.device.Graphics;
 
 /**
@@ -607,4 +609,27 @@ public class DrawableObject extends BasicGameObject implements Drawable, Updatea
 	public boolean isTouchable() {
 		return isTouchable();
 	}
+
+	/* (non-Javadoc)
+	 * @see com.stickycoding.rokon.Drawable#onTouchDown(float, float, android.view.MotionEvent, int)
+	 */
+	/* (non-Javadoc)
+	 * @see com.stickycoding.rokon.Drawable#onTouchDown(float, float, android.view.MotionEvent, int)
+	 */
+	public void onTouchDown(float x, float y, MotionEvent event, int pointerId) { }
+
+	/* (non-Javadoc)
+	 * @see com.stickycoding.rokon.Drawable#onTouchUp(float, float, android.view.MotionEvent, int)
+	 */
+	public void onTouchUp(float x, float y, MotionEvent event, int pointerId) { }
+
+	/* (non-Javadoc)
+	 * @see com.stickycoding.rokon.Drawable#onTouch(float, float, android.view.MotionEvent, int)
+	 */
+	public void onTouch(float x, float y, MotionEvent event, int pointerId) { }
+
+	/* (non-Javadoc)
+	 * @see com.stickycoding.rokon.Drawable#onTouchMove(float, float, android.view.MotionEvent, int)
+	 */
+	public void onTouchMove(float x, float y, MotionEvent event, int pointerId) { }
 }

@@ -352,18 +352,21 @@ public class Scene {
 							switch(action & MotionEventWrapper8.ACTION_MASK) {
 								case MotionEvent.ACTION_DOWN:
 									onTouchDown(object, checkX, checkY, event, id);
+									object.onTouchDown(checkX, checkY, event, id);
 									if(object.getName() != null) {
 										invoke(object.getName() + "_onTouchDown", new Class[] { float.class, float.class, MotionEvent.class, int.class }, new Object[] { gameX, gameY, event, id });
 									}
 									break;
 								case MotionEvent.ACTION_UP:
 									onTouchUp(object, checkX, checkY, event, id);
+									object.onTouchUp(checkX, checkY, event, id);
 									if(object.getName() != null) {
 										invoke(object.getName() + "_onTouchUp", new Class[] { float.class, float.class, MotionEvent.class, int.class }, new Object[] { gameX, gameY, event, id });
 									}
 									break;
 								case MotionEvent.ACTION_MOVE:
 									onTouch(object, checkX, checkY, event, id);
+									object.onTouchMove(checkX, checkY, event, id);
 									if(object.getName() != null) {
 										invoke(object.getName() + "_onTouchMove", new Class[] { float.class, float.class, MotionEvent.class, int.class }, new Object[] { gameX, gameY, event, id });
 									}
@@ -371,6 +374,7 @@ public class Scene {
 								case MotionEventWrapper8.ACTION_POINTER_DOWN:
 									if((action & MotionEventWrapper8.ACTION_POINTER_INDEX_MASK) >> MotionEventWrapper8.ACTION_POINTER_INDEX_SHIFT == idx) {
 										onTouchDown(object, checkX, checkY, event, id);
+										object.onTouchDown(checkX, checkY, event, id);
 										if(object.getName() != null) {
 											invoke(object.getName() + "_onTouchDown", new Class[] { float.class, float.class, MotionEvent.class, int.class }, new Object[] { gameX, gameY, event, id });
 										}
@@ -379,6 +383,7 @@ public class Scene {
 								case MotionEventWrapper8.ACTION_POINTER_UP:
 									if((action & MotionEventWrapper8.ACTION_POINTER_INDEX_MASK) >> MotionEventWrapper8.ACTION_POINTER_INDEX_SHIFT == idx) {
 										onTouchUp(object, checkX, checkY, event, id);
+										object.onTouchUp(checkX, checkY, event, id);
 										if(object.getName() != null) {
 											invoke(object.getName() + "_onTouchUp", new Class[] { float.class, float.class, MotionEvent.class, int.class }, new Object[] { gameX, gameY, event, id });
 										}
@@ -471,24 +476,28 @@ public class Scene {
 					if(object != null && object.isTouchable()) {
 						if(MathHelper.pointInRect(checkX, checkY, object.getX(), object.getY(), object.getWidth(), object.getHeight())) {
 							onTouch(object, checkX, checkY, event, id);
+							object.onTouch(checkX, checkY, event, id);
 							if(object.getName() != null) {
 								invoke(object.getName() + "_onTouch", new Class[] { float.class, float.class, MotionEvent.class, int.class }, new Object[] { gameX, gameY, event, id });
 							}
 							switch(action) {
 								case MotionEvent.ACTION_DOWN:
 									onTouchDown(object, checkX, checkY, event, id);
+									object.onTouchDown(checkX, checkY, event, id);
 									if(object.getName() != null) {
 										invoke(object.getName() + "_onTouchDown", new Class[] { float.class, float.class, MotionEvent.class, int.class }, new Object[] { gameX, gameY, event, id });
 									}
 									break;
 								case MotionEvent.ACTION_UP:
 									onTouchUp(object, checkX, checkY, event, id);
+									object.onTouchUp(checkX, checkY, event, id);
 									if(object.getName() != null) {
 										invoke(object.getName() + "_onTouchUp", new Class[] { float.class, float.class, MotionEvent.class, int.class }, new Object[] { gameX, gameY, event, id });
 									}
 									break;
 								case MotionEvent.ACTION_MOVE:
 									onTouch(object, checkX, checkY, event, id);
+									object.onTouchMove(checkX, checkY, event, id);
 									if(object.getName() != null) {
 										invoke(object.getName() + "_onTouchMove", new Class[] { float.class, float.class, MotionEvent.class, int.class }, new Object[] { gameX, gameY, event, id });
 									}
@@ -496,6 +505,7 @@ public class Scene {
 								case MotionEventWrapper5.ACTION_POINTER_1_DOWN:
 									if(idx == 0) {
 										onTouchDown(object, checkX, checkY, event, id);
+										object.onTouchDown(checkX, checkY, event, id);
 										if(object.getName() != null) {
 											invoke(object.getName() + "_onTouchDown", new Class[] { float.class, float.class, MotionEvent.class, int.class }, new Object[] { gameX, gameY, event, id });
 										}
@@ -504,6 +514,7 @@ public class Scene {
 								case MotionEventWrapper5.ACTION_POINTER_1_UP:
 									if(idx == 0) {
 										onTouchUp(object, checkX, checkY, event, id);
+										object.onTouchUp(checkX, checkY, event, id);
 										if(object.getName() != null) {
 											invoke(object.getName() + "_onTouchUp", new Class[] { float.class, float.class, MotionEvent.class, int.class }, new Object[] { gameX, gameY, event, id });
 										}
@@ -512,6 +523,7 @@ public class Scene {
 								case MotionEventWrapper5.ACTION_POINTER_2_DOWN:
 									if(idx == 1) {
 										onTouchDown(object, checkX, checkY, event, id);
+										object.onTouchDown(checkX, checkY, event, id);
 										if(object.getName() != null) {
 											invoke(object.getName() + "_onTouchDown", new Class[] { float.class, float.class, MotionEvent.class, int.class }, new Object[] { gameX, gameY, event, id });
 										}
@@ -520,6 +532,7 @@ public class Scene {
 								case MotionEventWrapper5.ACTION_POINTER_2_UP:
 									if(idx == 1) {
 										onTouchUp(object, checkX, checkY, event, id);
+										object.onTouchUp(checkX, checkY, event, id);
 										if(object.getName() != null) {
 											invoke(object.getName() + "_onTouchUp", new Class[] { float.class, float.class, MotionEvent.class, int.class }, new Object[] { gameX, gameY, event, id });
 										}
@@ -528,6 +541,7 @@ public class Scene {
 								case MotionEventWrapper5.ACTION_POINTER_3_DOWN:
 									if(idx == 2) {
 										onTouchDown(object, checkX, checkY, event, id);
+										object.onTouchDown(checkX, checkY, event, id);
 										if(object.getName() != null) {
 											invoke(object.getName() + "_onTouchDown", new Class[] { float.class, float.class, MotionEvent.class, int.class }, new Object[] { gameX, gameY, event, id });
 										}
@@ -536,6 +550,7 @@ public class Scene {
 								case MotionEventWrapper5.ACTION_POINTER_3_UP:
 									if(idx == 2) {
 										onTouchUp(object, checkX, checkY, event, id);
+										object.onTouchUp(checkX, checkY, event, id);
 										if(object.getName() != null) {
 											invoke(object.getName() + "_onTouchUp", new Class[] { float.class, float.class, MotionEvent.class, int.class }, new Object[] { gameX, gameY, event, id });
 										}
@@ -601,21 +616,25 @@ public class Scene {
 						if(object.getName() != null) {
 							invoke(object.getName() + "_onTouch", new Class[] { float.class, float.class, MotionEvent.class }, new Object[] { gameX, gameY, event, 0 });
 						}
+						object.onTouch(checkX, checkY, event, 0);
 						switch(event.getAction()) {
 							case MotionEvent.ACTION_DOWN:
 								onTouchDown(object, checkX, checkY, event, 0);
+								object.onTouchDown(checkX, checkY, event, 0);
 								if(object.getName() != null) {
 									invoke(object.getName() + "_onTouchDown", new Class[] { float.class, float.class, MotionEvent.class, int.class }, new Object[] { gameX, gameY, event, 0 });
 								}
 								break;
 							case MotionEvent.ACTION_UP:
 								onTouchUp(object, checkX, checkY, event, 0);
+								object.onTouchUp(checkX, checkY, event, 0);
 								if(object.getName() != null) {
 									invoke(object.getName() + "_onTouchUp", new Class[] { float.class, float.class, MotionEvent.class, int.class }, new Object[] { gameX, gameY, event, 0 });
 								}
 								break;
 							case MotionEvent.ACTION_MOVE:
 								onTouch(object, checkX, checkY, event, 0);
+								object.onTouchMove(checkX, checkY, event, 0);
 								if(object.getName() != null) {
 									invoke(object.getName() + "_onTouchMove", new Class[] { float.class, float.class, MotionEvent.class, int.class }, new Object[] { gameX, gameY, event, 0 });
 								}

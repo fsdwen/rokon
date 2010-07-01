@@ -381,23 +381,22 @@ public class GLHelper {
     * @param textureTile the index of the tile inside the Texture
     */
     public static void drawVBO(boolean fill, float red, float green, float blue, float alpha, BlendFunction blendFunction, ArrayVBO arrayVBO, int vertexMode, float x, float y, float width, float height, float rotation, boolean rotateAboutPivot, float rotationPivotX, float rotationPivotY, boolean border, ArrayVBO borderVBO, float borderRed, float borderGreen, float borderBlue, float borderAlpha, float lineWidth, boolean hasTexture, Texture texture, int textureTile) {
-
+    	
 		if(!arrayVBO.isLoaded()) {
-			Debug.print("VBO isn't loaded");
+			Debug.print("Vertex VBO isn't loaded");
 			arrayVBO.load(gl);
 		}
 		if(border && !borderVBO.isLoaded()) {
-			Debug.print("VBO isn't loaded");
+			Debug.print("Border VBO isn't loaded");
 			borderVBO.load(gl);
 		}
 		if(hasTexture) {
 			checkTextureValid(texture);
 			if(!texture.vbo[textureTile].isLoaded()) {
-				Debug.print("VBO isn't loaded");
+				Debug.print("Texture VBO isn't loaded");
 				texture.vbo[textureTile].load(gl);
 			}
 		}
-		
 		
 		if(blendFunction != null) {
 			GLHelper.blendMode(blendFunction);

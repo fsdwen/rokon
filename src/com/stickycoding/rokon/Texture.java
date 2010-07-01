@@ -92,6 +92,7 @@ public class Texture {
 			BitmapFactory.decodeStream(Rokon.currentActivity.getAssets().open(path), null, opts);
 		} catch (Exception e) {
 			Debug.error("Tried creating a Texture, failed while decoding, " + path);
+			e.printStackTrace();
 			return;
 		}
 		width = opts.outWidth;

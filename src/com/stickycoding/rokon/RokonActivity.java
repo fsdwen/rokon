@@ -29,7 +29,7 @@ public class RokonActivity extends Activity {
 	protected RokonSurfaceView surfaceView;
 	protected static boolean engineLoaded = false;
 	protected static float gameWidth, gameHeight;
-	protected static String graphicsPath;
+	protected static String graphicsPath = "";
 	protected static boolean reloadToHardware;
 	protected static boolean isOnPause;
 
@@ -94,7 +94,6 @@ public class RokonActivity extends Activity {
 		engineLoaded = false;
 		engineCreated = false;
 		reloadToHardware = false;
-		graphicsPath = null;
 		currentScene = null;
 		System.gc();
 		System.exit(0);

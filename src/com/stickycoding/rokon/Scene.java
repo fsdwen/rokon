@@ -345,7 +345,15 @@ public class Scene {
 					}
 					Drawable object = layer[i].gameObjects.get(j);
 					if(object != null && object.isTouchable()) {
-						if(MathHelper.pointInRect(checkX, checkY, object.getX(), object.getY(), object.getWidth(), object.getHeight())) {
+						boolean touched = false;
+						if(object.getRotation() == 0) {
+							touched = MathHelper.pointInRect(checkX, checkY, object.getX(), object.getY(), object.getWidth(), object.getHeight());
+						} else {
+							if(object instanceof Sprite) {
+								touched = MathHelper.pointInShape(checkX, checkY, (Sprite)object);
+							}
+						}
+						if(touched) {
 							onTouch(object, checkX, checkY, event, 0);
 							if(object.getName() != null) {
 								invoke(object.getName() + "_onTouch", new Class[] { float.class, float.class, MotionEvent.class, int.class }, new Object[] { gameX, gameY, event, id });
@@ -475,7 +483,17 @@ public class Scene {
 					}
 					Drawable object = layer[i].gameObjects.get(j);
 					if(object != null && object.isTouchable()) {
-						if(MathHelper.pointInRect(checkX, checkY, object.getX(), object.getY(), object.getWidth(), object.getHeight())) {
+						boolean touched = false;
+						if(object.getRotation() == 0) {
+							touched = MathHelper.pointInRect(checkX, checkY, object.getX(), object.getY(), object.getWidth(), object.getHeight());
+						} else {
+							if(object instanceof Sprite) {
+								Debug.print("CHECKING SPRITE");
+								touched = MathHelper.pointInShape(checkX, checkY, (Sprite)object);
+								Debug.print("touched=" + touched);
+							}
+						}
+						if(touched) {
 							onTouch(object, checkX, checkY, event, id);
 							object.onTouch(checkX, checkY, event, id);
 							if(object.getName() != null) {
@@ -612,7 +630,16 @@ public class Scene {
 				}
 				Drawable object = layer[i].gameObjects.get(j);
 				if(object != null && object.isTouchable()) {
-					if(MathHelper.pointInRect(checkX, checkY, object.getX(), object.getY(), object.getWidth(), object.getHeight())) {
+					boolean touched = false;
+					if(object.getRotation() == 0) {
+						touched = MathHelper.pointInRect(checkX, checkY, object.getX(), object.getY(), object.getWidth(), object.getHeight());
+					} else {
+						if(object instanceof Sprite) {
+							Debug.print("CHECKING SPRITE");
+							touched = MathHelper.pointInShape(checkX, checkY, (Sprite)object);
+						}
+					}
+					if(touched) {
 						onTouch(object, checkX, checkY, event, 0);
 						if(object.getName() != null) {
 							invoke(object.getName() + "_onTouch", new Class[] { float.class, float.class, MotionEvent.class }, new Object[] { gameX, gameY, event, 0 });

@@ -38,6 +38,8 @@ public class RokonActivity extends Activity {
 	
 	protected static int toastType;
 	protected static String toastMessage;
+	
+	protected static Toast lastToast;
 
 
 	/**
@@ -404,13 +406,16 @@ public class RokonActivity extends Activity {
 	 */
 	public static void setDrawPriority(int drawPriority) {
 		DrawPriority.drawPriority = drawPriority;
-	}
-	
+	}	
 	
 	protected static Handler toastHandler = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {
-			Toast.makeText(Rokon.getActivity(), toastMessage, toastType).show();
+			if(lastToast != null) {
+				lastToast.cancel();
+			}
+			lastToast = Toast.makeText(Rokon.getActivity(), toastMessage, toastType);
+			lastToast.show();
 		}
 	};
 	

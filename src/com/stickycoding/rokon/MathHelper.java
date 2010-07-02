@@ -186,6 +186,46 @@ public class MathHelper {
 	    }
 	}
 	
+	public static boolean pointInShape(float x, float y, Sprite sprite) {
+		for(int i = 0; i < sprite.getPolygon().vertexCount; i++) {
+			int startIndex = i;
+			int endIndex = (i < sprite.polygon.edge.length - 1 ? i + 1 : 0);
+			float[] startVertex = sprite.getVertex(startIndex);
+			float[] endVertex = sprite.getVertex(endIndex);
+			float edgeX = endVertex[0] - startVertex[0];
+			float edgeY = endVertex[1] - startVertex[1];
+			float axisX = edgeY;
+			float axisY = -edgeX;
+			int posCount = 0, negCount = 0;
+			
+			float minDot = dot(axisX, axisY, startVertex[0], startVertex[1]) - 0.005f;
+			
+			for(int j = 0; j < sprite.getPolygon().vertexCount; j++) {
+				if(j != i) {
+					float[] vertex = sprite.getVertex(j);
+					float dotProduct = dot(axisX, axisY, vertex[0], vertex[1]);
+					if(dotProduct > minDot + 0.05f) {
+						posCount++;
+					} else if(dotProduct < minDot - 0.05f) {
+						negCount++;
+					}
+				}
+			}
+			float dotProduct = dot(axisX, axisY, x, y);
+			if(dotProduct > minDot) {
+				posCount++;
+			} else if(dotProduct < minDot) {
+				negCount++;
+			} else {
+				return false;
+			}
+			if(posCount > 0 && negCount > 0) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
 	/**
 	 * Returns the dot product between two Vector2 objects
 	 * 

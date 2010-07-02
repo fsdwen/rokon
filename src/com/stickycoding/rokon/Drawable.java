@@ -139,5 +139,12 @@ public abstract interface Drawable {
 	 * @return Z order, 0 if unset
 	 */
 	int getZ();
+	
+	/**
+	 * Fetches the rotation
+	 * 
+	 * @return rotation value, 0 is default
+	 */
+	float getRotation();
 
 }

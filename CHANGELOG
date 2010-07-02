@@ -4,6 +4,8 @@
 		* DrawableObject.getParentLayer()
 		* Scene.toastLong and Scene.toastShort are helpers for showing Toast messages
 		* Drawable.setZ, Drawable.getZ - for use with new DrawOrder.Z_ORDER
+		* Drawable.getRotation
+		* MathHelper.pointInShape - determines whether a point is inside a Sprites shape/polygon
 	
 	Changes
 		* DrawableObject.isOnScreen() returns FALSE if it is not added to a Layer
@@ -14,6 +16,8 @@
 		* DrawableObjet.setSize did not modify height
 		* TextSprite was being silly, and was looking for FontTexture intead of TextTexture
 		* PhysicalSprite did not take into account current rotaton when creating its Body 
+		* TextureAtlas was overlapping inserted Textures
+		* Touchables are now checked against their rotated position, previously rotation wasn't considered
 
 30/06/10 - 2.0.2
 	Another quick minor update, sorry for having so many packed together - obviously with the new release came a few unexpected bugs.

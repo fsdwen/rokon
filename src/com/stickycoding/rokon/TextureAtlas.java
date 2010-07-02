@@ -133,7 +133,7 @@ public class TextureAtlas extends Texture {
 	private int textureAt(int x, int y, Texture skip) {
 		for(int i = 0; i < maxTextureCount; i++) {
 			if(this.texture[i] != null && this.texture[i] != skip) {
-				if(MathHelper.pointInRect(x, y, texture[i].atlasX, texture[i].atlasY, texture[i].width, texture[i].height)) {
+				if(MathHelper.rectOverlap(x, y, x + skip.width, y + skip.width, texture[i].atlasX, texture[i].atlasY, texture[i].atlasX + texture[i].width, texture[i].atlasY + texture[i].height)) {
 					return i;
 				}
 			}

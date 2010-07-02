@@ -14,6 +14,7 @@ public class DrawableObject extends BasicGameObject implements Drawable, Updatea
 
 	protected boolean killNextUpdate = false;
 	
+	protected int z = 0;
 	protected BlendFunction blendFunction;
 	protected int forceDrawType = DrawPriority.DEFAULT;
 	protected float red = 1, green = 1, blue = 1, alpha = 1;
@@ -388,6 +389,9 @@ public class DrawableObject extends BasicGameObject implements Drawable, Updatea
 	 * @return TRUE if on screen, FALSE otherwise
 	 */
 	public boolean isOnScreen() {
+		if(parentLayer == null) {
+			return false;
+		}
 		float maxSize = width;
 		if(height > width) maxSize = height;
 		if(parentLayer.ignoreWindow || parentScene.window == null) {
@@ -463,6 +467,7 @@ public class DrawableObject extends BasicGameObject implements Drawable, Updatea
 	 * @see com.stickycoding.rokon.Drawable#onAdd(com.stickycoding.rokon.Layer)
 	 */
 	public void onAdd(Layer layer) {
+		parentLayer = layer;
         killNextUpdate = false;
 	}
 
@@ -476,6 +481,7 @@ public class DrawableObject extends BasicGameObject implements Drawable, Updatea
 	 */
 	public void remove() {
 		killNextUpdate = true;
+		parentLayer = null;
 	}
 	
 	/* (non-Javadoc)
@@ -632,4 +638,30 @@ public class DrawableObject extends BasicGameObject implements Drawable, Updatea
 	 * @see com.stickycoding.rokon.Drawable#onTouchMove(float, float, android.view.MotionEvent, int)
 	 */
 	public void onTouchMove(float x, float y, MotionEvent event, int pointerId) { }
+	
+	/**
+	 * Returns the current Layer to which this DrawableObject is included
+	 * 
+	 * @return NULL if not set
+	 */
+	public Layer getParentLayer() {
+		return parentLayer;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.stickycoding.rokon.Drawable#getZ()
+	 */
+	@Override
+	public int getZ() {
+		return z;
+	}
+	
+	/**
+	 * Sets the (relative) Z position of this object. It will only take affect if setDrawOrder is DrawOrder.Z_ORDER
+	 * 
+	 * @param z integer
+	 */
+	public void setZ(int z) {
+		this.z = z;
+	}
 }

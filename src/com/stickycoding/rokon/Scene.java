@@ -8,6 +8,7 @@ import javax.microedition.khronos.opengles.GL10;
 
 import android.view.KeyEvent;
 import android.view.MotionEvent;
+import android.widget.Toast;
 
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.World;
@@ -106,9 +107,9 @@ public class Scene {
 	public void onTouchUpReal(float x, float y, MotionEvent event, int pointerId) { }
 	public void onTouchReal(float x, float y, MotionEvent event, int pointerId) { }
 
-	public void onKeyDown(int keyCode, KeyEvent event) { }
-	public void onKeyUp(int keyCode, KeyEvent event) { }
-	public void onTrackballEvent(MotionEvent event) { }
+	public boolean onKeyDown(int keyCode, KeyEvent event) { return false; }
+	public boolean onKeyUp(int keyCode, KeyEvent event) { return false; }
+	public boolean onTrackballEvent(MotionEvent event) { return false; }
 	
 	/**
 	 * Sets a World for the physics in this Scene
@@ -963,6 +964,28 @@ public class Scene {
 	 */
 	public float getDefaultLineWidth() {
 		return defaultLineWidth;
+	}
+	
+	/**
+	 * Shows toast for a short period of time
+	 * 
+	 * @param message message string
+	 */
+	public void toastShort(String message) {
+		RokonActivity.toastMessage = message;
+		RokonActivity.toastType = Toast.LENGTH_SHORT;
+		RokonActivity.toastHandler.sendEmptyMessage(0);
+	}
+	
+	/**
+	 * Shows toast for a longer period of time
+	 * 
+	 * @param message message string
+	 */
+	public void toastLong(String message) {
+		RokonActivity.toastMessage = message;
+		RokonActivity.toastType = Toast.LENGTH_LONG;
+		RokonActivity.toastHandler.sendEmptyMessage(0);
 	}
 	
 	

@@ -13,7 +13,7 @@ public class DrawOrder {
 	/**
 	 * The methods for choosing render order
 	 */
-	public static final int FASTEST = 0, X_ASCENDING = 1, X_DESCENDING = 2, Y_ASCENDING = 3, Y_DESCENDING = 4;
+	public static final int FASTEST = 0, X_ASCENDING = 1, X_DESCENDING = 2, Y_ASCENDING = 3, Y_DESCENDING = 4, Z_ORDER = 5;
 	
 	protected int method = FASTEST;
 	
@@ -39,6 +39,10 @@ public class DrawOrder {
 				break;
 			case Y_DESCENDING:
 				gameObjects.setComparator(YDescendingComparator);
+				gameObjects.sort(true);
+				break;
+			case Z_ORDER:
+				gameObjects.setComparator(ZComparator);
 				gameObjects.sort(true);
 				break;
 		}
@@ -79,6 +83,16 @@ public class DrawOrder {
 			if(object1.getY() < object2.getY())
 				return 1;
 			if(object1.getY() == object2.getY())
+				return 0;
+			return -1;
+		}
+	};
+	
+	protected static Comparator<Drawable> ZComparator = new Comparator<Drawable>() {
+		public int compare(Drawable object1, Drawable object2) {
+			if(object1.getZ() > object2.getZ())
+				return 1;
+			if(object1.getZ() == object2.getZ())
 				return 0;
 			return -1;
 		}

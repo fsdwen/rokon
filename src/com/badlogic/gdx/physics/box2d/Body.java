@@ -112,7 +112,6 @@ public class Body
 	private native void jniSetTransform( long addr, float positionX, float positionY, float angle );
 	
 	/** 
-	 * Get the body transform for the body's origin. FIXME
 	 */	
 	private final Transform transform = new Transform( );
 	public Transform getTransform()

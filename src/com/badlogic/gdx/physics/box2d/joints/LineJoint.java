@@ -138,7 +138,6 @@ public class LineJoint extends Joint
 	
 	/** 
 	 * Set/Get the maximum motor force, usually in N. 
-	 * FIXME returns 0 at the moment due to a linking problem.
 	 */
 	public float getMaxMotorForce()
 	{

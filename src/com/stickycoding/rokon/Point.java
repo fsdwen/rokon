@@ -63,7 +63,7 @@ public class Point extends Vector2 {
 	 * @return y-coordinate
 	 */
 	public float getY() {
-		return parent == null ? y : parent.getX() + y;
+		return parent == null ? y : parent.getY() + y;
 	}
 	
 	/**

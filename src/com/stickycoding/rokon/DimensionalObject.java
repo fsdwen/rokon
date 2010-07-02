@@ -88,6 +88,7 @@ public class DimensionalObject extends Point {
 	 */
 	public void setSize(float width, float height) {
 		this.width = width;
+		this.height = height;
 	}
 	
 	/**

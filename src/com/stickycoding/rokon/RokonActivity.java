@@ -5,9 +5,12 @@ import javax.microedition.khronos.opengles.GL10;
 import android.app.Activity;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import com.stickycoding.rokon.audio.RokonMusic;
 import com.stickycoding.rokon.device.Graphics;
@@ -32,6 +35,9 @@ public class RokonActivity extends Activity {
 	protected static String graphicsPath = "";
 	protected static boolean reloadToHardware;
 	protected static boolean isOnPause;
+	
+	protected static int toastType;
+	protected static String toastMessage;
 
 
 	/**
@@ -62,7 +68,9 @@ public class RokonActivity extends Activity {
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if(currentScene != null) {
-			currentScene.onKeyDown(keyCode, event);
+			if(currentScene.onKeyDown(keyCode, event)) {
+				return true;
+			}
 		}
 		return super.onKeyDown(keyCode, event);
 	}
@@ -73,7 +81,7 @@ public class RokonActivity extends Activity {
 	@Override
 	public boolean onTrackballEvent(MotionEvent event) {
 		if(currentScene != null) {
-			currentScene.onTrackballEvent(event);
+			return currentScene.onTrackballEvent(event);
 		}
 		return super.onTrackballEvent(event);
 	}
@@ -84,7 +92,9 @@ public class RokonActivity extends Activity {
 	@Override
 	public boolean onKeyUp(int keyCode, KeyEvent event) {
 		if(currentScene != null) {
-			currentScene.onKeyUp(keyCode, event);
+			if(currentScene.onKeyUp(keyCode, event)) {
+				return true;
+			}
 		}
 		return super.onKeyUp(keyCode, event);
 	}
@@ -395,4 +405,13 @@ public class RokonActivity extends Activity {
 	public static void setDrawPriority(int drawPriority) {
 		DrawPriority.drawPriority = drawPriority;
 	}
+	
+	
+	protected static Handler toastHandler = new Handler() {
+		@Override
+		public void handleMessage(Message msg) {
+			Toast.makeText(Rokon.getActivity(), toastMessage, toastType).show();
+		}
+	};
+	
 }

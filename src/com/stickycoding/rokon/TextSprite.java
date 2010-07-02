@@ -53,7 +53,7 @@ public class TextSprite extends Sprite {
 	 */
 	@Override
 	public void setTexture(Texture texture) {
-		if(!(texture instanceof FontTexture)) {
+		if(!(texture instanceof TextTexture)) {
 			Debug.error("Tried setting TextSprite to non-TextTexture");
 			return;
 		}

@@ -89,6 +89,7 @@ public class PhysicalSprite extends Sprite implements Updateable {
 		bodyDef.type = BodyType.DynamicBody;
 		bodyDef.position.x = getX() + width / 2f;
 		bodyDef.position.y = getY() + height / 2f;
+		bodyDef.angle = rotation * MathHelper.DEG_TO_RAD;
 		createBody(bodyDef, fixture);
 	}
 	
@@ -102,6 +103,7 @@ public class PhysicalSprite extends Sprite implements Updateable {
 		bodyDef.type = BodyType.DynamicBody;
 		bodyDef.position.x = getX() + width / 2f;
 		bodyDef.position.y = getY() + height / 2f;
+		bodyDef.angle = rotation * MathHelper.DEG_TO_RAD;
 		createBody(bodyDef, shape);
 	}
 	
@@ -115,6 +117,7 @@ public class PhysicalSprite extends Sprite implements Updateable {
 		bodyDef.type = BodyType.StaticBody;
 		bodyDef.position.x = getX() + width / 2f;
 		bodyDef.position.y = getY() + height / 2f;
+		bodyDef.angle = rotation * MathHelper.DEG_TO_RAD;
 		createBody(bodyDef, fixture);
 	}
 	
@@ -128,6 +131,7 @@ public class PhysicalSprite extends Sprite implements Updateable {
 		bodyDef.type = BodyType.StaticBody;
 		bodyDef.position.x = getX() + width / 2f;
 		bodyDef.position.y = getY() + height / 2f;
+		bodyDef.angle = rotation * MathHelper.DEG_TO_RAD;
 		createBody(bodyDef, shape);
 	}
 	
@@ -141,6 +145,7 @@ public class PhysicalSprite extends Sprite implements Updateable {
 		bodyDef.type = BodyType.KinematicBody;
 		bodyDef.position.x = getX() + width / 2f;
 		bodyDef.position.y = getY() + height / 2f;
+		bodyDef.angle = rotation * MathHelper.DEG_TO_RAD;
 		createBody(bodyDef, fixture);
 	}
 	
@@ -154,6 +159,7 @@ public class PhysicalSprite extends Sprite implements Updateable {
 		bodyDef.type = BodyType.KinematicBody;
 		bodyDef.position.x = getX() + width / 2f;
 		bodyDef.position.y = getY() + height / 2f;
+		bodyDef.angle = rotation * MathHelper.DEG_TO_RAD;
 		createBody(bodyDef, shape);
 	}
 	
@@ -343,7 +349,7 @@ public class PhysicalSprite extends Sprite implements Updateable {
 		if(usePhysics) {
 			setX(body.getPosition().x - width / 2);
 			setY(body.getPosition().y - height / 2);
-			rotation = body.getAngle() * 57.2957795f;
+			rotation = body.getAngle() * MathHelper.RAD_TO_DEG;
 		}
 	}
 	
@@ -355,6 +361,7 @@ public class PhysicalSprite extends Sprite implements Updateable {
 		super.onRemove();
 		if(body != null) {
 			Physics.world.destroyBody(body);
+			body = null;
 		}
 	}
 

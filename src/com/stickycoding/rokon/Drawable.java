@@ -132,5 +132,12 @@ public abstract interface Drawable {
 	 * @param pointerId id of the pointer, always 0 if no multitouch present
 	 */
 	void onTouchMove(float x, float y, MotionEvent event, int pointerId);
+	
+	/**
+	 * Fetches the Z order of the Drawable
+	 * 
+	 * @return Z order, 0 if unset
+	 */
+	int getZ();
 
 }

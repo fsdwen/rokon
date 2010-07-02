@@ -282,6 +282,7 @@ public class GLHelper {
      * @param textureTile the index of the tile inside the Texture
      */
     public static void drawNormal(boolean fill, float red, float green, float blue, float alpha, BlendFunction blendFunction, BufferObject vertexBuffer, int vertexMode, float x, float y, float width, float height, float rotation, boolean rotateAboutPivot, float rotationPivotX, float rotationPivotY, boolean border, BufferObject borderBuffer, float borderRed, float borderGreen, float borderBlue, float borderAlpha, float lineWidth, boolean hasTexture, Texture texture, int textureTile) {
+    	if(alpha == 0 && (borderAlpha == 0 || border == false)) return;
     	if(!fill && !border) return;
 		if(blendFunction != null) {
 			GLHelper.blendMode(blendFunction);
@@ -381,7 +382,8 @@ public class GLHelper {
     * @param textureTile the index of the tile inside the Texture
     */
     public static void drawVBO(boolean fill, float red, float green, float blue, float alpha, BlendFunction blendFunction, ArrayVBO arrayVBO, int vertexMode, float x, float y, float width, float height, float rotation, boolean rotateAboutPivot, float rotationPivotX, float rotationPivotY, boolean border, ArrayVBO borderVBO, float borderRed, float borderGreen, float borderBlue, float borderAlpha, float lineWidth, boolean hasTexture, Texture texture, int textureTile) {
-    	
+    	if(alpha == 0 && (borderAlpha == 0 || border == false)) return;
+    	if(!fill && !border) return;
 		if(!arrayVBO.isLoaded()) {
 			Debug.print("Vertex VBO isn't loaded");
 			arrayVBO.load(gl);

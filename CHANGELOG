@@ -1,11 +1,19 @@
 2.0.3
 	New Features
 		* Drawable now has onTouch events within itself
+		* DrawableObject.getParentLayer()
+		* Scene.toastLong and Scene.toastShort are helpers for showing Toast messages
+		* Drawable.setZ, Drawable.getZ - for use with new DrawOrder.Z_ORDER
 	
 	Changes
+		* DrawableObject.isOnScreen() returns FALSE if it is not added to a Layer
 	
 	Bug Fixes
 		* Drawable is now public, previously was not. This prevented 'onTouch(Drawable' methods from being used.
+		* Point.getY() returned wrong value if it had a parent
+		* DrawableObjet.setSize did not modify height
+		* TextSprite was being silly, and was looking for FontTexture intead of TextTexture
+		* PhysicalSprite did not take into account current rotaton when creating its Body 
 
 30/06/10 - 2.0.2
 	Another quick minor update, sorry for having so many packed together - obviously with the new release came a few unexpected bugs.

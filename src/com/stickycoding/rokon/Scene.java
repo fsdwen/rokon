@@ -21,6 +21,10 @@ import com.stickycoding.rokon.device.OS;
  * 
  * @author Richard
  */
+/**
+ * @author Richard
+ *
+ */
 public class Scene {
 	
 	/**
@@ -957,6 +961,15 @@ public class Scene {
 	}
 	
 	/**
+	 * Fetches the current state of the physics engine
+	 * 
+	 * @return TRUE if physics is paused, FALSE otherwise
+	 */
+	public boolean isPhysicsPaused() {
+		return pausePhysics;
+	}
+	
+	/**
 	 * Sets the Background for this Scene
 	 * 
 	 * @param background valid Background object
@@ -998,7 +1011,7 @@ public class Scene {
 	 * 
 	 * @param message message string
 	 */
-	public void toastShort(String message) {
+	public static void toastShort(String message) {
 		RokonActivity.toastMessage = message;
 		RokonActivity.toastType = Toast.LENGTH_SHORT;
 		RokonActivity.toastHandler.sendEmptyMessage(0);
@@ -1009,7 +1022,7 @@ public class Scene {
 	 * 
 	 * @param message message string
 	 */
-	public void toastLong(String message) {
+	public static void toastLong(String message) {
 		RokonActivity.toastMessage = message;
 		RokonActivity.toastType = Toast.LENGTH_LONG;
 		RokonActivity.toastHandler.sendEmptyMessage(0);

@@ -77,7 +77,7 @@ public class Layer {
 	 * @param type Taken from the constants in DrawQueue
 	 */
 	public void setDrawOrder(int type) {
-		if(type < 0 || type > 4) {
+		if(type < 0 || type > 5) {
 			Debug.warning("Scene.setDrawOrder", "Tried setting DrawOrder type to " + type + ", defaulting to 0");
 			drawQueueType = 0;
 			return;
@@ -110,8 +110,22 @@ public class Layer {
 		drawableObject.onAdd(this);
 	}
 	
+	protected void removeDead() {
+		for(int i = 0; i < gameObjects.getCapacity(); i++) {
+			if(gameObjects.get(i) != null) {
+				if(gameObjects.get(i) != null) {
+					while(gameObjects.get(i) != null && !gameObjects.get(i).isAlive()) {
+						gameObjects.remove(i);
+					}
+				}
+			}
+		}
+	}
+	
 	protected void onDraw(GL10 gl) {
 		DrawOrder.sort(gameObjects, drawQueueType);
+		
+		removeDead();
 		
 		if(ignoreWindow && parentScene.window != null) {
 			Window.setDefault(gl);
@@ -120,17 +134,14 @@ public class Layer {
 		}
 		for(int i = 0; i < gameObjects.getCapacity(); i++) {
 			if(gameObjects.get(i) != null) {
-				if(gameObjects.get(i) != null) {
-					while(gameObjects.get(i) != null && !gameObjects.get(i).isAlive()) {
-						gameObjects.remove(i);
+				try {
+					gameObjects.get(i).onUpdate();
+					if(gameObjects.get(i).isOnScreen()) {
+						gameObjects.get(i).onDraw(gl);
 					}
-					if(gameObjects.get(i) != null) {
-						gameObjects.get(i).onUpdate();
-						if(gameObjects.get(i).isOnScreen()) {
-							gameObjects.get(i).onDraw(gl);
-						}
-					}
-				}
+				} catch (Exception e) { 
+					
+				}	
 			}
 		}
 		if(ignoreWindow && parentScene.window != null) {

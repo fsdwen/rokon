@@ -29,6 +29,7 @@ public class RokonRenderer implements GLSurfaceView.Renderer {
 	 */
 	public void onDrawFrame(GL10 gl) {
 		if(RokonActivity.isOnPause) {
+			Debug.print("onpause...");
 			return;
 		}
 		Time.update();
@@ -42,13 +43,14 @@ public class RokonRenderer implements GLSurfaceView.Renderer {
 		FPSCounter.onFrame();
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		if(RokonActivity.currentScene != null) {
-			TextureManager.execute(gl);
 			if(RokonActivity.reloadToHardware) {
 				Debug.print("Reloading");
-				TextureManager.reloadTextures();
+				TextureManager.removeTextures();
+				VBOManager.removeVBOs();
 				RokonActivity.reloadToHardware = false;
+			} else {
+				RokonActivity.currentScene.onDraw(gl);	
 			}
-			RokonActivity.currentScene.onDraw(gl);			
 		}
 	}
 
@@ -56,11 +58,16 @@ public class RokonRenderer implements GLSurfaceView.Renderer {
 	 * @see android.opengl.GLSurfaceView.Renderer#onSurfaceChanged(javax.microedition.khronos.opengles.GL10, int, int)
 	 */
 	public void onSurfaceChanged(GL10 gl, int w, int h) {
-		Debug.print("Surface Size Changed: " + w + " " + h);
+		Debug.print("onSurfaceChanged() " + RokonActivity.isOnPause);
+		if(RokonActivity.isOnPause) {
+			Debug.print(" - Changed Surface with onPause, force resume?	");
+			//Rokon.getActivity().onResume();
+		}
+		//Debug.print("Surface Size Changed: " + w + " " + h);
 		gl.glViewport(0, 0, w, h);
 		gl.glMatrixMode(GL10.GL_PROJECTION);
 		gl.glLoadIdentity();
-		Debug.print("gluOrtho2D : " + RokonActivity.gameWidth + "x" + RokonActivity.gameHeight);
+		//Debug.print("gluOrtho2D : " + RokonActivity.gameWidth + "x" + RokonActivity.gameHeight);
         GLU.gluOrtho2D(gl, 0, RokonActivity.gameWidth, RokonActivity.gameHeight, 0);
 	}
 
@@ -68,9 +75,13 @@ public class RokonRenderer implements GLSurfaceView.Renderer {
 	 * @see android.opengl.GLSurfaceView.Renderer#onSurfaceCreated(javax.microedition.khronos.opengles.GL10, javax.microedition.khronos.egl.EGLConfig)
 	 */
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
+		Debug.print("onSurfaceCreated() " + RokonActivity.isOnPause);
+		if(RokonActivity.isOnPause) {
+			Debug.print(" - Created Surface with onPause, force resume?");
+			//Rokon.getActivity().onResume();
+		}
 		gl.glHint(GL10.GL_PERSPECTIVE_CORRECTION_HINT, GL10.GL_FASTEST);
 		
-		gl.glClearColor(0, 0, 0, 1);
 		gl.glShadeModel(GL10.GL_FLAT);
 		gl.glDisable(GL10.GL_DEPTH_TEST);
 		gl.glEnable(GL10.GL_TEXTURE_2D);
@@ -94,14 +105,14 @@ public class RokonRenderer implements GLSurfaceView.Renderer {
 
 		if(DrawPriority.drawPriority == DrawPriority.PRIORITY_VBO) {
 			if(!Graphics.isSupportsVBO()) {
-				Debug.warning("Device does not support VBO's, defaulting back to normal");
+				//Debug.warning("Device does not support VBO's, defaulting back to normal");
 				DrawPriority.drawPriority = DrawPriority.PRIORITY_NORMAL;
 			}
 		}
 
         OS.hackBrokenDevices();
 
-        Debug.print("Graphics Support - " + version + " - " + (Graphics.isSupportsVBO() ? "vbos" : ""));
+       // Debug.print("Graphics Support - " + version + " - " + (Graphics.isSupportsVBO() ? "vbos" : ""));
         
         GLU.gluOrtho2D(gl, 0, RokonActivity.gameWidth, RokonActivity.gameHeight, 0);
 	}

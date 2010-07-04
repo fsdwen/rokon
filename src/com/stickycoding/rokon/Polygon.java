@@ -71,9 +71,7 @@ public class Polygon {
 			if(nextEdge == vertexCount) nextEdge = 0;
 			edge[i] = new Vector2(vertex[nextEdge].getX() - vertex[i].getX(), vertex[nextEdge].getY() - vertex[i].getY());
 			normal[i] = MathHelper.findNormal(edge[i]);
-			Debug.print("Found edge = " + edge[i].x + " " + edge[i].y + " norm " + normal[i].x + " " + normal[i].y);
 		}
-		Debug.print("Edges found");
 	}
 	
 	/**

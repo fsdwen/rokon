@@ -103,8 +103,8 @@ public class GLHelper {
 	 * 
 	 * @param bufferIndex index of the buffer to bind
 	 */
-	public static void bindBuffer(int bufferIndex) {
-		if(bufferIndex != arrayBuffer) {
+	public static void bindBuffer(int bufferIndex, boolean force) {
+		if(bufferIndex != arrayBuffer || force) {
 			((GL11)gl).glBindBuffer(GL11.GL_ARRAY_BUFFER, bufferIndex);
 			arrayBuffer = bufferIndex;
 		}
@@ -129,6 +129,7 @@ public class GLHelper {
 	 */
 	public static void bindTexture(int textureIndex) {
 		if(GLHelper.textureIndex != textureIndex) {
+			Debug.print("@@ bind " + textureIndex);
 			gl.glBindTexture(GL10.GL_TEXTURE_2D, textureIndex);
 			GLHelper.textureIndex = textureIndex;
 		}
@@ -153,9 +154,13 @@ public class GLHelper {
 	public static void checkTextureValid(Texture texture) {
 		if(texture.textureIndex == -1 && texture.parentAtlas == null) {
 			texture.onLoadTexture(gl);
+			Debug.print("checkTextureValid - load self");
+			Debug.print("we're at " + texture.textureIndex);
 		} else {
 			if(texture.textureIndex == -1) {
 				texture.parentAtlas.onLoadTexture(gl);
+				Debug.print("checkTextureValid - load parent");
+				Debug.print("we're at " + texture.textureIndex);
 			}
 		}
 	}
@@ -291,7 +296,7 @@ public class GLHelper {
 		}
 		gl.glPushMatrix();
 		enableVertexArray();
-		bindBuffer(0);
+		bindBuffer(0, false);
 		if(x != 0 || y != 0) {
 			gl.glTranslatef(x, y, 0);
 		}
@@ -385,17 +390,17 @@ public class GLHelper {
     	if(alpha == 0 && (borderAlpha == 0 || border == false)) return;
     	if(!fill && !border) return;
 		if(!arrayVBO.isLoaded()) {
-			Debug.print("Vertex VBO isn't loaded");
+			//Debug.print("Vertex VBO isn't loaded");
 			arrayVBO.load(gl);
 		}
 		if(border && !borderVBO.isLoaded()) {
-			Debug.print("Border VBO isn't loaded");
+			//Debug.print("Border VBO isn't loaded");
 			borderVBO.load(gl);
 		}
 		if(hasTexture) {
 			checkTextureValid(texture);
 			if(!texture.vbo[textureTile].isLoaded()) {
-				Debug.print("Texture VBO isn't loaded");
+				//Debug.print("Texture VBO isn't loaded");
 				texture.vbo[textureTile].load(gl);
 			}
 		}
@@ -430,9 +435,9 @@ public class GLHelper {
 			bindTexture(texture);
 			color4f(red, green, blue, alpha);
 			texCoordPointer(texture.buffer[textureTile], GL10.GL_FLOAT);
-			bindBuffer(arrayVBO.getBufferIndex());
+			bindBuffer(arrayVBO.getBufferIndex(), false);
 			vertexPointer(GL10.GL_FLOAT);
-			bindBuffer(texture.vbo[textureTile].getBufferIndex());
+			bindBuffer(texture.vbo[textureTile].getBufferIndex(), false);
 			texCoordPointer(GL10.GL_FLOAT);
 			gl.glDrawArrays(vertexMode, 0, arrayVBO.getBufferObject().getSize() / 2);
 		} else {
@@ -440,7 +445,7 @@ public class GLHelper {
 			disableTextures();
 			if(fill) {
 				color4f(red, green, blue, alpha);
-				bindBuffer(arrayVBO.getBufferIndex());
+				bindBuffer(arrayVBO.getBufferIndex(), false);
 				vertexPointer(GL10.GL_FLOAT);
 				gl.glDrawArrays(vertexMode, 0, arrayVBO.getBufferObject().getSize() / 2);
 			}
@@ -451,7 +456,7 @@ public class GLHelper {
 					lineWidth(RokonActivity.currentScene.defaultLineWidth);
 				}
 				color4f(borderRed, borderGreen, borderBlue, borderAlpha);
-				bindBuffer(borderVBO.getBufferIndex());
+				bindBuffer(borderVBO.getBufferIndex(), false);
 				vertexPointer(GL10.GL_FLOAT);
 				gl.glDrawArrays(GL10.GL_LINE_LOOP, 0, borderVBO.getBufferObject().getSize() / 2);
 			}

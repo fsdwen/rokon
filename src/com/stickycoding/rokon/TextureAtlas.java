@@ -160,6 +160,8 @@ public class TextureAtlas extends Texture {
 			return;
 		}
 		
+		Debug.error("Loading TextureAtlas");
+		
 		int[] nameArray = new int[1];
 		GLHelper.enableTextures();
 		gl.glGenTextures(1, nameArray, 0);
@@ -184,7 +186,19 @@ public class TextureAtlas extends Texture {
                 bmp = null;
             }
 		}
+		
+		TextureManager.addToActive(this);
 
+	}
+	
+	@Override
+	public void setUnloaded() {
+		textureIndex = -1;
+		for(int i = 0; i < maxTextureCount; i++) {
+			if(texture[i] != null) {
+				texture[i].setUnloaded();
+			}
+		}
 	}
 
 }

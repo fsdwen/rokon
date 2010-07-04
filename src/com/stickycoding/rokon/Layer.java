@@ -111,12 +111,11 @@ public class Layer {
 	}
 	
 	protected void removeDead() {
-		for(int i = 0; i < gameObjects.getCapacity(); i++) {
+		for(int i = 0; i < gameObjects.getCount(); i++) {
 			if(gameObjects.get(i) != null) {
-				if(gameObjects.get(i) != null) {
-					while(gameObjects.get(i) != null && !gameObjects.get(i).isAlive()) {
-						gameObjects.remove(i);
-					}
+				while(gameObjects.get(i) != null && !gameObjects.get(i).isAlive()) {
+					Debug.print("REMOVING");
+					gameObjects.remove(i);
 				}
 			}
 		}
@@ -132,7 +131,7 @@ public class Layer {
 			gl.glMatrixMode(GL10.GL_MODELVIEW);
 	        gl.glLoadIdentity();
 		}
-		for(int i = 0; i < gameObjects.getCapacity(); i++) {
+		for(int i = 0; i < gameObjects.getCount(); i++) {
 			if(gameObjects.get(i) != null) {
 				try {
 					gameObjects.get(i).onUpdate();
@@ -140,7 +139,7 @@ public class Layer {
 						gameObjects.get(i).onDraw(gl);
 					}
 				} catch (Exception e) { 
-					
+					e.printStackTrace();
 				}	
 			}
 		}

@@ -19,6 +19,7 @@
 		* PhysicalSprite did not take into account current rotaton when creating its Body 
 		* TextureAtlas was overlapping inserted Textures
 		* Touchables are now checked against their rotated position, previously rotation wasn't considered
+		* Fixed an issue with the Activity lifecycle, it should now properly reload textures / resume last position in the game when hidden/destroyed
 
 30/06/10 - 2.0.2
 	Another quick minor update, sorry for having so many packed together - obviously with the new release came a few unexpected bugs.

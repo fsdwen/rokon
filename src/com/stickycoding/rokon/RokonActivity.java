@@ -28,13 +28,13 @@ public class RokonActivity extends Activity {
 	
 	protected static boolean engineCreated;
 	protected static Scene currentScene = null;
-	protected boolean forceLandscape, forcePortrait, forceFullscreen;
-	protected RokonSurfaceView surfaceView;
+	protected static boolean forceLandscape, forcePortrait, forceFullscreen;
+	protected static RokonSurfaceView surfaceView;
 	protected static boolean engineLoaded = false;
 	protected static float gameWidth, gameHeight;
 	protected static String graphicsPath = "";
 	protected static boolean reloadToHardware;
-	protected static boolean isOnPause;
+	protected static boolean isOnPause, isDestroyed;
 	
 	protected static int toastType;
 	protected static String toastMessage;
@@ -102,6 +102,7 @@ public class RokonActivity extends Activity {
 	}
 	
 	protected void dispose() {
+		Debug.error("DISPOSE");
 		isOnPause = false;
 		engineLoaded = false;
 		engineCreated = false;
@@ -127,46 +128,53 @@ public class RokonActivity extends Activity {
 	 */
 	@Override
 	public void onCreate(Bundle savedState) {
-		super.onCreate(savedState);
-
+		super.onCreate(savedState);		
+		Debug.print("onCreate()");
 		try {
 			MotionEventWrapper5.checkAvailable();
 			Rokon.motionEvent5 = new MotionEventWrapper5();
-			Debug.print("5 IS AVAILABLE");
-		} catch (VerifyError e) {
-			Debug.print("5 NOT AVAILBLE");
-		}
+		} catch (VerifyError e) { }
 		
 		try {
 			MotionEventWrapper8.checkAvailable();
 			Rokon.motionEvent8 = new MotionEventWrapper8();
-			Debug.print("8 IS AVAILABLE");
-		} catch (VerifyError e) {
-			Debug.print("8 NOT AVAILBLE");
-		}
-		
+		} catch (VerifyError e) { }		
 		if(isOnPause) {
-			Debug.print("Engine Activity created, loading previous state");
-			finish();//initEngine();
+			Debug.warning("onCreate() when already paused");
+
+			/*surfaceView = new RokonSurfaceView(this);
+			setContentView(surfaceView);
+			if(currentScene != null) {
+				currentScene.useNewClearColor = true;
+			}*/
+			
 			return;
 		}
 		Debug.print("Engine Activity created");
 		onCreate();
 		if(!engineCreated) {
 			Debug.error("The engine was not created");
+			Debug.print("#################### FINISH ME HERE");
 			finish();
 			return;
 		}
 	}
+	
 	
 	/* (non-Javadoc)
 	 * @see android.app.Activity#onDestroy()
 	 */
 	@Override
 	public void onDestroy() {
+		Debug.print("onDestroy()");
+		isDestroyed = true;
 		if(isFinishing()) {
-			Debug.print("DESTROY");
-			dispose();
+			Debug.error("exit()");
+			
+			//This removes the app from processes, and forgets all our static variables.
+			//I'm sure technically,we should dispose of all the variables ourselves, and not do this.
+			//But shit, it works for now
+			System.exit(0);
 		}
 		super.onDestroy();
 	}
@@ -191,14 +199,16 @@ public class RokonActivity extends Activity {
 	 */
 	@Override
 	public void onPause() {
-		super.onPause();
-		Debug.print("Engine Activity received onPause()");
 		isOnPause = true;
-		reloadToHardware = true;
+		Debug.error("onPause() " + TextureManager.activeTextureCount);
+		TextureManager.removeTextures();
+		VBOManager.removeVBOs();
+		Debug.error("onPause2() " + TextureManager.activeTextureCount);
 		if(currentScene != null) {
 			currentScene.onPause();
 		}
 		RokonMusic.onPause();
+		super.onPause();
 	}
 	
 	/* (non-Javadoc)
@@ -206,14 +216,26 @@ public class RokonActivity extends Activity {
 	 */
 	@Override
 	public void onResume() {
-		super.onResume();
+		Debug.error("onResume() " + TextureManager.activeTextureCount);
+		
 		Rokon.currentActivity = this;
-		isOnPause = false;
-		Debug.print("Engine Activity received onResume()");
-		if(currentScene != null) {
-			currentScene.onResume();
+
+		if(isDestroyed) {
+			surfaceView = new RokonSurfaceView(this);		
+			setContentView(surfaceView);	
+			isDestroyed = false;
 		}
-		RokonMusic.onResume();
+		if(currentScene != null) {
+			currentScene.useNewClearColor = true;
+		}
+		if(isOnPause) {
+			if(currentScene != null) {
+				currentScene.onResume();
+			}
+			isOnPause = false;
+			RokonMusic.onResume();
+		}
+		super.onResume();
 	}
 	
 	/* (non-Javadoc)
@@ -418,5 +440,4 @@ public class RokonActivity extends Activity {
 			lastToast.show();
 		}
 	};
-	
 }

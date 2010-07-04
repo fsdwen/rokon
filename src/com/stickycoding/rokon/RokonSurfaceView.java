@@ -11,8 +11,16 @@ import android.view.MotionEvent;
  */
 public class RokonSurfaceView extends GLSurfaceView {
 
-	private RokonActivity rokonActivity;
-	private RokonRenderer renderer;
+	protected RokonActivity rokonActivity;
+	protected RokonRenderer renderer;
+	
+	public RokonSurfaceView(RokonActivity rokonActivity, RokonRenderer renderer) {
+		super(rokonActivity);
+		this.rokonActivity = rokonActivity;
+		this.renderer = renderer;
+		setRenderer(renderer);
+		setKeepScreenOn(true);
+	}
 	
 	/**
 	 * Creates RokonSurfaceView

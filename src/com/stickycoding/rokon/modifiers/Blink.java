@@ -23,7 +23,7 @@ public class Blink extends Modifier {
 	 * @see com.stickycoding.rokon.Modifier#onStart()
 	 */
 	@Override
-	public void onStart() {
+	public void onStart(Sprite sprite) {
 		nextFlash = Time.getTicks() + 500;
 		end = Time.getTicks() + 10000;
 	}
@@ -47,6 +47,12 @@ public class Blink extends Modifier {
 			}
 			nextFlash = Time.getTicks() + 500;
 		}
+	}
+
+	@Override
+	public void onEnd(Sprite sprite) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

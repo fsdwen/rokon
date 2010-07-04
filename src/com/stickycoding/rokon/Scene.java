@@ -724,16 +724,6 @@ public class Scene {
 	}
 	
 	/**
-	 * Flags a Texture to be loaded into this Scene
-	 * This must be called before RokonActivity.setScene
-	 * 
-	 * @param texture valid Texture object
-	 */
-	public void useTexture(Texture texture) {
-		TextureManager.load(texture);
-	}
-	
-	/**
 	 * Defines the active Window for this Scene
 	 * If no Window is given, a default static view will be rendered 
 	 * 
@@ -916,7 +906,7 @@ public class Scene {
 	}
 	
 	protected void onEndScene() {
-		TextureManager.unloadActiveTextures();
+		//TextureManager.unloadActiveTextures();
 	}
 	
 	protected void onDraw(GL10 gl) {

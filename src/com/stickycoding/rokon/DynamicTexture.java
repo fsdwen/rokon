@@ -78,7 +78,8 @@ public class DynamicTexture extends Texture {
 	 * Informs the TextureManager to reload the texture from the Bitmap, any updates in Canvas will be drawn in here
 	 */
 	public void reload() {
-		TextureManager.refreshTexture(this);
+		//TODO Remove old texture from hardware, this isn't right!
+		//TextureManager.removeFromActiveTextures(this);
 	}
 	
 	protected void onRefreshTexture(GL10 gl) {

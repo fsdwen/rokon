@@ -651,7 +651,6 @@ public class DrawableObject extends BasicGameObject implements Drawable, Updatea
 	/* (non-Javadoc)
 	 * @see com.stickycoding.rokon.Drawable#getZ()
 	 */
-	@Override
 	public int getZ() {
 		return z;
 	}

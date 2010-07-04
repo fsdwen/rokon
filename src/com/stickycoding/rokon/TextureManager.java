@@ -19,205 +19,43 @@ public class TextureManager {
 	protected static Texture[] activeTexture = new Texture[MAX_TEXTURE_COUNT];
 	protected static int activeTextureCount = 0;
 	
-	protected static Texture[] unloadQueue = new Texture[MAX_TEXTURE_COUNT];
-	protected static int unloadQueueCount = 0;
-	
-	protected static Texture[] loadQueue = new Texture[MAX_TEXTURE_COUNT];
-	protected static int loadQueueCount = 0;
-	
-	protected static DynamicTexture[] refreshQueue = new DynamicTexture[MAX_TEXTURE_COUNT];
-	protected static int refreshQueueCount = 0;
-	
-	/**
-	 * Refreshes a DynamicTexture on the hardware
-	 * 
-	 * @param texture valid DynamicTexture
-	 */
-	public static void refreshTexture(DynamicTexture texture) {
-		if(isRefreshing(texture)) {
-			return;
-		}
-		if(isUnloading(texture)) {
-			removeFromUnloading(texture);
-		} else {
-			if(!isActive(texture) && !isLoading(texture)) {
-				return;
-			}
-		}
-		for(int i = 0; i < MAX_TEXTURE_COUNT; i++) {
-			if(refreshQueue[i] == null) {
-				refreshQueue[i] = texture;
-				refreshQueueCount++;
-				return;
-			}
-		}
-		Debug.error("Reload texture Q is too long");
-	}
-	
-	protected static boolean isRefreshing(DynamicTexture texture) {
-		for(int i = 0; i < MAX_TEXTURE_COUNT; i++) {
-			if(refreshQueue[i] != null && (refreshQueue[i] == texture || (refreshQueue[i].parentAtlas != null && refreshQueue[i].parentAtlas == texture.parentAtlas))) {
-				return true;
-			}
-		}
-		return false;
-	}
-	
 	/** 
 	 * Reloads all active Textures
 	 */
-	public static void reloadTextures() {
+	public static void removeTextures() {
+		Debug.error("removeTextures()");
 		for(int i = 0; i < MAX_TEXTURE_COUNT; i++) {
 			if(activeTexture[i] != null) {
+				Debug.print(" - Unloaded " + i);
 				Texture texture = activeTexture[i];
+				texture.setUnloaded();
 				activeTexture[i] = null;
 				activeTextureCount--;
-				load(texture);
 			}
 		}
 	}
-	
-	/**
-	 * Queues a Texture to be loaded onto the hardware
-	 * 
-	 * @param texture valid Texture object
-	 */
-	public static void load(Texture texture) {
-		if(isLoading(texture) || isActive(texture)) {
-			return;
-		}
-		if(isUnloading(texture)) {
-			removeFromActiveTextures(texture);
-			return;
-		}
-		for(int i = 0; i < MAX_TEXTURE_COUNT; i++) {
-			if(loadQueue[i] == null) {
-				loadQueue[i] = texture;
-				loadQueueCount++;
-				return;
-			}
-		}
-		Debug.error("Unable to load texture into the queue, queue is full");
-	}
-	
-	protected static boolean isLoading(Texture texture) {
-		for(int i = 0; i < MAX_TEXTURE_COUNT; i++) {
-			if(loadQueue[i] != null && (loadQueue[i] == texture || (loadQueue[i].parentAtlas != null && loadQueue[i].parentAtlas == texture.parentAtlas))) {
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	/**
-	 * Unloads all currently active Texture objects from the hardware
-	 */
-	public static void unloadActiveTextures() {
-		for(int i = 0; i < MAX_TEXTURE_COUNT; i++) {
-			if(activeTexture[i] != null) {
-				unload(activeTexture[i]);
-				activeTexture[i] = null;
-			}
-		}
-		activeTextureCount = 0;
-	}
-	
-	protected static void execute(GL10 gl) {
-		if(refreshQueueCount > 0) {
-			for(int i = 0; i < MAX_TEXTURE_COUNT; i++) {
-				if(refreshQueue[i] != null) {
-					refreshQueue[i].onRefreshTexture(gl);
-					refreshQueue[i] = null;
-				}
-			}
-		}
-		if(unloadQueueCount > 0) {
-			GLHelper.removeTextures(unloadQueue);
-			clearUnloadQueue();
-		}
-		if(loadQueueCount > 0) {
-			for(int i = 0; i < MAX_TEXTURE_COUNT; i++) {
-				if(loadQueue[i] != null) {
-					loadQueue[i].onLoadTexture(gl);
-					addToActive(loadQueue[i]);
-					loadQueue[i] = null;
-				}
-			}
-			loadQueueCount = 0;
-		}
-	}
-	
-	protected static void clearUnloadQueue() {
-		for(int i = 0; i < MAX_TEXTURE_COUNT; i++) {
-			unloadQueue[i] = null;
-		}
-		unloadQueueCount = 0;
-	}
-	
+		
 	protected static void addToActive(Texture textureId) {
 		if(isActive(textureId)) {
 			return;
 		}
+		Debug.error("  addToActive(" + textureId.textureIndex + ")");
 		for(int i = 0 ; i < MAX_TEXTURE_COUNT; i++) {
 			if(activeTexture[i] == null) {
 				activeTexture[i] = textureId;
 				activeTextureCount++;
-			}
-		}
-	}
-	
-	protected static void unload(Texture textureId) {
-		if(isUnloading(textureId)) {
-			return;
-		}
-		removeFromActiveTextures(textureId);
-		for(int i = 0; i < MAX_TEXTURE_COUNT; i++) {
-			if(unloadQueue[i] == null) {
-				unloadQueue[i] = textureId;
-				unloadQueueCount++;
 				return;
 			}
 		}
-		Debug.warning("TRIED ADDING TO UNLOAD QUEUE, BUT FULL");
 	}
 	
 	protected static boolean isActive(Texture texture) {
 		for(int i = 0; i < MAX_TEXTURE_COUNT; i++) {
-			//if(activeTexture[i] != null && (activeTexture[i] == texture || (activeTexture[i].parentAtlas != null && activeTexture[i].parentAtlas == texture.parentAtlas))) {
 			if(activeTexture[i] == texture) {
 				return true;
 			}
 		}
 		return false;
 	}
-	
-	protected static boolean isUnloading(Texture texture) {
-		for(int i = 0; i < MAX_TEXTURE_COUNT; i++) {
-			if(unloadQueue[i] != null && (unloadQueue[i] == texture || (unloadQueue[i].parentAtlas != null && unloadQueue[i].parentAtlas == texture.parentAtlas))) {
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	protected static void removeFromUnloading(Texture texture) {
-		for(int i = 0 ; i < MAX_TEXTURE_COUNT; i++) {
-			if(unloadQueue[i] != null && unloadQueue[i].textureIndex == texture.textureIndex) {
-				unloadQueue[i] = null;
-				activeTextureCount--;
-			}
-		}
-	}
-	
-	protected static void removeFromActiveTextures(Texture texture) {
-		for(int i = 0; i < MAX_TEXTURE_COUNT; i++) {
-			if(activeTexture[i] != null && activeTexture[i].textureIndex == texture.textureIndex) {
-				activeTexture[i] = null;
-				activeTextureCount--;
-			}
-		}
-	}
-	
-	
 
 }

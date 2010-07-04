@@ -752,5 +752,14 @@ public class Sprite extends GameObject implements Updateable {
 			}
 		}
 	}
+	
+	/**
+	 * Clears all the Modifiers from the Sprite
+	 */
+	public void clearModifiers() {
+		for(int i = 0; i < MAX_MODIFIERS; i++) {
+			modifier[i] = null;
+		}
+	}
 
 }

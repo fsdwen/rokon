@@ -78,7 +78,7 @@ public class TextSprite extends Sprite {
 		GLHelper.bindTexture(texture);		
 		gl.glPushMatrix();
 		GLHelper.enableVertexArray();
-		GLHelper.bindBuffer(0);
+		GLHelper.bindBuffer(0, false);
 		GLHelper.vertexPointer(Rokon.triangleStripBoxBuffer, GL10.GL_FLOAT);			
 		gl.glTranslatef(getX(), getY(), 0);	
 		for(int i = 0; i < textLength; i++) {

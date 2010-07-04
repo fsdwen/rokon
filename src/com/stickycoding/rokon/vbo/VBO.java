@@ -64,7 +64,7 @@ public class VBO {
 	/**
 	 * Sets the VBO to unloaded, and resets buffer index 
 	 */
-	protected void setUnloaded() {
+	public void setUnloaded() {
 		bufferIndex = -1;
 	}
 	

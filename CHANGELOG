@@ -4,12 +4,14 @@
 		* DrawableObject.getParentLayer()
 		* Scene.toastLong and Scene.toastShort are helpers for showing Toast messages
 		* Drawable.setZ, Drawable.getZ - for use with new DrawOrder.Z_ORDER
-		* Drawable.getRotation
+		* Drawable.getRotation()
 		* MathHelper.pointInShape - determines whether a point is inside a Sprites shape/polygon
 		* Preferences class, just a helper for SharedPreferences
+		* Sprite.clearModifiers()
 	
 	Changes
 		* DrawableObject.isOnScreen() returns FALSE if it is not added to a Layer
+		* Modifier and some of its methods are now abstract (to force override). The parameters of onStart and onEnd changed.
 	
 	Bug Fixes
 		* Drawable is now public, previously was not. This prevented 'onTouch(Drawable' methods from being used.
@@ -20,6 +22,7 @@
 		* TextureAtlas was overlapping inserted Textures
 		* Touchables are now checked against their rotated position, previously rotation wasn't considered
 		* Fixed an issue with the Activity lifecycle, it should now properly reload textures / resume last position in the game when hidden/destroyed
+		* Now works on the emulator, unsure where the bug was. Somewhere in this update!
 
 30/06/10 - 2.0.2
 	Another quick minor update, sorry for having so many packed together - obviously with the new release came a few unexpected bugs.

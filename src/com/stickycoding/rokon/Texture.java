@@ -33,6 +33,7 @@ public class Texture {
 	
 	protected void setUnloaded() {
 		textureIndex = -1;
+		if(parentAtlas != null && parentAtlas.textureIndex != -1) parentAtlas.setUnloaded();
 	}
 	
 	/**
@@ -224,9 +225,12 @@ public class Texture {
 	        GLUtils.texSubImage2D(GL10.GL_TEXTURE_2D, 0, 0, 0, bmp);
 	        clearBitmap();
 	        bmp = null;
+			TextureManager.addToActive(this);
 		} else {
 			parentAtlas.onLoadTexture(gl);
+			TextureManager.addToActive(this);
 		}
+		
 	}
 	
 	protected void clearBitmap() {

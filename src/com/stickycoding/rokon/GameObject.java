@@ -58,8 +58,7 @@ public class GameObject extends DrawableObject {
 		parentLayer = layer;
 		if(texture != null && texture.textureIndex == -1) {
 			if(layer.parentScene != null) {
-				if(Rokon.verbose) Debug.verbose("DrawableObject.onAdd", "Scene does not already contain the this objects Texture, adding automatically."); 
-				layer.parentScene.useTexture(texture);
+				if(Rokon.verbose) Debug.verbose("DrawableObject.onAdd", "Scene does not already contain the this objects Texture, adding automatically.");
 			}
 		}
 	}

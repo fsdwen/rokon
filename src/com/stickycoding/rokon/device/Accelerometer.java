@@ -21,7 +21,6 @@ import com.stickycoding.rokon.Time;
 
 public class Accelerometer {
 	
-	private static boolean running = false;
 	private static SensorManager sensorManager;
 	private static Sensor sensor;
 	private static SensorEventListener sensorEventListener;

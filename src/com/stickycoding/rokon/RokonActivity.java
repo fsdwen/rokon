@@ -148,6 +148,10 @@ public class RokonActivity extends Activity {
 				currentScene.useNewClearColor = true;
 			}*/
 			
+			if(isDestroyed) {
+				onResume();
+			}
+			
 			return;
 		}
 		Debug.print("Engine Activity created");
@@ -158,8 +162,7 @@ public class RokonActivity extends Activity {
 			finish();
 			return;
 		}
-	}
-	
+	}	
 	
 	/* (non-Javadoc)
 	 * @see android.app.Activity#onDestroy()

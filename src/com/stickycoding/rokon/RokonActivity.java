@@ -142,15 +142,11 @@ public class RokonActivity extends Activity {
 		if(isOnPause) {
 			Debug.warning("onCreate() when already paused");
 
-			/*surfaceView = new RokonSurfaceView(this);
+			surfaceView = new RokonSurfaceView(this);
 			setContentView(surfaceView);
-			if(currentScene != null) {
-				currentScene.useNewClearColor = true;
-			}*/
-			
-			if(isDestroyed) {
-				onResume();
-			}
+			//if(currentScene != null) {
+			//	currentScene.useNewClearColor = true;
+			//}
 			
 			return;
 		}
@@ -202,8 +198,8 @@ public class RokonActivity extends Activity {
 	 */
 	@Override
 	public void onPause() {
-		isOnPause = true;
-		Debug.error("onPause() " + TextureManager.activeTextureCount);
+		//isOnPause = true;
+		/*Debug.error("onPause() " + TextureManager.activeTextureCount);
 		TextureManager.removeTextures();
 		VBOManager.removeVBOs();
 		Debug.error("onPause2() " + TextureManager.activeTextureCount);
@@ -211,6 +207,8 @@ public class RokonActivity extends Activity {
 			currentScene.onPause();
 		}
 		RokonMusic.onPause();
+		super.onPause();*/
+		surfaceView.onPause();
 		super.onPause();
 	}
 	
@@ -222,7 +220,9 @@ public class RokonActivity extends Activity {
 		Debug.error("onResume() " + TextureManager.activeTextureCount);
 		
 		Rokon.currentActivity = this;
-
+		
+		surfaceView.onResume();
+/*
 		if(isDestroyed) {
 			surfaceView = new RokonSurfaceView(this);		
 			setContentView(surfaceView);	
@@ -237,7 +237,7 @@ public class RokonActivity extends Activity {
 			}
 			isOnPause = false;
 			RokonMusic.onResume();
-		}
+		}*/
 		super.onResume();
 	}
 	

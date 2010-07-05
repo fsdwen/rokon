@@ -1,6 +1,5 @@
 package com.stickycoding.rokon;
 
-import android.opengl.GLSurfaceView;
 import android.view.MotionEvent;
 
 /**

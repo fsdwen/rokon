@@ -3,7 +3,6 @@ package com.stickycoding.rokon;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-import android.opengl.GLSurfaceView;
 import android.opengl.GLU;
 
 import com.stickycoding.rokon.device.Graphics;
@@ -43,14 +42,7 @@ public class RokonRenderer implements GLSurfaceView.Renderer {
 		FPSCounter.onFrame();
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		if(RokonActivity.currentScene != null) {
-			if(RokonActivity.reloadToHardware) {
-				Debug.print("Reloading");
-				TextureManager.removeTextures();
-				VBOManager.removeVBOs();
-				RokonActivity.reloadToHardware = false;
-			} else {
-				RokonActivity.currentScene.onDraw(gl);	
-			}
+			RokonActivity.currentScene.onDraw(gl);	
 		}
 	}
 
@@ -65,10 +57,18 @@ public class RokonRenderer implements GLSurfaceView.Renderer {
 		}
 		//Debug.print("Surface Size Changed: " + w + " " + h);
 		gl.glViewport(0, 0, w, h);
-		gl.glMatrixMode(GL10.GL_PROJECTION);
-		gl.glLoadIdentity();
+        gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
+
+         float ratio = (float) w / h;
+         gl.glMatrixMode(GL10.GL_PROJECTION);
+         gl.glLoadIdentity();
+         gl.glFrustumf(-ratio, ratio, -1, 1, 1, 10);
+         GLU.gluOrtho2D(gl, 0, RokonActivity.gameWidth, RokonActivity.gameHeight, 0);
+        
+		//gl.glMatrixMode(GL10.GL_PROJECTION);
+		//gl.glLoadIdentity();
 		//Debug.print("gluOrtho2D : " + RokonActivity.gameWidth + "x" + RokonActivity.gameHeight);
-        GLU.gluOrtho2D(gl, 0, RokonActivity.gameWidth, RokonActivity.gameHeight, 0);
+        //GLU.gluOrtho2D(gl, 0, RokonActivity.gameWidth, RokonActivity.gameHeight, 0);
 	}
 
 	/* (non-Javadoc)
@@ -111,10 +111,23 @@ public class RokonRenderer implements GLSurfaceView.Renderer {
 		}
 
         OS.hackBrokenDevices();
+        
+        TextureManager.reloadTextures(gl);
 
        // Debug.print("Graphics Support - " + version + " - " + (Graphics.isSupportsVBO() ? "vbos" : ""));
         
-        GLU.gluOrtho2D(gl, 0, RokonActivity.gameWidth, RokonActivity.gameHeight, 0);
+        //GLU.gluOrtho2D(gl, 0, RokonActivity.gameWidth, RokonActivity.gameHeight, 0);
+	}
+
+	@Override
+	public void onSurfaceLost() {
+		Debug.print("onSurfaceLost");
+		GLHelper.reset();
+		TextureManager.removeTextures();
+		VBOManager.removeVBOs();
+		if(RokonActivity.currentScene != null) {
+			RokonActivity.currentScene.useNewClearColor = true;
+		}
 	}
 
 }

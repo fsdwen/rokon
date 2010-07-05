@@ -19,6 +19,18 @@ public class TextureManager {
 	protected static Texture[] activeTexture = new Texture[MAX_TEXTURE_COUNT];
 	protected static int activeTextureCount = 0;
 	
+	public static void reloadTextures(GL10 gl) {
+		Debug.print("reloadTextures()");
+		for(int i = 0; i < MAX_TEXTURE_COUNT; i++) {
+			if(activeTexture[i] != null && activeTexture[i].textureIndex == -1) {
+				activeTexture[i].onLoadTexture(gl);
+				Debug.print(" - Loading [" + i + "] to " + activeTexture[i].textureIndex);
+				//activeTexture[i] = null;
+				//activeTextureCount--;
+			}
+		}
+	}
+	
 	/** 
 	 * Reloads all active Textures
 	 */
@@ -29,8 +41,8 @@ public class TextureManager {
 				Debug.print(" - Unloaded " + i);
 				Texture texture = activeTexture[i];
 				texture.setUnloaded();
-				activeTexture[i] = null;
-				activeTextureCount--;
+				//activeTexture[i] = null;
+				//activeTextureCount--;
 			}
 		}
 	}

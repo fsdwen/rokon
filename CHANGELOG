@@ -8,6 +8,7 @@
 		* MathHelper.pointInShape - determines whether a point is inside a Sprites shape/polygon
 		* Preferences class, just a helper for SharedPreferences
 		* Sprite.clearModifiers()
+		* RokonActivity.setGameSize(width, height, force) Can force width/height to remain as given, setGameSize(width, height) now assumes fixed aspect and adjusts
 	
 	Changes
 		* DrawableObject.isOnScreen() returns FALSE if it is not added to a Layer

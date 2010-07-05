@@ -24,6 +24,27 @@ public class GLHelper {
     private static float lineWidth;
     
     /**
+     * Resets what GLHelper thinks is going on, forces everything to be put through
+     */
+    public static void reset() {
+    	glVertexArray = false;
+    	glTexCoordArray = false;
+    	glTexture2D = false;
+    	textureIndex = -1;
+    	arrayBuffer = -1;
+    	elementBuffer = -1;
+    	srcBlendMode = -1;
+    	dstBlendMode = -1;
+    	glColor4fRed = -1;
+    	glColor4fGreen = -1;
+    	glColor4fBlue = -1;
+    	glColor4fAlpha = -1;
+    	lastVertexPointerBuffer = null;
+    	lastTexCoordPointerBuffer = null;
+    	lineWidth = 1;
+    }
+    
+    /**
      * Sets the line width
      * 
      * @param lineWidth float value, > 0

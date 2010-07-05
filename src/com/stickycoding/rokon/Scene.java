@@ -25,7 +25,7 @@ import com.stickycoding.rokon.device.OS;
  * @author Richard
  *
  */
-public class Scene {
+public abstract class Scene {
 	
 	/**
 	 * The default number of layers if no number is passed
@@ -85,17 +85,19 @@ public class Scene {
 	/**
 	 * Called when the RokonActivity is hidden (usually with home button) 
 	 */
-	public void onPause() { }
+	public abstract void onPause();
 	
 	/**
 	 * Called when the RokonActivity is resumed  
 	 */
-	public void onResume() { }
+	public abstract void onResume();
 	
 	/**
 	 * Called at every loop
 	 */
-	public void onGameLoop() { }
+	public abstract void onGameLoop();
+	
+	public abstract void onReady();
 	
 	public void onTouchDown(Drawable object, float x, float y, MotionEvent event, int pointerId) { }
 	public void onTouchUp(Drawable object, float x, float y, MotionEvent event, int pointerId) { }
@@ -923,8 +925,12 @@ public class Scene {
 		if(window != null) {
 			window.onUpdate(gl);
 		}
-		if(usePhysics && !pausePhysics) {
-			world.step(Time.getTicksFraction(), 10, 10);
+		if(usePhysics) {
+			if(pausePhysics) {
+				world.step(0, 1, 1);
+			} else {
+				world.step(Time.getTicksFraction(), 10, 10);
+			}
 		}
 		gl.glMatrixMode(GL10.GL_MODELVIEW);
         gl.glLoadIdentity();

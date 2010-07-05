@@ -114,7 +114,6 @@ public class Layer {
 		for(int i = 0; i < gameObjects.getCount(); i++) {
 			if(gameObjects.get(i) != null) {
 				while(gameObjects.get(i) != null && !gameObjects.get(i).isAlive()) {
-					Debug.print("REMOVING");
 					gameObjects.remove(i);
 				}
 			}

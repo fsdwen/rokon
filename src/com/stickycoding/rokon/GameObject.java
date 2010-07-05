@@ -43,7 +43,7 @@ public class GameObject extends DrawableObject {
 	 * @return TRUE if the object is touchable, FALSE otherwise
 	 */
 	public boolean isTouchable() {
-		return isTouchable;
+		return isTouchable && !invisible;
 	}
 	
 	/* (non-Javadoc)

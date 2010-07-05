@@ -613,7 +613,7 @@ public class DrawableObject extends BasicGameObject implements Drawable, Updatea
 	 * @see com.stickycoding.rokon.Drawable#isTouchable()
 	 */
 	public boolean isTouchable() {
-		return isTouchable();
+		return false;
 	}
 
 	/* (non-Javadoc)

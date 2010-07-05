@@ -27,10 +27,6 @@ public class RokonRenderer implements GLSurfaceView.Renderer {
 	 * @see android.opengl.GLSurfaceView.Renderer#onDrawFrame(javax.microedition.khronos.opengles.GL10)
 	 */
 	public void onDrawFrame(GL10 gl) {
-		if(RokonActivity.isOnPause) {
-			Debug.print("onpause...");
-			return;
-		}
 		Time.update();
 		if(!RokonActivity.engineLoaded) {
 			RokonActivity.engineLoaded = true;
@@ -49,36 +45,24 @@ public class RokonRenderer implements GLSurfaceView.Renderer {
 	 * @see android.opengl.GLSurfaceView.Renderer#onSurfaceChanged(javax.microedition.khronos.opengles.GL10, int, int)
 	 */
 	public void onSurfaceChanged(GL10 gl, int w, int h) {
-		Debug.print("onSurfaceChanged() " + RokonActivity.isOnPause);
-		if(RokonActivity.isOnPause) {
-			Debug.print(" - Changed Surface with onPause, force resume?	");
-			//Rokon.getActivity().onResume();
-		}
+		Debug.print("onSurfaceChanged()");
 		//Debug.print("Surface Size Changed: " + w + " " + h);
 		gl.glViewport(0, 0, w, h);
         gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
-
-         float ratio = (float) w / h;
-         gl.glMatrixMode(GL10.GL_PROJECTION);
-         gl.glLoadIdentity();
-         gl.glFrustumf(-ratio, ratio, -1, 1, 1, 10);
-         GLU.gluOrtho2D(gl, 0, RokonActivity.gameWidth, RokonActivity.gameHeight, 0);
-        
-		//gl.glMatrixMode(GL10.GL_PROJECTION);
-		//gl.glLoadIdentity();
-		//Debug.print("gluOrtho2D : " + RokonActivity.gameWidth + "x" + RokonActivity.gameHeight);
-        //GLU.gluOrtho2D(gl, 0, RokonActivity.gameWidth, RokonActivity.gameHeight, 0);
+		gl.glMatrixMode(GL10.GL_PROJECTION);
+		gl.glLoadIdentity();
+		Debug.print("gluOrtho2D : " + RokonActivity.gameWidth + "x" + RokonActivity.gameHeight);
+        GLU.gluOrtho2D(gl, 0, RokonActivity.gameWidth, RokonActivity.gameHeight, 0);
 	}
 
 	/* (non-Javadoc)
 	 * @see android.opengl.GLSurfaceView.Renderer#onSurfaceCreated(javax.microedition.khronos.opengles.GL10, javax.microedition.khronos.egl.EGLConfig)
 	 */
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-		Debug.print("onSurfaceCreated() " + RokonActivity.isOnPause);
-		if(RokonActivity.isOnPause) {
-			Debug.print(" - Created Surface with onPause, force resume?");
-			//Rokon.getActivity().onResume();
-		}
+		Debug.print("onSurfaceCreated()");
+		
+		GLHelper.reset();
+		
 		gl.glHint(GL10.GL_PERSPECTIVE_CORRECTION_HINT, GL10.GL_FASTEST);
 		
 		gl.glShadeModel(GL10.GL_FLAT);

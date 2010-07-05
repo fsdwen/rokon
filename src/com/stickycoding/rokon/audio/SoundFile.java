@@ -27,7 +27,7 @@ public class SoundFile {
          * @return the AudioStream through which the sound is playing
          */
         public AudioStream play() {
-                if(RokonAudio.mute)
+        	if(RokonAudio.mute)
                         return null;
                 result = RokonAudio.singleton.getSoundPool().play(id, RokonAudio.singleton.getMasterVolume(), RokonAudio.singleton.getMasterVolume(), 1, 0, 1f);
                 if(result != 0) {

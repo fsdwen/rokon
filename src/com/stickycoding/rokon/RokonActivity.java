@@ -33,14 +33,33 @@ public class RokonActivity extends Activity {
 	protected static boolean engineLoaded = false;
 	protected static float gameWidth, gameHeight;
 	protected static String graphicsPath = "";
-	protected static boolean reloadToHardware;
-	protected static boolean isOnPause, isDestroyed;
 	
 	protected static int toastType;
 	protected static String toastMessage;
 	
 	protected static Toast lastToast;
 
+	
+	/**
+	 * Removes everyting from the memory, and resets statics.
+	 * This is automatically called at onDestroy() when isFinishing() is TRUE
+	 * You shouldn't need to call this yourself
+	 */
+	public void dispose() {
+		Debug.print("dispose()");
+		engineCreated = false;
+		currentScene = null;
+		forceLandscape = false;
+		forcePortrait = false;
+		forceFullscreen = false;
+		surfaceView = null;
+		engineLoaded = false;
+		gameWidth = 0;
+		gameHeight = 0;
+		graphicsPath = "";
+		Rokon.currentActivity = null;
+		System.gc();
+	}
 
 	/**
 	 * Flags debugMode as true, Debug.print will output to LogCat
@@ -101,18 +120,6 @@ public class RokonActivity extends Activity {
 		return super.onKeyUp(keyCode, event);
 	}
 	
-	protected void dispose() {
-		Debug.error("DISPOSE");
-		isOnPause = false;
-		engineLoaded = false;
-		engineCreated = false;
-		reloadToHardware = false;
-		currentScene = null;
-		System.gc();
-		System.exit(0);
-		finish();
-	}
-	
 	/**
 	 * Called when RokonActivity is created
 	 */
@@ -139,15 +146,10 @@ public class RokonActivity extends Activity {
 			MotionEventWrapper8.checkAvailable();
 			Rokon.motionEvent8 = new MotionEventWrapper8();
 		} catch (VerifyError e) { }		
-		if(isOnPause) {
-			Debug.warning("onCreate() when already paused");
-
+		if(engineCreated) {
+			Debug.print("onCreate() when already started, creating new GLSurfaceView");
 			surfaceView = new RokonSurfaceView(this);
 			setContentView(surfaceView);
-			//if(currentScene != null) {
-			//	currentScene.useNewClearColor = true;
-			//}
-			
 			return;
 		}
 		Debug.print("Engine Activity created");
@@ -166,14 +168,8 @@ public class RokonActivity extends Activity {
 	@Override
 	public void onDestroy() {
 		Debug.print("onDestroy()");
-		isDestroyed = true;
 		if(isFinishing()) {
-			Debug.error("exit()");
-			
-			//This removes the app from processes, and forgets all our static variables.
-			//I'm sure technically,we should dispose of all the variables ourselves, and not do this.
-			//But shit, it works for now
-			System.exit(0);
+			dispose();
 		}
 		super.onDestroy();
 	}
@@ -198,16 +194,11 @@ public class RokonActivity extends Activity {
 	 */
 	@Override
 	public void onPause() {
-		//isOnPause = true;
-		/*Debug.error("onPause() " + TextureManager.activeTextureCount);
-		TextureManager.removeTextures();
-		VBOManager.removeVBOs();
-		Debug.error("onPause2() " + TextureManager.activeTextureCount);
+		Debug.print("onPause()");
 		if(currentScene != null) {
 			currentScene.onPause();
 		}
-		RokonMusic.onPause();
-		super.onPause();*/
+		//RokonMusic.onPause();
 		surfaceView.onPause();
 		super.onPause();
 	}
@@ -217,27 +208,13 @@ public class RokonActivity extends Activity {
 	 */
 	@Override
 	public void onResume() {
-		Debug.error("onResume() " + TextureManager.activeTextureCount);
-		
+		Debug.print("onResume()");
 		Rokon.currentActivity = this;
-		
 		surfaceView.onResume();
-/*
-		if(isDestroyed) {
-			surfaceView = new RokonSurfaceView(this);		
-			setContentView(surfaceView);	
-			isDestroyed = false;
-		}
 		if(currentScene != null) {
-			currentScene.useNewClearColor = true;
+			currentScene.onResume();
 		}
-		if(isOnPause) {
-			if(currentScene != null) {
-				currentScene.onResume();
-			}
-			isOnPause = false;
-			RokonMusic.onResume();
-		}*/
+		//RokonMusic.onResume();
 		super.onResume();
 	}
 	
@@ -321,6 +298,7 @@ public class RokonActivity extends Activity {
 		}
 		currentScene = scene;
 		scene.onSetScene();
+		scene.onReady();
 	}
 	
 	/**
@@ -328,7 +306,7 @@ public class RokonActivity extends Activity {
 	 * 
 	 * @return NULL of no Scene is set
 	 */
-	public Scene getScene() {
+	public static Scene getScene() {
 		return currentScene;
 	}
 	

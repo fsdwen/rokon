@@ -19,6 +19,21 @@ import android.content.Context;
 public class Vibrator {
 	
 	protected static android.os.Vibrator vibrator;
+	protected static boolean enabled = true;
+	
+	/**
+	 * Enables the Vibrator to work (this is on by default)
+	 */
+	public static void enable() {
+		enabled = true;
+	}
+	
+	/**
+	 * Prevents the Vibrator from vibrating
+	 */
+	public static void disable() {
+		enabled = false;
+	}
 	
 	private static void prepareVibrator() {
 		if(vibrator != null) return;
@@ -32,6 +47,7 @@ public class Vibrator {
 	 * @param time in milliseconds
 	 */
 	public static void vibrate(long time) {
+		if(!enabled) return;
 		prepareVibrator();
 		vibrator.vibrate(time);
 	}
@@ -44,6 +60,7 @@ public class Vibrator {
 	 * @param repeat the index into pattern at which to repeat, or -1 if you don't want to repeat
 	 */
 	public static void vibrate(long[] pattern, int repeat) {
+		if(!enabled) return;
 		prepareVibrator();
 		vibrator.vibrate(pattern, repeat);
 	}

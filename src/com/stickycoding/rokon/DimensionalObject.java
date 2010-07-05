@@ -204,7 +204,7 @@ public class DimensionalObject extends Point {
 				setX(startX + ((finishX - startX) * factor));
 				setY(startY + ((finishY - startY) * factor));
 				width = startWidth + ((finishWidth - startWidth) * factor);
-				height = startHeight+ ((finishHeight - startHeight) * factor);
+				height = startHeight + ((finishHeight - startHeight) * factor);
 			}
 		}
 	}
@@ -240,7 +240,7 @@ public class DimensionalObject extends Point {
 	 * @param time time, in milliseconds
 	 */
 	public void move(float x, float y, int time) {
-		move(getX(), getY(), width, height, time, Movement.SMOOTH);
+		move(x, y, width, height, time, Movement.SMOOTH);
 	}
 
 	/**
@@ -252,7 +252,7 @@ public class DimensionalObject extends Point {
 	 * @param movementType valid movement type, see Movement constants
 	 */
 	public void move(float x, float y, int time, int movementType) {
-		move(getX(), getY(), width, height, time, movementType);
+		move(x, y, width, height, time, movementType);
 	}
 	
 	/**
@@ -265,7 +265,7 @@ public class DimensionalObject extends Point {
 	 * @param time time, in milliseconds
 	 */
 	public void move(float x, float y, float width, float height, int time) {
-		move(getX(), getY(), width, height, time, Movement.SMOOTH);
+		move(x, y, width, height, time, Movement.SMOOTH);
 	}
 	
 	/**
@@ -290,6 +290,7 @@ public class DimensionalObject extends Point {
 		finishY = y;
 		finishWidth = width;
 		finishHeight = height;
+		Debug.print("moving from " + startX + " to " + finishX );
 		moving = true;
 	}
 

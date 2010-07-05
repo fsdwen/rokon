@@ -1,13 +1,13 @@
 2.0.3
 	New Features
 		* Drawable now has onTouch events within itself
-		* DrawableObject.getParentLayer()
+		* DrawableObject.getParentLayer() fetches the current Layer
 		* Scene.toastLong and Scene.toastShort are helpers for showing Toast messages
 		* Drawable.setZ, Drawable.getZ - for use with new DrawOrder.Z_ORDER
-		* Drawable.getRotation()
+		* Drawable.getRotation() fetches rotation, forces override
 		* MathHelper.pointInShape - determines whether a point is inside a Sprites shape/polygon
 		* Preferences class, just a helper for SharedPreferences
-		* Sprite.clearModifiers()
+		* Sprite.clearModifiers() clears all current modifiers
 		* RokonActivity.setGameSize(width, height, force) Can force width/height to remain as given, setGameSize(width, height) now assumes fixed aspect and adjusts
 		* Scene has a couple of abstract methods that must be overriden, onReady onResume onPause
 		* Vibrator now has an enable() and disable(), to prevent the phone from being vibrated. The default state, is enabled
@@ -30,6 +30,8 @@
 		* Now works on the emulator, unsure where the bug was. Somewhere in this update!
 		* Scene.pausePhysics() and Scene.resumePhysics() now work properly. Previously, it would cause unpredictable stuff in Box2D.
 		* GameObject.isTouchable() would not take into consideration whether or not the object had been made invisible. Touchables must now be visible to be touched
+		* Fixed DimensionalObject.move() over-time functions. Would appear to do nothing if only passing X, Y coordinates
+		* Fixed NullPointerException in TextSprite when added to Scene without calling setText first
 
 30/06/10 - 2.0.2
 	Another quick minor update, sorry for having so many packed together - obviously with the new release came a few unexpected bugs.

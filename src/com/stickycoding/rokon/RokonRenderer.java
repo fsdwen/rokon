@@ -40,7 +40,6 @@ public class RokonRenderer implements GLSurfaceView.Renderer {
 		}
 		GLHelper.setGL(gl);
 		FPSCounter.onFrame();
-		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		if(RokonActivity.currentScene != null) {
 			RokonActivity.currentScene.onDraw(gl);	
 		}

@@ -13,7 +13,7 @@ public class TextSprite extends Sprite {
 	/**
 	 * The text that this TextSprite contains
 	 */
-	public String text;
+	public String text = "";
 
 	protected float characterWidth;
 	protected int textLength = 0;
@@ -68,11 +68,12 @@ public class TextSprite extends Sprite {
 		if(text.length() < 1)
 			return;		
 		GLHelper.color4f(red, green, blue, alpha);		
+		GLHelper.checkTextureValid(texture);
 		if(blendFunction != null) {
 			GLHelper.blendMode(blendFunction);
 		} else {
 			GLHelper.blendMode(Rokon.blendFunction);
-		}		
+		}	
 		GLHelper.enableTextures();
 		GLHelper.enableTexCoordArray();
 		GLHelper.bindTexture(texture);		

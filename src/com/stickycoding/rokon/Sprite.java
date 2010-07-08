@@ -762,4 +762,15 @@ public class Sprite extends GameObject implements Updateable {
 		}
 	}
 
+	/**
+	 * Determines whether a Sprite overlaps with this one
+	 * 
+	 * @param sprite valid Sprite object
+	 * 
+	 * @return TRUE if overlapping, FALSE otherwise
+	 */
+	public boolean intersects(Sprite sprite) {
+		return MathHelper.intersects(this, sprite);
+	}
+	
 }

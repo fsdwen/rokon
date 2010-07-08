@@ -12,6 +12,8 @@
 		* Scene has a couple of abstract methods that must be overriden, onReady onResume onPause
 		* Vibrator now has an enable() and disable(), to prevent the phone from being vibrated. The default state, is enabled
 		* Functionality to load inside a RelativeLayout - to enable a top layer of Views, createEngine(true), then getInterface() for the top RelativeLayout
+		* Sprite.intersects(Sprite) is a helper to the MathHelper function of the same description
+		* Automatically disables VBOs on emulator, they are not supported
 	
 	Changes
 		* DrawableObject.isOnScreen() returns FALSE if it is not added to a Layer

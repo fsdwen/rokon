@@ -4,15 +4,17 @@ import javax.microedition.khronos.opengles.GL10;
 
 import android.app.Activity;
 import android.content.pm.ActivityInfo;
+import android.graphics.Path.FillType;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.WindowManager;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.stickycoding.rokon.audio.RokonMusic;
 import com.stickycoding.rokon.device.Graphics;
 import com.stickycoding.rokon.device.OS;
 import com.stickycoding.rokon.vbo.ArrayVBO;
@@ -148,8 +150,8 @@ public class RokonActivity extends Activity {
 		} catch (VerifyError e) { }		
 		if(engineCreated) {
 			Debug.print("onCreate() when already started, creating new GLSurfaceView");
-			surfaceView = new RokonSurfaceView(this);
-			setContentView(surfaceView);
+			//surfaceView = new RokonSurfaceView(this);
+			//setContentView(surfaceView);
 			return;
 		}
 		Debug.print("Engine Activity created");
@@ -372,10 +374,32 @@ public class RokonActivity extends Activity {
 			return;
 		}
 		createStatics();
-		initEngine();
+		initEngine(false);
 	}
 	
-	private void initEngine() {
+	/**
+	 * Prepares the Activity for rendering
+	 * Note that some functions may only be called before createEngine
+	 * 
+	 * @param createRelativeLayout TRUE to create a RelativeLayout above the surface for allowing Views ontop of the OGL surface
+	 */
+	public void createEngine(boolean createRelativeLayout) {
+		if(engineCreated) {
+			Debug.warning("RokonActivity.createEngine", "Attempted to call createEngine for a second time");
+			return;
+		}
+		createStatics();
+		initEngine(createRelativeLayout);
+	}
+	
+	protected static RelativeLayout rokonInterface;
+	protected static RelativeLayout rokonContainer;
+	
+	public RelativeLayout getInterface() {
+		return rokonInterface;
+	}
+	
+	private void initEngine(boolean createRelativeLayout) {
 		if(forceFullscreen) {
 	        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 	        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
@@ -387,9 +411,25 @@ public class RokonActivity extends Activity {
 		if(forcePortrait) {
 			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		}
-		surfaceView = new RokonSurfaceView(this);
-		setContentView(surfaceView);
-		engineCreated = true;
+		
+		if(!createRelativeLayout) {
+			surfaceView = new RokonSurfaceView(this);
+			setContentView(surfaceView);
+			engineCreated = true;
+		} else {
+			surfaceView = new RokonSurfaceView(this);
+			
+			rokonInterface = new RelativeLayout(this);
+			rokonInterface.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.FILL_PARENT));
+			
+			rokonContainer = new RelativeLayout(this);
+			rokonContainer.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.FILL_PARENT, RelativeLayout.LayoutParams.FILL_PARENT));
+			
+			rokonContainer.addView(surfaceView);
+			rokonContainer.addView(rokonInterface);
+			setContentView(rokonContainer);
+			engineCreated = true;
+		}
 	}
 
 	/**

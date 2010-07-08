@@ -18,7 +18,11 @@ public class RotationalObject extends DimensionalObject {
 		super(x, y, width, height);
 	}
 	
-	public float getRotation() {
+    public float getRotation() {
+        return rotation;
+    }
+	
+	public float angle() {
 		return rotation;
 	}
 	

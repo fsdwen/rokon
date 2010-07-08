@@ -53,6 +53,8 @@ public abstract class Scene {
 	
 	protected float defaultLineWidth = 1;
 	
+	public RokonActivity activity;
+	
 	/**
 	 * Sets the clear colour (the colour behind the background)
 	 * 
@@ -905,6 +907,7 @@ public abstract class Scene {
 	
 	protected void onSetScene() {
 		loadedTextures = false;
+		activity = Rokon.currentActivity;
 	}
 	
 	protected void onEndScene() {

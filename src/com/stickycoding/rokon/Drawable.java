@@ -101,7 +101,7 @@ public abstract interface Drawable {
 	 * @param event the MotionEvent associated with the touch
 	 * @param pointerId id of the pointer, always 0 if no multitouch present
 	 */
-	void onTouchDown(float x, float y, MotionEvent event, int pointerId);
+	void onTouchDown(float x, float y, MotionEvent event, int pointerCount, int pointerId);
 
 	/**
 	 * Triggered when a touch is released on this Drawable
@@ -111,7 +111,7 @@ public abstract interface Drawable {
 	 * @param event the MotionEvent associated with the touch
 	 * @param pointerId id of the pointer, always 0 if no multitouch present
 	 */
-	void onTouchUp(float x, float y, MotionEvent event, int pointerId);
+	void onTouchUp(float x, float y, MotionEvent event, int pointerCount, int pointerId);
 
 	/**
 	 * Triggered on all touch events on the Drawable
@@ -121,7 +121,7 @@ public abstract interface Drawable {
 	 * @param event the MotionEvent associated with the touch
 	 * @param pointerId id of the pointer, always 0 if no multitouch present
 	 */
-	void onTouch(float x, float y, MotionEvent event, int pointerId);
+	void onTouch(float x, float y, MotionEvent event, int pointerCount, int pointerId);
 	
 	/**
 	 * Triggered when a touch is moved on this Drawable
@@ -131,7 +131,7 @@ public abstract interface Drawable {
 	 * @param event the MotionEvent associated with the touch
 	 * @param pointerId id of the pointer, always 0 if no multitouch present
 	 */
-	void onTouchMove(float x, float y, MotionEvent event, int pointerId);
+	void onTouchMove(float x, float y, MotionEvent event, int pointerCount, int pointerId);
 	
 	/**
 	 * Fetches the Z order of the Drawable

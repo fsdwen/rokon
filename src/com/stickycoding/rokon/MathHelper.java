@@ -186,29 +186,90 @@ public class MathHelper {
 	    }
 	}
 	
-	public static boolean pointInShape(float x, float y, Sprite sprite) {
-		for(int i = 0; i < sprite.getPolygon().vertexCount; i++) {
-			int startIndex = i;
-			int endIndex = i < sprite.polygon.edge.length - 1 ? i + 1 : 0;
-			float[] startVertex = sprite.getVertex(startIndex);
-			float[] endVertex = sprite.getVertex(endIndex);
-			float edgeX = endVertex[0] - startVertex[0];
-			float edgeY = endVertex[1] - startVertex[1];
-			float axisX = edgeY;
-			float axisY = -edgeX;
-
-			int nextIndex = (endIndex < sprite.polygon.edge.length - 1 ? endIndex + 1 : 0);
-			float[] nextVertex = sprite.getVertex(nextIndex);
-			
-			float axisDot = dot(axisX, axisY, startVertex[0], startVertex[1]);
-			float nextDot = dot(axisX, axisY, nextVertex[0], nextVertex[1]);
-			float testDot = dot(axisX, axisY, x, y);
-			
-			if((nextDot >= axisDot && testDot < axisDot) || (nextDot <= axisDot && testDot > axisDot)) {
-				return false;
+	/**
+	 * Calculates the minimum distance between a given point, and an edge/vertex on a Sprite
+	 * 
+	 * @param x point X
+	 * @param y point Y 
+	 * @param sprite valid Sprite
+	 * @return 9999 if unable to calculate, +ve float otherwise
+	 */
+	public static float distanceToShape(float x, float y, Sprite sprite) {
+		if(sprite.polygon != Rokon.circle) {
+			float minDistance = 9999;
+			for(int i = 0; i < sprite.getPolygon().vertexCount; i++) {
+				int startIndex = i;
+				int endIndex = i < sprite.polygon.edge.length - 1 ? i + 1 : 0;
+				float[] startVertex = sprite.getVertex(startIndex);
+				float[] endVertex = sprite.getVertex(endIndex);
+				float edgeX = endVertex[0] - startVertex[0];
+				float edgeY = endVertex[1] - startVertex[1];
+				float axisX = edgeY;
+				float axisY = -edgeX;
+				
+				float edgeStartPoint = dot(edgeX, edgeY, startVertex[0], startVertex[1]);
+				float edgeEndPoint = dot(edgeX, edgeY, endVertex[0], endVertex[1]);
+				float edgePointPos = dot(edgeX, edgeY, x, y);
+				
+				if((edgePointPos > edgeStartPoint && edgePointPos < edgeEndPoint) || (edgePointPos > edgeEndPoint && edgePointPos < edgeStartPoint)) {
+					
+					float normalDotEdge = dot(axisX, axisY, startVertex[0], startVertex[1]);
+					float normalDotPoint = dot(axisX, axisY, x, y);
+					float normalDotDiff = Math.abs(normalDotEdge - normalDotPoint);
+					
+					if(normalDotDiff < minDistance) minDistance = normalDotDiff;
+				}
+				
+				//Also check against this vertex
+				float dx = x - startVertex[0];
+				float dy = y - startVertex[1];
+				float vertexDiff = (float)Math.sqrt(dx * dx + dy * dy);
+				if(vertexDiff < minDistance) minDistance = vertexDiff;
 			}
+			return minDistance;
+		} else {
+			float centreX = sprite.getX() + (sprite.getWidth() / 2);
+			float centreY = sprite.getY() + (sprite.getHeight() / 2);
+			float maxDistance = (sprite.getWidth() / 2) * (sprite.getWidth() / 2);
+			float dx = x - centreX;
+			float dy = y - centreY;
+			return (float)Math.sqrt(dx * dx + dy * dy) - (sprite.getWidth() / 2);
 		}
-		return true;
+	}
+	
+	public static boolean pointInShape(float x, float y, Sprite sprite) {
+		if(sprite.polygon != Rokon.circle) { 
+			for(int i = 0; i < sprite.getPolygon().vertexCount; i++) {
+				int startIndex = i;
+				int endIndex = i < sprite.polygon.edge.length - 1 ? i + 1 : 0;
+				float[] startVertex = sprite.getVertex(startIndex);
+				float[] endVertex = sprite.getVertex(endIndex);
+				float edgeX = endVertex[0] - startVertex[0];
+				float edgeY = endVertex[1] - startVertex[1];
+				float axisX = edgeY;
+				float axisY = -edgeX;
+	
+				int nextIndex = (endIndex < sprite.polygon.edge.length - 1 ? endIndex + 1 : 0);
+				float[] nextVertex = sprite.getVertex(nextIndex);
+				
+				float axisDot = dot(axisX, axisY, startVertex[0], startVertex[1]);
+				float nextDot = dot(axisX, axisY, nextVertex[0], nextVertex[1]);
+				float testDot = dot(axisX, axisY, x, y);
+				
+				if((nextDot >= axisDot && testDot < axisDot) || (nextDot <= axisDot && testDot > axisDot)) {
+					return false;
+				}
+			}
+			return true;
+		} else {
+			float centreX = sprite.getX() + (sprite.getWidth() / 2);
+			float centreY = sprite.getY() + (sprite.getHeight() / 2);
+			float maxDistance = (sprite.getWidth() / 2) * (sprite.getWidth() / 2);
+			float dx = x - centreX;
+			float dy = y - centreY;
+			float distance = dx * dx + dy * dy;
+			return distance <= maxDistance;
+		}
 	}
 	
 	/**

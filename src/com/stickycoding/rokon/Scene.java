@@ -101,19 +101,19 @@ public abstract class Scene {
 	
 	public abstract void onReady();
 	
-	public void onTouchDown(Drawable object, float x, float y, MotionEvent event, int pointerId) { }
-	public void onTouchUp(Drawable object, float x, float y, MotionEvent event, int pointerId) { }
-	public void onTouchMove(Drawable object, float x, float y, MotionEvent event, int pointerId) { }
-	public void onTouch(Drawable object, float x, float y, MotionEvent event, int pointerId) { }
-	public void onTouchDown(float x, float y, MotionEvent event, int pointerId) { }
-	public void onTouchMove(float x, float y, MotionEvent event, int pointerId) { }
-	public void onTouch(float x, float y, MotionEvent event, int pointerId) { }
-	public void onTouchUp(float x, float y, MotionEvent event, int pointerId) { }
+	public void onTouchDown(Drawable object, float x, float y, MotionEvent event, int pointerCount, int pointerId) { }
+	public void onTouchUp(Drawable object, float x, float y, MotionEvent event, int pointerCount, int pointerId) { }
+	public void onTouchMove(Drawable object, float x, float y, MotionEvent event, int pointerCount, int pointerId) { }
+	public void onTouch(Drawable object, float x, float y, MotionEvent event, int pointerCount, int pointerId) { }
+	public void onTouchDown(float x, float y, MotionEvent event, int pointerCount, int pointerId) { }
+	public void onTouchMove(float x, float y, MotionEvent event, int pointerCount, int pointerId) { }
+	public void onTouch(float x, float y, MotionEvent event, int pointerCount, int pointerId) { }
+	public void onTouchUp(float x, float y, MotionEvent event, int pointerCount, int pointerId) { }
 	
-	public void onTouchDownReal(float x, float y, MotionEvent event, int pointerId) { }
-	public void onTouchMoveReal(float x, float y, MotionEvent event, int pointerId) { }
-	public void onTouchUpReal(float x, float y, MotionEvent event, int pointerId) { }
-	public void onTouchReal(float x, float y, MotionEvent event, int pointerId) { }
+	public void onTouchDownReal(float x, float y, MotionEvent event, int pointerCount, int pointerId) { }
+	public void onTouchMoveReal(float x, float y, MotionEvent event, int pointerCount, int pointerId) { }
+	public void onTouchUpReal(float x, float y, MotionEvent event, int pointerCount, int pointerId) { }
+	public void onTouchReal(float x, float y, MotionEvent event, int pointerCount, int pointerId) { }
 
 	public boolean onKeyDown(int keyCode, KeyEvent event) { return false; }
 	public boolean onKeyUp(int keyCode, KeyEvent event) { return false; }
@@ -301,7 +301,8 @@ public abstract class Scene {
 	}
 	
 	protected void handleSDK8MultiTouch(MotionEvent event) {
-		for(int idx = 0; idx < Rokon.motionEvent8.getPointerCount(event); idx++) {
+		int pointerCount = Rokon.motionEvent8.getPointerCount(event);
+		for(int idx = 0; idx < pointerCount; idx++) {
 			int id = Rokon.motionEvent8.getPointerId(event, idx);
 			final float realX = Rokon.motionEvent8.getX(event, idx) * (RokonActivity.gameWidth / Graphics.getWidthPixels());
 			final float realY = Rokon.motionEvent8.getY(event, idx) * (RokonActivity.gameHeight / Graphics.getHeightPixels());
@@ -313,32 +314,32 @@ public abstract class Scene {
 				gameX = window.getX() + (window.width * xFraction);
 				gameY = window.getY() + (window.height * yFraction);
 			}
-			onTouch(gameX, gameY, event, id);
-			onTouchReal(realX, realY, event, id);
+			onTouch(gameX, gameY, event, pointerCount, id);
+			onTouchReal(realX, realY, event, pointerCount, id);
 			final int action = event.getAction();
 			switch(action & MotionEventWrapper8.ACTION_MASK) {
 				case MotionEvent.ACTION_DOWN:
-					onTouchDown(gameX, gameY, event, id);
-					onTouchDownReal(realX, realY, event, id);
+					onTouchDown(gameX, gameY, event, pointerCount, id);
+					onTouchDownReal(realX, realY, event, pointerCount, id);
 					break;
 				case MotionEvent.ACTION_UP:
-					onTouchUp(gameX, gameY, event, id);
-					onTouchUpReal(realX, realY, event, id);
+					onTouchUp(gameX, gameY, event, pointerCount, id);
+					onTouchUpReal(realX, realY, event, pointerCount, id);
 					break;
 				case MotionEvent.ACTION_MOVE:
-					onTouchMove(gameX, gameY, event, id);
-					onTouchMoveReal(realX, realY, event, id);
+					onTouchMove(gameX, gameY, event, pointerCount, id);
+					onTouchMoveReal(realX, realY, event, pointerCount, id);
 					break;
 				case MotionEventWrapper8.ACTION_POINTER_DOWN:
 					if((action & MotionEventWrapper8.ACTION_POINTER_INDEX_MASK) >> MotionEventWrapper8.ACTION_POINTER_INDEX_SHIFT == idx) {
-						onTouchDown(gameX, gameY, event, id);
-						onTouchDownReal(realX, realY, event, id);
+						onTouchDown(gameX, gameY, event, pointerCount, id);
+						onTouchDownReal(realX, realY, event, pointerCount, id);
 					}
 					break;
 				case MotionEventWrapper8.ACTION_POINTER_UP:
 					if((action & MotionEventWrapper8.ACTION_POINTER_INDEX_MASK) >> MotionEventWrapper8.ACTION_POINTER_INDEX_SHIFT == idx) {
-						onTouchUp(gameX, gameY, event, id);
-						onTouchUpReal(realX, realY, event, id);
+						onTouchUp(gameX, gameY, event, pointerCount, id);
+						onTouchUpReal(realX, realY, event, pointerCount, id);
 					}
 					break;
 			}
@@ -354,55 +355,53 @@ public abstract class Scene {
 					Drawable object = layer[i].gameObjects.get(j);
 					if(object != null && object.isTouchable()) {
 						boolean touched = false;
-						if(object.getRotation() == 0) {
+						if(object instanceof Sprite) {
+							touched = MathHelper.pointInShape(checkX, checkY, (Sprite)object);
+						} else {	
 							touched = MathHelper.pointInRect(checkX, checkY, object.getX(), object.getY(), object.getWidth(), object.getHeight());
-						} else {
-							if(object instanceof Sprite) {
-								touched = MathHelper.pointInShape(checkX, checkY, (Sprite)object);
-							}
 						}
 						if(touched) {
-							onTouch(object, checkX, checkY, event, 0);
+							onTouch(object, checkX, checkY, event, pointerCount, id);
 							if(object.getName() != null) {
-								invoke(object.getName() + "_onTouch", new Class[] { float.class, float.class, MotionEvent.class, int.class }, new Object[] { gameX, gameY, event, id });
+								invoke(object.getName() + "_onTouch", new Class[] { float.class, float.class, MotionEvent.class, int.class, int.class }, new Object[] { gameX, gameY, event, pointerCount, id });
 							}
 							switch(action & MotionEventWrapper8.ACTION_MASK) {
 								case MotionEvent.ACTION_DOWN:
-									onTouchDown(object, checkX, checkY, event, id);
-									object.onTouchDown(checkX, checkY, event, id);
+									onTouchDown(object, checkX, checkY, event, pointerCount, id);
+									object.onTouchDown(checkX, checkY, event, pointerCount, id);
 									if(object.getName() != null) {
-										invoke(object.getName() + "_onTouchDown", new Class[] { float.class, float.class, MotionEvent.class, int.class }, new Object[] { gameX, gameY, event, id });
+										invoke(object.getName() + "_onTouchDown", new Class[] { float.class, float.class, MotionEvent.class, int.class, int.class }, new Object[] { gameX, gameY, event, pointerCount, id });
 									}
 									break;
 								case MotionEvent.ACTION_UP:
-									onTouchUp(object, checkX, checkY, event, id);
-									object.onTouchUp(checkX, checkY, event, id);
+									onTouchUp(object, checkX, checkY, event, pointerCount, id);
+									object.onTouchUp(checkX, checkY, event, pointerCount, id);
 									if(object.getName() != null) {
-										invoke(object.getName() + "_onTouchUp", new Class[] { float.class, float.class, MotionEvent.class, int.class }, new Object[] { gameX, gameY, event, id });
+										invoke(object.getName() + "_onTouchUp", new Class[] { float.class, float.class, MotionEvent.class, int.class, int.class }, new Object[] { gameX, gameY, event, pointerCount, id });
 									}
 									break;
 								case MotionEvent.ACTION_MOVE:
-									onTouch(object, checkX, checkY, event, id);
-									object.onTouchMove(checkX, checkY, event, id);
+									onTouch(object, checkX, checkY, event, pointerCount, id);
+									object.onTouchMove(checkX, checkY, event, pointerCount, id);
 									if(object.getName() != null) {
-										invoke(object.getName() + "_onTouchMove", new Class[] { float.class, float.class, MotionEvent.class, int.class }, new Object[] { gameX, gameY, event, id });
+										invoke(object.getName() + "_onTouchMove", new Class[] { float.class, float.class, MotionEvent.class, int.class, int.class }, new Object[] { gameX, gameY, event, pointerCount, id });
 									}
 									break;
 								case MotionEventWrapper8.ACTION_POINTER_DOWN:
 									if((action & MotionEventWrapper8.ACTION_POINTER_INDEX_MASK) >> MotionEventWrapper8.ACTION_POINTER_INDEX_SHIFT == idx) {
-										onTouchDown(object, checkX, checkY, event, id);
-										object.onTouchDown(checkX, checkY, event, id);
+										onTouchDown(object, checkX, checkY, event, pointerCount, id);
+										object.onTouchDown(checkX, checkY, event, pointerCount, id);
 										if(object.getName() != null) {
-											invoke(object.getName() + "_onTouchDown", new Class[] { float.class, float.class, MotionEvent.class, int.class }, new Object[] { gameX, gameY, event, id });
+											invoke(object.getName() + "_onTouchDown", new Class[] { float.class, float.class, MotionEvent.class, int.class, int.class }, new Object[] { gameX, gameY, event, pointerCount, id });
 										}
 									}
 									break;
 								case MotionEventWrapper8.ACTION_POINTER_UP:
 									if((action & MotionEventWrapper8.ACTION_POINTER_INDEX_MASK) >> MotionEventWrapper8.ACTION_POINTER_INDEX_SHIFT == idx) {
-										onTouchUp(object, checkX, checkY, event, id);
-										object.onTouchUp(checkX, checkY, event, id);
+										onTouchUp(object, checkX, checkY, event, pointerCount, id);
+										object.onTouchUp(checkX, checkY, event, pointerCount, id);
 										if(object.getName() != null) {
-											invoke(object.getName() + "_onTouchUp", new Class[] { float.class, float.class, MotionEvent.class, int.class }, new Object[] { gameX, gameY, event, id });
+											invoke(object.getName() + "_onTouchUp", new Class[] { float.class, float.class, MotionEvent.class, int.class, int.class }, new Object[] { gameX, gameY, event, pointerCount, id });
 										}
 									}
 									break;
@@ -416,6 +415,7 @@ public abstract class Scene {
 	
 	protected void handleMultiTouch(MotionEvent event) {
 		final int action = event.getAction();
+		final int pointerCount = Rokon.motionEvent5.getPointerCount(event);
 		for(int idx = 0; idx < Rokon.motionEvent5.getPointerCount(event); idx++) {
 			int id = Rokon.motionEvent5.getPointerId(event, idx);
 			final float realX = Rokon.motionEvent5.getX(event, idx) * (RokonActivity.gameWidth / Graphics.getWidthPixels());
@@ -428,55 +428,55 @@ public abstract class Scene {
 				gameX = window.getX() + (window.width * xFraction);
 				gameY = window.getY() + (window.height * yFraction);
 			}
-			onTouch(gameX, gameY, event, id);
-			onTouchReal(realX, realY, event, id);
+			onTouch(gameX, gameY, event, pointerCount, id);
+			onTouchReal(realX, realY, event, pointerCount, id);
 			switch(action) {
 				case MotionEvent.ACTION_DOWN:
-					onTouchDown(gameX, gameY, event, id);
-					onTouchDownReal(realX, realY, event, id);
+					onTouchDown(gameX, gameY, event, pointerCount, id);
+					onTouchDownReal(realX, realY, event, pointerCount, id);
 					break;
 				case MotionEvent.ACTION_UP:
-					onTouchUp(gameX, gameY, event, id);
-					onTouchUpReal(realX, realY, event, id);
+					onTouchUp(gameX, gameY, event, pointerCount, id);
+					onTouchUpReal(realX, realY, event, pointerCount, id);
 					break;
 				case MotionEvent.ACTION_MOVE:
-					onTouchMove(gameX, gameY, event, id);
-					onTouchMoveReal(realX, realY, event, id);
+					onTouchMove(gameX, gameY, event, pointerCount, id);
+					onTouchMoveReal(realX, realY, event, pointerCount, id);
 					break;
 				case MotionEventWrapper5.ACTION_POINTER_1_DOWN:
 					if(idx == 0) {
-						onTouchDown(gameX, gameY, event, id);
-						onTouchDownReal(realX, realY, event, id);
+						onTouchDown(gameX, gameY, event, pointerCount, id);
+						onTouchDownReal(realX, realY, event, pointerCount, id);
 					}
 					break;
 				case MotionEventWrapper5.ACTION_POINTER_1_UP:
 					if(idx == 0) {
-						onTouchUp(gameX, gameY, event, id);
-						onTouchUpReal(realX, realY, event, id);
+						onTouchUp(gameX, gameY, event, pointerCount, id);
+						onTouchUpReal(realX, realY, event, pointerCount, id);
 					}
 					break;
 				case MotionEventWrapper5.ACTION_POINTER_2_DOWN:
 					if(idx == 1) {
-						onTouchDown(gameX, gameY, event, id);
-						onTouchDownReal(realX, realY, event, id);
+						onTouchDown(gameX, gameY, event, pointerCount, id);
+						onTouchDownReal(realX, realY, event, pointerCount, id);
 					}
 					break;
 				case MotionEventWrapper5.ACTION_POINTER_2_UP:
 					if(idx == 1) {
-						onTouchUp(gameX, gameY, event, id);
-						onTouchUpReal(realX, realY, event, id);
+						onTouchUp(gameX, gameY, event, pointerCount, id);
+						onTouchUpReal(realX, realY, event, pointerCount, id);
 					}
 					break;
 				case MotionEventWrapper5.ACTION_POINTER_3_DOWN:
 					if(idx == 2) {
-						onTouchDown(gameX, gameY, event, id);
-						onTouchDownReal(realX, realY, event, id);
+						onTouchDown(gameX, gameY, event, pointerCount, id);
+						onTouchDownReal(realX, realY, event, pointerCount, id);
 					}
 					break;
 				case MotionEventWrapper5.ACTION_POINTER_3_UP:
 					if(idx == 2) {
-						onTouchUp(gameX, gameY, event, id);
-						onTouchUpReal(realX, realY, event, id);
+						onTouchUp(gameX, gameY, event, pointerCount, id);
+						onTouchUpReal(realX, realY, event, pointerCount, id);
 					}
 					break;
 			}
@@ -492,94 +492,90 @@ public abstract class Scene {
 					Drawable object = layer[i].gameObjects.get(j);
 					if(object != null && object.isTouchable()) {
 						boolean touched = false;
-						if(object.getRotation() == 0) {
+						if(object instanceof Sprite) {
+							touched = MathHelper.pointInShape(checkX, checkY, (Sprite)object);
+						} else {	
 							touched = MathHelper.pointInRect(checkX, checkY, object.getX(), object.getY(), object.getWidth(), object.getHeight());
-						} else {
-							if(object instanceof Sprite) {
-								Debug.print("CHECKING SPRITE");
-								touched = MathHelper.pointInShape(checkX, checkY, (Sprite)object);
-								Debug.print("touched=" + touched);
-							}
 						}
 						if(touched) {
-							onTouch(object, checkX, checkY, event, id);
-							object.onTouch(checkX, checkY, event, id);
+							onTouch(object, checkX, checkY, event, pointerCount, id);
+							object.onTouch(checkX, checkY, event, pointerCount, id);
 							if(object.getName() != null) {
-								invoke(object.getName() + "_onTouch", new Class[] { float.class, float.class, MotionEvent.class, int.class }, new Object[] { gameX, gameY, event, id });
+								invoke(object.getName() + "_onTouch", new Class[] { float.class, float.class, MotionEvent.class, int.class, int.class }, new Object[] { gameX, gameY, event, pointerCount, id });
 							}
 							switch(action) {
 								case MotionEvent.ACTION_DOWN:
-									onTouchDown(object, checkX, checkY, event, id);
-									object.onTouchDown(checkX, checkY, event, id);
+									onTouchDown(object, checkX, checkY, event, pointerCount, id);
+									object.onTouchDown(checkX, checkY, event, pointerCount, id);
 									if(object.getName() != null) {
-										invoke(object.getName() + "_onTouchDown", new Class[] { float.class, float.class, MotionEvent.class, int.class }, new Object[] { gameX, gameY, event, id });
+										invoke(object.getName() + "_onTouchDown", new Class[] { float.class, float.class, MotionEvent.class, int.class, int.class }, new Object[] { gameX, gameY, event, pointerCount, id });
 									}
 									break;
 								case MotionEvent.ACTION_UP:
-									onTouchUp(object, checkX, checkY, event, id);
-									object.onTouchUp(checkX, checkY, event, id);
+									onTouchUp(object, checkX, checkY, event, pointerCount, id);
+									object.onTouchUp(checkX, checkY, event, pointerCount, id);
 									if(object.getName() != null) {
-										invoke(object.getName() + "_onTouchUp", new Class[] { float.class, float.class, MotionEvent.class, int.class }, new Object[] { gameX, gameY, event, id });
+										invoke(object.getName() + "_onTouchUp", new Class[] { float.class, float.class, MotionEvent.class, int.class, int.class }, new Object[] { gameX, gameY, event, pointerCount, id });
 									}
 									break;
 								case MotionEvent.ACTION_MOVE:
-									onTouch(object, checkX, checkY, event, id);
-									object.onTouchMove(checkX, checkY, event, id);
+									onTouch(object, checkX, checkY, event, pointerCount, id);
+									object.onTouchMove(checkX, checkY, event, pointerCount, id);
 									if(object.getName() != null) {
-										invoke(object.getName() + "_onTouchMove", new Class[] { float.class, float.class, MotionEvent.class, int.class }, new Object[] { gameX, gameY, event, id });
+										invoke(object.getName() + "_onTouchMove", new Class[] { float.class, float.class, MotionEvent.class, int.class, int.class }, new Object[] { gameX, gameY, event, pointerCount, id });
 									}
 									break;
 								case MotionEventWrapper5.ACTION_POINTER_1_DOWN:
 									if(idx == 0) {
-										onTouchDown(object, checkX, checkY, event, id);
-										object.onTouchDown(checkX, checkY, event, id);
+										onTouchDown(object, checkX, checkY, event, pointerCount, id);
+										object.onTouchDown(checkX, checkY, event, pointerCount, id);
 										if(object.getName() != null) {
-											invoke(object.getName() + "_onTouchDown", new Class[] { float.class, float.class, MotionEvent.class, int.class }, new Object[] { gameX, gameY, event, id });
+											invoke(object.getName() + "_onTouchDown", new Class[] { float.class, float.class, MotionEvent.class, int.class, int.class }, new Object[] { gameX, gameY, event, pointerCount, id });
 										}
 									}
 									break;
 								case MotionEventWrapper5.ACTION_POINTER_1_UP:
 									if(idx == 0) {
-										onTouchUp(object, checkX, checkY, event, id);
-										object.onTouchUp(checkX, checkY, event, id);
+										onTouchUp(object, checkX, checkY, event, pointerCount, id);
+										object.onTouchUp(checkX, checkY, event, pointerCount, id);
 										if(object.getName() != null) {
-											invoke(object.getName() + "_onTouchUp", new Class[] { float.class, float.class, MotionEvent.class, int.class }, new Object[] { gameX, gameY, event, id });
+											invoke(object.getName() + "_onTouchUp", new Class[] { float.class, float.class, MotionEvent.class, int.class, int.class }, new Object[] { gameX, gameY, event, pointerCount, id });
 										}
 									}
 									break;
 								case MotionEventWrapper5.ACTION_POINTER_2_DOWN:
 									if(idx == 1) {
-										onTouchDown(object, checkX, checkY, event, id);
-										object.onTouchDown(checkX, checkY, event, id);
+										onTouchDown(object, checkX, checkY, event, pointerCount, id);
+										object.onTouchDown(checkX, checkY, event, pointerCount, id);
 										if(object.getName() != null) {
-											invoke(object.getName() + "_onTouchDown", new Class[] { float.class, float.class, MotionEvent.class, int.class }, new Object[] { gameX, gameY, event, id });
+											invoke(object.getName() + "_onTouchDown", new Class[] { float.class, float.class, MotionEvent.class, int.class, int.class }, new Object[] { gameX, gameY, event, pointerCount, id });
 										}
 									}
 									break;
 								case MotionEventWrapper5.ACTION_POINTER_2_UP:
 									if(idx == 1) {
-										onTouchUp(object, checkX, checkY, event, id);
-										object.onTouchUp(checkX, checkY, event, id);
+										onTouchUp(object, checkX, checkY, event, pointerCount, id);
+										object.onTouchUp(checkX, checkY, event, pointerCount, id);
 										if(object.getName() != null) {
-											invoke(object.getName() + "_onTouchUp", new Class[] { float.class, float.class, MotionEvent.class, int.class }, new Object[] { gameX, gameY, event, id });
+											invoke(object.getName() + "_onTouchUp", new Class[] { float.class, float.class, MotionEvent.class, int.class, int.class }, new Object[] { gameX, gameY, event, pointerCount, id });
 										}
 									}
 									break;
 								case MotionEventWrapper5.ACTION_POINTER_3_DOWN:
 									if(idx == 2) {
-										onTouchDown(object, checkX, checkY, event, id);
-										object.onTouchDown(checkX, checkY, event, id);
+										onTouchDown(object, checkX, checkY, event, pointerCount, id);
+										object.onTouchDown(checkX, checkY, event, pointerCount, id);
 										if(object.getName() != null) {
-											invoke(object.getName() + "_onTouchDown", new Class[] { float.class, float.class, MotionEvent.class, int.class }, new Object[] { gameX, gameY, event, id });
+											invoke(object.getName() + "_onTouchDown", new Class[] { float.class, float.class, MotionEvent.class, int.class, int.class }, new Object[] { gameX, gameY, event, pointerCount, id });
 										}
 									}
 									break;
 								case MotionEventWrapper5.ACTION_POINTER_3_UP:
 									if(idx == 2) {
-										onTouchUp(object, checkX, checkY, event, id);
-										object.onTouchUp(checkX, checkY, event, id);
+										onTouchUp(object, checkX, checkY, event, pointerCount, id);
+										object.onTouchUp(checkX, checkY, event, pointerCount, id);
 										if(object.getName() != null) {
-											invoke(object.getName() + "_onTouchUp", new Class[] { float.class, float.class, MotionEvent.class, int.class }, new Object[] { gameX, gameY, event, id });
+											invoke(object.getName() + "_onTouchUp", new Class[] { float.class, float.class, MotionEvent.class, int.class, int.class }, new Object[] { gameX, gameY, event, pointerCount, id });
 										}
 									}
 									break;
@@ -610,21 +606,21 @@ public abstract class Scene {
 			gameX = window.getX() + (window.width * xFraction);
 			gameY = window.getY() + (window.height * yFraction);
 		}
-		onTouch(gameX, gameY, event, 0);
-		onTouchReal(realX, realY, event, 0);
+		onTouch(gameX, gameY, event, 1, 0);
+		onTouchReal(realX, realY, event, 1, 0);
 		final int action = event.getAction();
 		switch(action) {
 			case MotionEvent.ACTION_DOWN:
-				onTouchDown(gameX, gameY, event, 0);
-				onTouchDownReal(realX, realY, event, 0);
+				onTouchDown(gameX, gameY, event, 1, 0);
+				onTouchDownReal(realX, realY, event, 1, 0);
 				break;
 			case MotionEvent.ACTION_UP:
-				onTouchUp(gameX, gameY, event, 0);
-				onTouchUpReal(realX, realY, event, 0);
+				onTouchUp(gameX, gameY, event, 1, 0);
+				onTouchUpReal(realX, realY, event, 1, 0);
 				break;
 			case MotionEvent.ACTION_MOVE:
-				onTouchMove(gameX, gameY, event, 0);
-				onTouchMoveReal(realX, realY, event, 0);
+				onTouchMove(gameX, gameY, event, 1, 0);
+				onTouchMoveReal(realX, realY, event, 1, 0);
 				break;
 		}
 		for(int i = 0; i < layerCount; i++) {
@@ -639,40 +635,37 @@ public abstract class Scene {
 				Drawable object = layer[i].gameObjects.get(j);
 				if(object != null && object.isTouchable()) {
 					boolean touched = false;
-					if(object.getRotation() == 0) {
+					if(object instanceof Sprite) {
+						touched = MathHelper.pointInShape(checkX, checkY, (Sprite)object);
+					} else {	
 						touched = MathHelper.pointInRect(checkX, checkY, object.getX(), object.getY(), object.getWidth(), object.getHeight());
-					} else {
-						if(object instanceof Sprite) {
-							Debug.print("CHECKING SPRITE");
-							touched = MathHelper.pointInShape(checkX, checkY, (Sprite)object);
-						}
 					}
 					if(touched) {
-						onTouch(object, checkX, checkY, event, 0);
+						onTouch(object, checkX, checkY, event, 1, 0);
 						if(object.getName() != null) {
-							invoke(object.getName() + "_onTouch", new Class[] { float.class, float.class, MotionEvent.class }, new Object[] { gameX, gameY, event, 0 });
+							invoke(object.getName() + "_onTouch", new Class[] { float.class, float.class, MotionEvent.class, int.class, int.class }, new Object[] { gameX, gameY, event, 1, 0 });
 						}
-						object.onTouch(checkX, checkY, event, 0);
+						object.onTouch(checkX, checkY, event, 1, 0);
 						switch(event.getAction()) {
 							case MotionEvent.ACTION_DOWN:
-								onTouchDown(object, checkX, checkY, event, 0);
-								object.onTouchDown(checkX, checkY, event, 0);
+								onTouchDown(object, checkX, checkY, event, 1, 0);
+								object.onTouchDown(checkX, checkY, event, 1, 0);
 								if(object.getName() != null) {
-									invoke(object.getName() + "_onTouchDown", new Class[] { float.class, float.class, MotionEvent.class, int.class }, new Object[] { gameX, gameY, event, 0 });
+									invoke(object.getName() + "_onTouchDown", new Class[] { float.class, float.class, MotionEvent.class, int.class, int.class }, new Object[] { gameX, gameY, event, 1, 0 });
 								}
 								break;
 							case MotionEvent.ACTION_UP:
-								onTouchUp(object, checkX, checkY, event, 0);
-								object.onTouchUp(checkX, checkY, event, 0);
+								onTouchUp(object, checkX, checkY, event, 1, 0);
+								object.onTouchUp(checkX, checkY, event, 1, 0);
 								if(object.getName() != null) {
-									invoke(object.getName() + "_onTouchUp", new Class[] { float.class, float.class, MotionEvent.class, int.class }, new Object[] { gameX, gameY, event, 0 });
+									invoke(object.getName() + "_onTouchUp", new Class[] { float.class, float.class, MotionEvent.class, int.class, int.class }, new Object[] { gameX, gameY, event, 1, 0 });
 								}
 								break;
 							case MotionEvent.ACTION_MOVE:
-								onTouch(object, checkX, checkY, event, 0);
-								object.onTouchMove(checkX, checkY, event, 0);
+								onTouch(object, checkX, checkY, event, 1, 0);
+								object.onTouchMove(checkX, checkY, event, 1, 0);
 								if(object.getName() != null) {
-									invoke(object.getName() + "_onTouchMove", new Class[] { float.class, float.class, MotionEvent.class, int.class }, new Object[] { gameX, gameY, event, 0 });
+									invoke(object.getName() + "_onTouchMove", new Class[] { float.class, float.class, MotionEvent.class, int.class, int.class }, new Object[] { gameX, gameY, event, 1, 0 });
 								}
 								break;
 						}

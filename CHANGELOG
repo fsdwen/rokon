@@ -1,4 +1,4 @@
-2.0.3
+09/07/2010 2.0.3
 	New Features
 		* Drawable now has onTouch events within itself
 		* DrawableObject.getParentLayer() fetches the current Layer
@@ -14,12 +14,16 @@
 		* Functionality to load inside a RelativeLayout - to enable a top layer of Views, createEngine(true), then getInterface() for the top RelativeLayout
 		* Sprite.intersects(Sprite) is a helper to the MathHelper function of the same description
 		* Automatically disables VBOs on emulator, they are not supported
+		* Rokon.circle is now a Polygon, but when checked for touch events, will behave as a circle
+		* DrawableObject.stopFade() stops any current fading animations
+		* ColourBuffer class and DrawableObject.setColourBuffer - allows colour-by-vertex mode. This isn't stable yet, seems to have some bugs, please don't report them.
 	
 	Changes
 		* DrawableObject.isOnScreen() returns FALSE if it is not added to a Layer
 		* Modifier and some of its methods are now abstract (to force override). The parameters of onStart and onEnd changed
 		* RokonActivity.getScene() is now static
-		* RokonMusic is no longer automatically paused/resumed, this must be hanled manually (to allow transition between Activities)
+		* RokonMusic is no longer automatically paused/resumed, this must be hanled manually (to allow transition between Activities).
+		* Scene onTouch methods now pass pointerCount parameter, this is to negate the need for your own wrappers to check if getPointerCount() is available
 	
 	Bug Fixes
 		* Drawable is now public, previously was not. This prevented 'onTouch(Drawable' methods from being used
@@ -36,6 +40,9 @@
 		* GameObject.isTouchable() would not take into consideration whether or not the object had been made invisible. Touchables must now be visible to be touched
 		* Fixed DimensionalObject.move() over-time functions. Would appear to do nothing if only passing X, Y coordinates
 		* Fixed NullPointerException in TextSprite when added to Scene without calling setText first
+		* DrawableObject.forceDrawObject wrongly determined VBO support
+		* Fixed DrawableObject.fade, would not fade from high to low properly
+		* RokonMusic would not reset properly, causing immediate System.exit()
 
 30/06/10 - 2.0.2
 	Another quick minor update, sorry for having so many packed together - obviously with the new release came a few unexpected bugs.

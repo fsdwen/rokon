@@ -187,7 +187,8 @@ public class RokonActivity extends Activity {
 		Rokon.boxArrayVBO = new ArrayVBO(Rokon.lineLoopBoxBuffer, VBO.STATIC);
 		
 		Rokon.rectangle = new Polygon(new float[] { 0, 0, 1, 0, 1, 1, 0, 1 });
-
+		Rokon.circle = new Polygon(new float[] { 0, 0, 1, 0, 1, 1, 0, 1 });
+		
 		OS.determineAPI();
 	}
 	
@@ -271,15 +272,38 @@ public class RokonActivity extends Activity {
 	public void setGameHeight(float height) {
 		gameHeight = height;
 	}
-	
+
 	/**
 	 * Sets the game width and height of the OpenGL surface
+	 * The width will altered depending on screen resolution
+	 * 
+	 * @param width
+	 * @param height
+	 * 
+	 * @return final game width
+	 */
+	public float setGameSize(float width, float height) {
+		Graphics.determine(this);
+		float aspect = width / height;
+		gameWidth = width;
+		gameHeight = height;
+		if(Graphics.getAspectRatio() < aspect) {
+			Debug.print("Thinner than expected");
+		} else if(Graphics.getAspectRatio() > aspect) {
+			Debug.print("Wider than expected");
+		}
+		gameWidth = Graphics.getAspectRatio() * gameHeight;
+		return gameWidth;
+	}
+	
+	/**
+	 * Forces the game width and height of the OpenGL surface
 	 * This must be called before createEngine
 	 * 
 	 * @param width
 	 * @param height
 	 */
-	public void setGameSize(float width, float height) {
+	public void forceGameSize(float width, float height) {
 		gameWidth = width;
 		gameHeight = height;
 	}
@@ -314,7 +338,7 @@ public class RokonActivity extends Activity {
 	
 	/**
 	 * Forces the engine to stick to a portrait screen, must be set before createEngine() 
-	 * This should be backed up by the correct android:screenSize parameter in AndroidManifest.xml
+	 * This should be backed up by the correct android:screenOrientation parameter in AndroidManifest.xml
 	 */
 	public void forcePortrait() {
 		if(engineCreated) {
@@ -327,7 +351,7 @@ public class RokonActivity extends Activity {
 	
 	/**
 	 * Forces the engine to stick to a landscape screen, must be set before createEngine()
-	 * This should be backed up by the correct android:screenSize parameter in AndroidManifest.xml
+	 * This should be backed up by the correct android:screenOrientation parameter in AndroidManifest.xml
 	 */
 	public void forceLandscape() {
 		if(engineCreated) {

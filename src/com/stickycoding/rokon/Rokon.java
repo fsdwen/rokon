@@ -26,7 +26,8 @@ public class Rokon {
 	protected static ArrayVBO boxArrayVBO;
 	protected static boolean verbose = false;
 	
-	protected static Polygon rectangle;
+	public static Polygon rectangle;
+	public static Polygon circle;
 	
 	/**
 	 * Fetches the current Activity associated with Rokon

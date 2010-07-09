@@ -23,9 +23,6 @@ public class Window extends DimensionalObject {
 	 */
 	public Window(float x, float y, float width, float height) {
 		super(x, y, width, height);
-		setXY(x, y);
-		this.width = width;
-		this.height = height;
 	}
 	
 	protected static void setDefault(GL10 gl) {

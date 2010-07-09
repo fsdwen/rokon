@@ -41,6 +41,9 @@ public class DrawableObject extends BasicGameObject implements Drawable, Updatea
 	
 	protected boolean border;
 	
+	
+	protected ColourBuffer colourBuffer;
+	
 	/**
 	 * Removes the border
 	 */
@@ -169,7 +172,7 @@ public class DrawableObject extends BasicGameObject implements Drawable, Updatea
 		fadeStartTime = Time.ticks;
 		fadeTo = alpha;
 		fadeStart = this.alpha;
-		fadeUp = alpha > this.alpha;
+		fadeUp = alpha > startAlpha;
 		
 	}
 	
@@ -183,9 +186,9 @@ public class DrawableObject extends BasicGameObject implements Drawable, Updatea
 			return;
 		}
 		if(fadeUp) {
-			this.alpha = fadeStart + ((fadeTo - fadeStart) * factor);
+			setAlpha(fadeStart + ((fadeTo - fadeStart) * factor));
 		} else {
-			this.alpha = fadeStart - ((fadeStart - fadeTo) * factor);
+			setAlpha(fadeStart - ((fadeStart - fadeTo) * factor));
 		}
 	}
 	
@@ -244,7 +247,7 @@ public class DrawableObject extends BasicGameObject implements Drawable, Updatea
 	 */
 	public void forceDrawType(int drawType) {
 		if(drawType == DrawPriority.VBO) {
-			if(Graphics.isSupportsVBO()) {
+			if(!Graphics.isSupportsVBO()) {
 				Debug.warning("Tried forcing DrawableObject to VBO, device does not support it");
 				drawType = DrawPriority.NORMAL;
 			}
@@ -376,11 +379,11 @@ public class DrawableObject extends BasicGameObject implements Drawable, Updatea
 	}
 	
 	protected void onDrawNormal(GL10 gl) {
-		GLHelper.drawNormal(fill, red, green, blue, alpha, blendFunction, Rokon.triangleStripBoxBuffer, GL10.GL_TRIANGLE_STRIP, getX(), getY(), width, height, rotation, rotateAboutPoint, rotationPivotX, rotationPivotY, border, Rokon.lineLoopBoxBuffer, borderRed, borderGreen, borderBlue, borderAlpha, lineWidth, texture != null, texture, textureTile);
+		GLHelper.drawNormal(fill, red, green, blue, alpha, blendFunction, Rokon.triangleStripBoxBuffer, GL10.GL_TRIANGLE_STRIP, getX(), getY(), width, height, rotation, rotateAboutPoint, rotationPivotX, rotationPivotY, border, Rokon.lineLoopBoxBuffer, borderRed, borderGreen, borderBlue, borderAlpha, lineWidth, texture != null, texture, textureTile, colourBuffer);
 	}
 	
 	protected void onDrawVBO(GL10 gl) {
-		GLHelper.drawVBO(fill, red, green, blue, alpha, blendFunction, Rokon.arrayVBO, GL10.GL_TRIANGLE_STRIP, getX(), getY(), width, height, rotation, rotateAboutPoint, rotationPivotX, rotationPivotY, border, Rokon.boxArrayVBO, borderRed, borderGreen, borderBlue, borderAlpha, lineWidth, texture != null, texture, textureTile);
+		GLHelper.drawVBO(fill, red, green, blue, alpha, blendFunction, Rokon.arrayVBO, GL10.GL_TRIANGLE_STRIP, getX(), getY(), width, height, rotation, rotateAboutPoint, rotationPivotX, rotationPivotY, border, Rokon.boxArrayVBO, borderRed, borderGreen, borderBlue, borderAlpha, lineWidth, texture != null, texture, textureTile, colourBuffer);
 	}
 	
 	/**
@@ -622,22 +625,22 @@ public class DrawableObject extends BasicGameObject implements Drawable, Updatea
 	/* (non-Javadoc)
 	 * @see com.stickycoding.rokon.Drawable#onTouchDown(float, float, android.view.MotionEvent, int)
 	 */
-	public void onTouchDown(float x, float y, MotionEvent event, int pointerId) { }
+	public void onTouchDown(float x, float y, MotionEvent event, int pointerCount, int pointerId) { }
 
 	/* (non-Javadoc)
 	 * @see com.stickycoding.rokon.Drawable#onTouchUp(float, float, android.view.MotionEvent, int)
 	 */
-	public void onTouchUp(float x, float y, MotionEvent event, int pointerId) { }
+	public void onTouchUp(float x, float y, MotionEvent event, int pointerCount, int pointerId) { }
 
 	/* (non-Javadoc)
 	 * @see com.stickycoding.rokon.Drawable#onTouch(float, float, android.view.MotionEvent, int)
 	 */
-	public void onTouch(float x, float y, MotionEvent event, int pointerId) { }
+	public void onTouch(float x, float y, MotionEvent event, int pointerCount, int pointerId) { }
 
 	/* (non-Javadoc)
 	 * @see com.stickycoding.rokon.Drawable#onTouchMove(float, float, android.view.MotionEvent, int)
 	 */
-	public void onTouchMove(float x, float y, MotionEvent event, int pointerId) { }
+	public void onTouchMove(float x, float y, MotionEvent event, int pointerCount, int pointerId) { }
 	
 	/**
 	 * Returns the current Layer to which this DrawableObject is included
@@ -662,5 +665,46 @@ public class DrawableObject extends BasicGameObject implements Drawable, Updatea
 	 */
 	public void setZ(int z) {
 		this.z = z;
+	}
+	
+	/**
+	 * Stops any fading animation
+	 */
+	public void stopFade() {
+		isFading = false;
+	}
+	
+	/**
+	 * Sets a ColourBuffer object to this DrawableObject
+	 * 
+	 * @param colourBuffer valid ColourBuffer
+	 */
+	public void setColourBuffer(ColourBuffer colourBuffer) {
+		this.colourBuffer = colourBuffer;
+	}
+	
+	/**
+	 * Returns the current ColourBuffer object
+	 * 
+	 * @return NULL if not set, ColourBuffer otherwise
+	 */
+	public ColourBuffer getColourBuffer() {
+		return colourBuffer;
+	}
+	
+	/**
+	 * Determines whether the ColourBuffer is being used
+	 * 
+	 * @return TRUE if ColourBuffer is being used, FALSE otherwise
+	 */
+	public boolean hasColourBuffer() {
+		return colourBuffer != null;
+	}
+	
+	/**
+	 * Removes the ColourBuffer object from this DrawableObject
+	 */
+	public void removeColourBuffer() {
+		colourBuffer = null;
 	}
 }

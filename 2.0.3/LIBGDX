@@ -1,8 +1,0 @@
-Rokon 2 would not have been possible without the help of the libgdx project - http://code.google.com/p/libgdx/
-
-libgdx is another Android game engine, with the unique ability to deploy your Android applications as regular desktop Java apps.
-
-With the permission and assistance of Mario, the project creator, Rokon has utilised the NDK wrapper for Box2D written for libgdx.
- 
- 
-Thanks!

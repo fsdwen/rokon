@@ -1,5 +1,7 @@
 package com.stickycoding.rokon.audio;
 
+import java.io.IOException;
+
 import android.content.res.AssetFileDescriptor;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -58,15 +60,20 @@ public class RokonMusic {
 			return;
 		}
 		try {
+			mediaPlayer.reset();
 			mediaPlayer.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
+			mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 			afd.close();
-		} catch (Exception e) {
+		} catch (IOException e) {
 			e.printStackTrace();
-			Debug.error("Error setting data source in RokonMusic.play");
+			Debug.error("Error setting data source in RokonMusic.play, IO exception");
 			Debug.forceExit();
 			return;
+		} catch (IllegalStateException e) {
+			e.printStackTrace();
+			Debug.error("Error setting data source in RokonMusic.play, fail ...");
+			return;
 		}
-		mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 		try {
 			mediaPlayer.prepare();	
 		} catch (Exception e) { 

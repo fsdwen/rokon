@@ -16,12 +16,34 @@ import com.stickycoding.rokon.vbo.ArrayVBO;
 public class GLHelper {
 	
 	private static GL10 gl;
-	private static boolean glVertexArray, glTexCoordArray, glTexture2D;
+	private static boolean glVertexArray, glTexCoordArray, glTexture2D, glColorArray;
 	private static int textureIndex = -1, arrayBuffer = -1, elementBuffer = -1, srcBlendMode = -1, dstBlendMode = -1;
 	private static float glColor4fRed = -1, glColor4fGreen = -1, glColor4fBlue = -1, glColor4fAlpha = -1;
     private static BufferObject lastVertexPointerBuffer;
     private static BufferObject lastTexCoordPointerBuffer;
+    private static ColourBuffer lastColourBufferObject;
     private static float lineWidth;
+    
+    public static void enableColourArray() {
+    	if(!glColorArray) {
+    		gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
+    		glColorArray = true;
+    	}
+    }
+    
+    public static void disableColourArray() {
+    	if(glColorArray) {
+    		gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
+    		glColorArray = false;
+    	}
+    }
+    
+    public static void colourPointer(ColourBuffer colourBuffer) {
+    	if(lastColourBufferObject != colourBuffer) {
+    		gl.glColorPointer(4, GL10.GL_FLOAT, 0, colourBuffer.get());
+            lastColourBufferObject = colourBuffer;
+    	}
+    }
     
     /**
      * Resets what GLHelper thinks is going on, forces everything to be put through
@@ -41,6 +63,8 @@ public class GLHelper {
     	glColor4fAlpha = -1;
     	lastVertexPointerBuffer = null;
     	lastTexCoordPointerBuffer = null;
+    	lastColourBufferObject = null;
+    	glColorArray = false;
     	lineWidth = 1;
     }
     
@@ -307,7 +331,7 @@ public class GLHelper {
      * @param texture valid Texture object to be rendered
      * @param textureTile the index of the tile inside the Texture
      */
-    public static void drawNormal(boolean fill, float red, float green, float blue, float alpha, BlendFunction blendFunction, BufferObject vertexBuffer, int vertexMode, float x, float y, float width, float height, float rotation, boolean rotateAboutPivot, float rotationPivotX, float rotationPivotY, boolean border, BufferObject borderBuffer, float borderRed, float borderGreen, float borderBlue, float borderAlpha, float lineWidth, boolean hasTexture, Texture texture, int textureTile) {
+    public static void drawNormal(boolean fill, float red, float green, float blue, float alpha, BlendFunction blendFunction, BufferObject vertexBuffer, int vertexMode, float x, float y, float width, float height, float rotation, boolean rotateAboutPivot, float rotationPivotX, float rotationPivotY, boolean border, BufferObject borderBuffer, float borderRed, float borderGreen, float borderBlue, float borderAlpha, float lineWidth, boolean hasTexture, Texture texture, int textureTile, ColourBuffer colourBuffer) {
     	if(alpha == 0 && (borderAlpha == 0 || border == false)) return;
     	if(!fill && !border) return;
 		if(blendFunction != null) {
@@ -341,6 +365,12 @@ public class GLHelper {
 				enableTexCoordArray();
 				bindTexture(texture);
 				color4f(red, green, blue, alpha);
+				if(colourBuffer != null) {
+					enableColourArray();
+					colourPointer(colourBuffer);
+				} else {
+					disableColourArray();
+				}
 				texCoordPointer(texture.buffer[textureTile], GL10.GL_FLOAT);
 				vertexPointer(vertexBuffer, GL10.GL_FLOAT);
 				gl.glDrawArrays(vertexMode, 0, vertexBuffer.getSize() / 2);
@@ -348,6 +378,7 @@ public class GLHelper {
 			if(border) {
 				disableTexCoordArray();
 				disableTextures();
+				disableColourArray();
 				color4f(borderRed, borderGreen, borderBlue, borderAlpha);
 				vertexPointer(borderBuffer, GL10.GL_FLOAT);
 				if(lineWidth != -1) {
@@ -362,10 +393,17 @@ public class GLHelper {
 			disableTextures();
 			if(fill) {
 				color4f(red, green, blue, alpha);
+				if(colourBuffer != null) {
+					enableColourArray();
+					colourPointer(colourBuffer);
+				} else {
+					disableColourArray();
+				}
 				vertexPointer(vertexBuffer, GL10.GL_FLOAT);
 				gl.glDrawArrays(vertexMode, 0, vertexBuffer.getSize() / 2);
 			}
 			if(border) {
+				disableColourArray();
 				color4f(borderRed, borderGreen, borderBlue, borderAlpha);
 				vertexPointer(borderBuffer, GL10.GL_FLOAT);
 				if(lineWidth != -1) {
@@ -407,7 +445,7 @@ public class GLHelper {
     * @param texture valid Texture object to be rendered
     * @param textureTile the index of the tile inside the Texture
     */
-    public static void drawVBO(boolean fill, float red, float green, float blue, float alpha, BlendFunction blendFunction, ArrayVBO arrayVBO, int vertexMode, float x, float y, float width, float height, float rotation, boolean rotateAboutPivot, float rotationPivotX, float rotationPivotY, boolean border, ArrayVBO borderVBO, float borderRed, float borderGreen, float borderBlue, float borderAlpha, float lineWidth, boolean hasTexture, Texture texture, int textureTile) {
+    public static void drawVBO(boolean fill, float red, float green, float blue, float alpha, BlendFunction blendFunction, ArrayVBO arrayVBO, int vertexMode, float x, float y, float width, float height, float rotation, boolean rotateAboutPivot, float rotationPivotX, float rotationPivotY, boolean border, ArrayVBO borderVBO, float borderRed, float borderGreen, float borderBlue, float borderAlpha, float lineWidth, boolean hasTexture, Texture texture, int textureTile, ColourBuffer colourBuffer) {
     	if(alpha == 0 && (borderAlpha == 0 || border == false)) return;
     	if(!fill && !border) return;
 		if(!arrayVBO.isLoaded()) {
@@ -457,6 +495,12 @@ public class GLHelper {
 			color4f(red, green, blue, alpha);
 			texCoordPointer(texture.buffer[textureTile], GL10.GL_FLOAT);
 			bindBuffer(arrayVBO.getBufferIndex(), false);
+			if(colourBuffer != null) {
+				enableColourArray();
+				colourPointer(colourBuffer);
+			} else {
+				disableColourArray();
+			}
 			vertexPointer(GL10.GL_FLOAT);
 			bindBuffer(texture.vbo[textureTile].getBufferIndex(), false);
 			texCoordPointer(GL10.GL_FLOAT);
@@ -468,9 +512,16 @@ public class GLHelper {
 				color4f(red, green, blue, alpha);
 				bindBuffer(arrayVBO.getBufferIndex(), false);
 				vertexPointer(GL10.GL_FLOAT);
+				if(colourBuffer != null) {
+					enableColourArray();
+					colourPointer(colourBuffer);
+				} else {
+					disableColourArray();
+				}
 				gl.glDrawArrays(vertexMode, 0, arrayVBO.getBufferObject().getSize() / 2);
 			}
 			if(border) {
+				disableColourArray();
 				if(lineWidth != -1) {
 					lineWidth(lineWidth);
 				} else {

@@ -1,6 +1,5 @@
 package com.stickycoding.rokon;
 
-import javax.microedition.khronos.opengles.GL10;
 
 /**
  * Layer.java
@@ -112,40 +111,23 @@ public class Layer {
 	
 	protected void removeDead() {
 		for(int i = 0; i < gameObjects.getCount(); i++) {
-			if(gameObjects.get(i) != null) {
-				while(gameObjects.get(i) != null && !gameObjects.get(i).isAlive()) {
-					gameObjects.remove(i);
-				}
+			while(gameObjects.get(i) != null && !gameObjects.get(i).isAlive()) {
+				gameObjects.remove(i);
 			}
 		}
 	}
 	
-	protected void onDraw(GL10 gl) {
+	protected void render() {
 		DrawOrder.sort(gameObjects, drawQueueType);
-		
 		removeDead();
-		
-		if(ignoreWindow && parentScene.window != null) {
-			Window.setDefault(gl);
-			gl.glMatrixMode(GL10.GL_MODELVIEW);
-	        gl.glLoadIdentity();
-		}
 		for(int i = 0; i < gameObjects.getCount(); i++) {
-			if(gameObjects.get(i) != null) {
-				try {
-					gameObjects.get(i).onUpdate();
-					if(gameObjects.get(i).isOnScreen()) {
-						gameObjects.get(i).onDraw(gl);
-					}
-				} catch (Exception e) { 
-					e.printStackTrace();
-				}	
+			final Drawable drawable = gameObjects.get(i);
+			if(drawable != null) {
+				drawable.onUpdate();
+				if(drawable.isOnScreen()) {
+					RokonActivity.renderQueueManager.add(drawable, !ignoreWindow);
+				}
 			}
-		}
-		if(ignoreWindow && parentScene.window != null) {
-			parentScene.window.onUpdate(gl);
-			gl.glMatrixMode(GL10.GL_MODELVIEW);
-	        gl.glLoadIdentity();
 		}
 	}
 	

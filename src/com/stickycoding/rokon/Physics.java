@@ -1,6 +1,5 @@
 package com.stickycoding.rokon;
 
-import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
 
 /**

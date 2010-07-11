@@ -8,21 +8,51 @@ package com.stickycoding.rokon;
  */
 public class Time {
 	
-	protected static long ticks, realTicks;
+	protected static long drawTicks, drawRealTicks, lastDrawTicks;
 	protected static int ticksSinceLastFrame;
-	protected static float ticksFraction;
-	protected static long lastTicks;
+	protected static float drawTicksFraction;
+	
+	protected static long loopTicks, loopRealTicks, lastLoopTicks;
+	protected static int ticksSinceLastLoop;
+	protected static float loopTicksFraction;
+
 	protected static long pauseStart, pauseTime;
 	protected static boolean paused;
 	
 	protected static void update() {
-		lastTicks = ticks;
-		realTicks = System.currentTimeMillis();
+		lastDrawTicks = drawTicks;
+		drawRealTicks = System.currentTimeMillis();
 		if(paused) return;
-		ticks = realTicks - pauseTime;
-		if(lastTicks == 0) return;
-		ticksSinceLastFrame = (int)(ticks - lastTicks);
-		ticksFraction = ticksSinceLastFrame / 1000f;
+		drawTicks = drawRealTicks - pauseTime;
+		if(lastDrawTicks == 0) return;
+		ticksSinceLastFrame = (int)(drawTicks - lastDrawTicks);
+		drawTicksFraction = ticksSinceLastFrame / 1000f;
+	}
+	
+	protected static void updateLoop() {
+		lastLoopTicks = loopTicks;
+		loopRealTicks = System.currentTimeMillis();
+		if(paused) return;
+		loopTicks = loopRealTicks - pauseTime;
+		if(lastLoopTicks == 0) return;
+		ticksSinceLastLoop = (int)(loopTicks - lastLoopTicks);
+		loopTicksFraction = ticksSinceLastLoop / 1000f;
+	}
+	
+	public static long getLoopTicks() {
+		return loopTicks;
+	}
+	
+	public static int getTicksSinceLastLoop() {
+		return ticksSinceLastLoop;
+	}
+	
+	public static float getLoopTicksFraction() {
+		return loopTicksFraction;
+	}
+	
+	public static long getLastLoopTicks() {
+		return lastLoopTicks;
 	}
 	
 	/**
@@ -30,8 +60,8 @@ public class Time {
 	 * 
 	 * @return current ticks
 	 */
-	public static long getTicks() {
-		return ticks;
+	public static long getDrawTicks() {
+		return drawTicks;
 	}
 	
 	/**
@@ -48,8 +78,8 @@ public class Time {
 	 * 
 	 * @return a fraction, where 1f = 1000ms
 	 */
-	public static float getTicksFraction() {
-		return ticksFraction;
+	public static float getDrawTicksFraction() {
+		return drawTicksFraction;
 	}
 	
 	/**
@@ -57,15 +87,15 @@ public class Time {
 	 * 
 	 * @return previous ticks
 	 */
-	public static long getLastTicks() {
-		return lastTicks;
+	public static long getLastDrawTicks() {
+		return lastDrawTicks;
 	}
 	
 	/**
 	 * Pauses the tick count
 	 */
 	public static void pause() {
-		pauseStart = ticks;
+		pauseStart = drawTicks;
 		paused = true;
 	}
 	

@@ -6,6 +6,8 @@ import java.util.Arrays;
 
 import javax.microedition.khronos.opengles.GL10;
 
+import android.os.Bundle;
+import android.os.Message;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.widget.Toast;
@@ -21,11 +23,12 @@ import com.stickycoding.rokon.device.OS;
  * 
  * @author Richard
  */
-/**
- * @author Richard
- *
- */
 public abstract class Scene {
+	
+	/**
+	 * The maximum number of Runnables that can be queued at one time, shouldn't ever need to be more than a couple
+	 */
+	public static final int MAX_RUNNABLE = 10;
 	
 	/**
 	 * The default number of layers if no number is passed
@@ -53,7 +56,50 @@ public abstract class Scene {
 	
 	protected float defaultLineWidth = 1;
 	
+	protected static Runnable[] uiRunnable = new Runnable[MAX_RUNNABLE];
+	protected static Runnable[] gameRunnable = new Runnable[MAX_RUNNABLE];
+	
 	public RokonActivity activity;
+	
+	/**
+	 * Queues a Runnable to be executed at the start of the next UI thread
+	 * 
+	 * @param runnable
+	 */
+	public boolean queueUI(Runnable runnable) {
+		synchronized(RokonActivity.runnableLock) {
+			for(int i = 0; i < MAX_RUNNABLE; i++) {
+				if(Scene.uiRunnable[i] == null) {
+					Scene.uiRunnable[i] = runnable;
+					Message message = new Message();
+					Bundle bundle = new Bundle();
+					bundle.putInt("index", i);
+					message.setData(bundle);
+					activity.executeRunnable.sendMessage(message);
+					return true;
+				}
+			}
+			return false;
+		}
+	}
+	
+	/**
+	 * Queues a Runnable to be executed at the start of the next game loop
+	 * 
+	 * @param runnable
+	 */
+	public boolean queueGame(Runnable runnable) {
+		synchronized(GameThread.runnableLock) {
+			for(int i = 0; i < MAX_RUNNABLE; i++) {
+				if(Scene.gameRunnable[i] == null) {
+					Scene.gameRunnable[i] = runnable;
+					GameThread.hasRunnable = true;
+					return true;
+				}
+			}
+			return false;
+		}
+	}
 	
 	/**
 	 * Sets the clear colour (the colour behind the background)
@@ -101,6 +147,20 @@ public abstract class Scene {
 	
 	public abstract void onReady();
 	
+	/**
+	 * Triggered when a DrawableObjects .fade is completed
+	 * 
+	 * @param object the DrawableObject to which fade was applied
+	 */
+	public void onFadeEnd(DrawableObject object) { }
+	
+	/**
+	 * Triggered when a DimensionalObject .move or .scale is completed
+	 * 
+	 * @param object the DimensionalObject to which .move was applied
+	 */
+	public void onMoveEnd(DimensionalObject object) { }
+	
 	public void onTouchDown(Drawable object, float x, float y, MotionEvent event, int pointerCount, int pointerId) { }
 	public void onTouchUp(Drawable object, float x, float y, MotionEvent event, int pointerCount, int pointerId) { }
 	public void onTouchMove(Drawable object, float x, float y, MotionEvent event, int pointerCount, int pointerId) { }
@@ -118,6 +178,20 @@ public abstract class Scene {
 	public boolean onKeyDown(int keyCode, KeyEvent event) { return false; }
 	public boolean onKeyUp(int keyCode, KeyEvent event) { return false; }
 	public boolean onTrackballEvent(MotionEvent event) { return false; }
+	
+	/**
+	 * Adds a Drawable to the render queue at the current point. This should only be used in special cases.
+	 * 
+	 * @param drawable valid Drwaable
+	 * @param useWindow TRUE if the Scenes Window should be used, FALSE if ignored
+	 */
+	public void render(Drawable drawable, boolean useWindow) {
+		RokonActivity.renderQueueManager.add(drawable, useWindow);
+	}
+	
+	public void render(Drawable drawable) {
+		RokonActivity.renderQueueManager.add(drawable, true);
+	}
 	
 	/**
 	 * Sets a World for the physics in this Scene
@@ -717,7 +791,15 @@ public abstract class Scene {
 	 */
 	public Scene() {
 		this(DEFAULT_LAYER_COUNT, DEFAULT_LAYER_OBJECT_COUNT);
-		
+	}
+	
+	/**
+	 * Fetches the current Activity
+	 * 
+	 * @return the current RokonActivity
+	 */
+	public RokonActivity getActivity() {
+		return activity;
 	}
 	
 	/**
@@ -904,36 +986,13 @@ public abstract class Scene {
 	}
 	
 	protected void onEndScene() {
-		//TextureManager.unloadActiveTextures();
+
 	}
 	
-	protected void onDraw(GL10 gl) {
-		onGameLoop();
-		onPreDraw(gl);
-		if(useNewClearColor) {
-			gl.glClearColor(newClearColor[0], newClearColor[1], newClearColor[2], newClearColor[3]);
-			useNewClearColor = false;
-		}
-		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-		if(background != null) {
-			background.onDraw(gl);
-		}
-		if(window != null) {
-			window.onUpdate(gl);
-		}
-		if(usePhysics) {
-			if(pausePhysics) {
-				world.step(0, 1, 1);
-			} else {
-				world.step(Time.getTicksFraction(), 10, 10);
-			}
-		}
-		gl.glMatrixMode(GL10.GL_MODELVIEW);
-        gl.glLoadIdentity();
+	protected void render() {
 		for(int i = 0; i < layerCount; i++) {
-			layer[i].onDraw(gl);
+			layer[i].render();
 		}
-		onPostDraw(gl);
 	}
 	
 	protected boolean pausePhysics = false;

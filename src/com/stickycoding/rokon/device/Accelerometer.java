@@ -137,13 +137,13 @@ public class Accelerometer {
 				z = sensorEvent.values[2];
 				onAccelerometerChange.onAccelerometerChange(x, y, z);
 				if(lastUpdate > 0) {
-					float speed = Math.abs(x + y + z - lastX - lastY - lastZ) / (Time.getTicks() - lastUpdate) * 10000;
-					if(speed > shakeThreshold && Time.getTicks() - lastShake >= minShakeInterval) {
+					float speed = Math.abs(x + y + z - lastX - lastY - lastZ) / (Time.getLoopTicks() - lastUpdate) * 10000;
+					if(speed > shakeThreshold && Time.getLoopTicks() - lastShake >= minShakeInterval) {
 						onAccelerometerChange.onShake(speed);
-						lastShake = Time.getTicks();
+						lastShake = Time.getLoopTicks();
 					}
 				}
-				lastUpdate = Time.getTicks();
+				lastUpdate = Time.getLoopTicks();
 			}			
 		};
 		sensorManager.registerListener(sensorEventListener, sensor, SensorManager.SENSOR_DELAY_GAME);

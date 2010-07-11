@@ -4,7 +4,6 @@ import javax.microedition.khronos.opengles.GL10;
 import javax.microedition.khronos.opengles.GL11;
 
 import com.stickycoding.rokon.BufferObject;
-import com.stickycoding.rokon.Debug;
 import com.stickycoding.rokon.GLHelper;
 import com.stickycoding.rokon.VBOManager;
 
@@ -32,7 +31,6 @@ public class ArrayVBO extends VBO {
 		gl11.glBufferData(GL11.GL_ARRAY_BUFFER, bufferObject.get().capacity(), bufferObject.get(), drawType);
 		setLoaded(bufferIndex);
 		VBOManager.add(this);
-		Debug.print("VBO Load (" + bufferIndex + ")");
 	}
 
 }

@@ -230,7 +230,7 @@ public class MathHelper {
 		} else {
 			float centreX = sprite.getX() + (sprite.getWidth() / 2);
 			float centreY = sprite.getY() + (sprite.getHeight() / 2);
-			float maxDistance = (sprite.getWidth() / 2) * (sprite.getWidth() / 2);
+			//float maxDistance = (sprite.getWidth() / 2) * (sprite.getWidth() / 2);
 			float dx = x - centreX;
 			float dy = y - centreY;
 			return (float)Math.sqrt(dx * dx + dy * dy) - (sprite.getWidth() / 2);

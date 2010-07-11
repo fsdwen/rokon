@@ -146,5 +146,7 @@ public abstract interface Drawable {
 	 * @return rotation value, 0 is default
 	 */
 	float getRotation();
+	
+	
 
 }

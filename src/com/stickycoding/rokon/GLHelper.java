@@ -174,7 +174,6 @@ public class GLHelper {
 	 */
 	public static void bindTexture(int textureIndex) {
 		if(GLHelper.textureIndex != textureIndex) {
-			Debug.print("@@ bind " + textureIndex);
 			gl.glBindTexture(GL10.GL_TEXTURE_2D, textureIndex);
 			GLHelper.textureIndex = textureIndex;
 		}
@@ -198,13 +197,13 @@ public class GLHelper {
 	 */
 	public static void checkTextureValid(Texture texture) {
 		if(texture.textureIndex == -1 && texture.parentAtlas == null) {
-			texture.onLoadTexture(gl);
 			Debug.print("checkTextureValid - load self");
+			texture.onLoadTexture(gl);
 			Debug.print("we're at " + texture.textureIndex);
 		} else {
 			if(texture.textureIndex == -1) {
-				texture.parentAtlas.onLoadTexture(gl);
 				Debug.print("checkTextureValid - load parent");
+				texture.parentAtlas.onLoadTexture(gl);
 				Debug.print("we're at " + texture.textureIndex);
 			}
 		}

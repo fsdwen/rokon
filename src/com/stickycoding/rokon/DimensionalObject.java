@@ -15,8 +15,16 @@ public class DimensionalObject extends Point {
 	protected boolean moving;
 	protected float startX, startY, startWidth, startHeight;
 	protected float finishX, finishY, finishWidth, finishHeight;
+	protected boolean scaleFromCentre;
 	protected long startTime;
 	protected int moveTime, moveType;
+
+	protected float accelerationX, accelerationY, speedX, speedY, terminalSpeedX, terminalSpeedY;
+	protected boolean useTerminalSpeedX, useTerminalSpeedY;
+	protected float acceleration, velocity, velocityAngle, velocityXFactor, velocityYFactor, terminalVelocity;
+	protected boolean useTerminalVelocity;
+	protected float angularVelocity, angularAcceleration, terminalAngularVelocity;
+	protected boolean useTerminalAngularVelocity;
 
 	public DimensionalObject(float x, float y, float width, float height) {
 		super(x, y);
@@ -193,18 +201,37 @@ public class DimensionalObject extends Point {
 	protected void onUpdate() {
 		super.onUpdate();
 		if(moving) {
-			float position = (float)(Time.ticks - startTime) / (float)moveTime;
+			float position = (float)(Time.loopTicks - startTime) / (float)moveTime;
 			float factor = Movement.getPosition(position, moveType);
-			if(position >= 1) {
-				setXY(finishX, finishY);
-				width = finishWidth;
-				height = finishHeight;
-				moving = false;
+			if(!scaleFromCentre) {
+				if(position >= 1) {
+					setXY(finishX, finishY);
+					width = finishWidth;
+					height = finishHeight;
+					moving = false;
+					RokonActivity.currentScene.onMoveEnd(this);
+					return;
+				} else {
+					setX(startX + ((finishX - startX) * factor));
+					setY(startY + ((finishY - startY) * factor));
+					width = startWidth + ((finishWidth - startWidth) * factor);
+					height = startHeight + ((finishHeight - startHeight) * factor);
+				}
 			} else {
-				setX(startX + ((finishX - startX) * factor));
-				setY(startY + ((finishY - startY) * factor));
-				width = startWidth + ((finishWidth - startWidth) * factor);
-				height = startHeight + ((finishHeight - startHeight) * factor);
+				startX += speedX * Time.loopTicksFraction;
+				startY += speedY * Time.loopTicksFraction;
+				if(position >= 1) {
+					width = finishWidth;
+					height = finishHeight;
+					centre(startX, startY);
+					moving = false;
+					RokonActivity.currentScene.onMoveEnd(this);
+					return;
+				} else {
+					width = startWidth + ((finishWidth - startWidth) * factor);
+					height = startHeight + ((finishHeight - startHeight) * factor);
+					centre(startX, startY);
+				}
 			}
 		}
 	}
@@ -283,15 +310,37 @@ public class DimensionalObject extends Point {
 		startY = getY();
 		startWidth = this.width;
 		startHeight = this.height;
-		startTime = Time.ticks;
+		startTime = Time.loopTicks;
 		moveTime = time;
 		moveType = movementType;
 		finishX = x;
 		finishY = y;
 		finishWidth = width;
 		finishHeight = height;
-		Debug.print("moving from " + startX + " to " + finishX );
+		scaleFromCentre = false;
+		moving = true;
+	}
+	
+	public void scaleFromCentre(float width, float height, int time, int movementType) {
+		startWidth = this.width;
+		startHeight = this.height;
+		startX = getX() + this.width / 2;
+		startY = getY() + this.height / 2;
+		startTime = Time.loopTicks;
+		moveTime = time;
+		moveType = movementType;
+		finishWidth = width;
+		finishHeight = height;
+		scaleFromCentre = true;
 		moving = true;
 	}
 
+	
+	public void stopMove() {
+		moving = false;
+	}
+	
+	public void stopScale() {
+		moving = false;
+	}
 }

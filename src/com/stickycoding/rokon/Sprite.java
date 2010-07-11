@@ -33,13 +33,6 @@ public class Sprite extends GameObject implements Updateable {
 	protected int rotateToTime, rotateToType, rotateToDirection;
 	protected Callback rotateToCallback;
 	
-	protected float accelerationX, accelerationY, speedX, speedY, terminalSpeedX, terminalSpeedY;
-	protected boolean useTerminalSpeedX, useTerminalSpeedY;
-	protected float acceleration, velocity, velocityAngle, velocityXFactor, velocityYFactor, terminalVelocity;
-	protected boolean useTerminalVelocity;
-	protected float angularVelocity, angularAcceleration, terminalAngularVelocity;
-	protected boolean useTerminalAngularVelocity;
-	
 	protected Polygon polygon = Rokon.rectangle;
 	
 	/**
@@ -132,7 +125,7 @@ public class Sprite extends GameObject implements Updateable {
 			onUpdateRotateTo();
 		}
 		if(accelerationX != 0) {
-			speedX += accelerationX * Time.ticksFraction;
+			speedX += accelerationX * Time.loopTicksFraction;
 			if(useTerminalSpeedX && ((accelerationX > 0 && speedX > terminalSpeedX) || (accelerationX < 0 && speedY < terminalSpeedX))) {
 				accelerationX = 0;
 				speedX = terminalSpeedX;
@@ -140,7 +133,7 @@ public class Sprite extends GameObject implements Updateable {
 			}
 		}
 		if(accelerationY != 0) {
-			speedY += accelerationY * Time.ticksFraction;
+			speedY += accelerationY * Time.loopTicksFraction;
 			if(useTerminalSpeedY && ((accelerationY > 0 && speedY > terminalSpeedY) || (accelerationY < 0 && speedY < terminalSpeedY))) {
 				accelerationY = 0;
 				speedY = terminalSpeedY;
@@ -148,13 +141,13 @@ public class Sprite extends GameObject implements Updateable {
 			}
 		}
 		if(speedX != 0) {
-			moveX(speedX * Time.ticksFraction);
+			moveX(speedX * Time.loopTicksFraction);
 		}
 		if(speedY != 0) {
-			moveY(speedY * Time.ticksFraction);
+			moveY(speedY * Time.loopTicksFraction);
 		}
 		if(acceleration != 0) {
-			velocity += acceleration * Time.ticksFraction;
+			velocity += acceleration * Time.loopTicksFraction;
 			if(useTerminalVelocity && ((acceleration > 0 && velocity > terminalVelocity) || (acceleration < 0 && velocity < terminalVelocity))) {
 				acceleration = 0;
 				velocity = terminalVelocity;
@@ -162,11 +155,11 @@ public class Sprite extends GameObject implements Updateable {
 			}
 		}
 		if(velocity != 0) {
-			moveX(velocityXFactor * (velocity * Time.ticksFraction));
-			moveY(velocityYFactor * (velocity * Time.ticksFraction));
+			moveX(velocityXFactor * (velocity * Time.loopTicksFraction));
+			moveY(velocityYFactor * (velocity * Time.loopTicksFraction));
 		}
 		if(angularAcceleration != 0) {
-			angularVelocity += angularAcceleration * Time.ticksFraction;
+			angularVelocity += angularAcceleration * Time.loopTicksFraction;
 			if(useTerminalAngularVelocity && ((angularAcceleration > 0 && angularVelocity > terminalAngularVelocity) || (angularAcceleration < 0 && angularVelocity < terminalAngularVelocity))) {
 				angularAcceleration = 0;
 				angularVelocity = terminalAngularVelocity;
@@ -174,7 +167,7 @@ public class Sprite extends GameObject implements Updateable {
 			}
 		}
 		if(angularVelocity != 0) {
-			rotation += angularVelocity * Time.ticksFraction;
+			rotation += angularVelocity * Time.loopTicksFraction;
 		}
 		if(modifierCount > 0) {
 			for(int i = 0; i < MAX_MODIFIERS; i++) {
@@ -209,7 +202,7 @@ public class Sprite extends GameObject implements Updateable {
 	 * @param x positive or negative floating point
 	 * @param y positive or negative floating point
 	 */
-	public void setSpeed(int x, int y) {
+	public void setSpeed(float x, float y) {
 		speedX = x;
 		speedY = y;
 	}
@@ -510,10 +503,19 @@ public class Sprite extends GameObject implements Updateable {
 	/**
 	 * Sets the angular acceleration
 	 * 
-	 * @param acceleration floating point integer, in radians 
+	 * @param acceleration floating point, in degrees 
 	 */
 	public void setAngularAcceleration(float acceleration) {
 		this.angularAcceleration = acceleration;
+	}
+	
+	/**
+	 * Sets the angular velocity
+	 * 
+	 * @param angularVelocity floating point, in degrees
+	 */
+	public void setAngularVelocity(float angularVelocity) {
+		this.angularVelocity = angularVelocity;
 	}
 	
 	/**
@@ -538,7 +540,7 @@ public class Sprite extends GameObject implements Updateable {
 		rotateToDirection = direction;
 		isRotateTo = true;
 		rotateToType = type;
-		rotateToStartTime = Time.ticks;
+		rotateToStartTime = Time.loopTicks;
 		rotateToTime = time;
 		
 		rotateToCallback = null;
@@ -596,7 +598,7 @@ public class Sprite extends GameObject implements Updateable {
 	}
 	
 	protected void onUpdateRotateTo() {
-		float position = (float)(Time.ticks - rotateToStartTime) / (float)rotateToTime;
+		float position = (float)(Time.loopTicks - rotateToStartTime) / (float)rotateToTime;
 		float movementFactor = Movement.getPosition(position, rotateToType);
 		if(position >= 1) {
 			rotation = rotateToAngle;
@@ -667,7 +669,7 @@ public class Sprite extends GameObject implements Updateable {
 		moveToFinalY = y;
 		isMoveTo = true;
 		moveToType = type;
-		moveToStartTime = Time.ticks;
+		moveToStartTime = Time.loopTicks;
 		moveToTime = time;
 		
 		moveToCallback = null;
@@ -688,7 +690,7 @@ public class Sprite extends GameObject implements Updateable {
 	}
 	
 	protected void onUpdateMoveTo() {
-		float position = (float)(Time.ticks - moveToStartTime) / (float)moveToTime;
+		float position = (float)(Time.loopTicks - moveToStartTime) / (float)moveToTime;
 		float movementFactor = Movement.getPosition(position, moveToType);
 		if(position >= 1) {
 			setX(moveToFinalX);

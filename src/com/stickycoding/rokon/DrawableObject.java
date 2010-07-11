@@ -169,7 +169,7 @@ public class DrawableObject extends BasicGameObject implements Drawable, Updatea
 		fadeType = movementType; 
 		isFading = true;
 		fadeTime = time;
-		fadeStartTime = Time.ticks;
+		fadeStartTime = Time.loopTicks;
 		fadeTo = alpha;
 		fadeStart = this.alpha;
 		fadeUp = alpha > startAlpha;
@@ -178,11 +178,12 @@ public class DrawableObject extends BasicGameObject implements Drawable, Updatea
 	
 	private void updateFadeTo() {
 		if(!isFading) return;
-		float position = (float)(Time.ticks - fadeStartTime) / (float)fadeTime;
+		float position = (float)(Time.loopTicks - fadeStartTime) / (float)fadeTime;
 		float factor = Movement.getPosition(position, fadeType);
 		if(position >= 1) {
 			this.alpha = fadeTo;
 			isFading = false;
+			parentScene.onFadeEnd(this);
 			return;
 		}
 		if(fadeUp) {
@@ -439,6 +440,15 @@ public class DrawableObject extends BasicGameObject implements Drawable, Updatea
 	}
 	
 	/**
+	 * Returns the current Texture
+	 * 
+	 * @return NULL if not set
+	 */
+	public Texture getTexture() {
+		return texture;
+	}
+	
+	/**
 	 * Returns the current row of the Texture which this DrawableObject is using
 	 * 
 	 * @return positive integer
@@ -513,7 +523,7 @@ public class DrawableObject extends BasicGameObject implements Drawable, Updatea
 		animationEndTile = endTile;
 		animationFrameTicks = frameTime;
 		animationLoops = loops;
-		animationLastTicks = Time.ticks;
+		animationLastTicks = Time.loopTicks;
 		textureTile = startTile;
 		hasCustomAnimation = false;
 		animationReturnToStart = returnToStart;
@@ -544,7 +554,7 @@ public class DrawableObject extends BasicGameObject implements Drawable, Updatea
 		textureTile = animationTiles[0];
 		animationReturnToStart = returnToStart;
 		animationLoops = loops;
-		animationLastTicks = Time.ticks;
+		animationLastTicks = Time.loopTicks;
 		animationFrameTicks = frameTime;
 		customAnimationSequence = animationTiles;
 		animated = true;
@@ -562,7 +572,7 @@ public class DrawableObject extends BasicGameObject implements Drawable, Updatea
 	
 	private void updateAnimation() {
 		if(!animated) return;
-		long tickDifference = Time.ticks - animationLastTicks - animationFrameTicks;
+		long tickDifference = Time.loopTicks - animationLastTicks - animationFrameTicks;
 		if(tickDifference > 0) {
 			int frameSkip = 0;
 			while(tickDifference > 0) {
@@ -707,4 +717,5 @@ public class DrawableObject extends BasicGameObject implements Drawable, Updatea
 	public void removeColourBuffer() {
 		colourBuffer = null;
 	}
+	
 }

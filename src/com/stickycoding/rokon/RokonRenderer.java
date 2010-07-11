@@ -5,6 +5,7 @@ import javax.microedition.khronos.opengles.GL10;
 
 import android.opengl.GLU;
 
+import com.stickycoding.rokon.RenderQueueManager.RenderElement;
 import com.stickycoding.rokon.device.Graphics;
 import com.stickycoding.rokon.device.OS;
 
@@ -18,26 +19,127 @@ import com.stickycoding.rokon.device.OS;
 public class RokonRenderer implements GLSurfaceView.Renderer {
 	
 	private RokonActivity rokonActivity;
+	private ObjectManager drawQueue;
+	
+	private Object drawLock = new Object();
+	
+	private boolean drawQueueChanged;
+	
+	public static RokonRenderer singleton;
+	
+	public synchronized void setDrawQueue(ObjectManager queue) {
+		this.drawQueue = queue;
+		synchronized(drawLock) {
+			drawQueueChanged = true;
+			drawLock.notify();
+		}
+	}
 	
 	protected RokonRenderer(RokonActivity rokonActivity) {
+		singleton = this;
 		this.rokonActivity = rokonActivity;
+		drawQueueChanged = false;
 	}
 	
 	/* (non-Javadoc)
 	 * @see android.opengl.GLSurfaceView.Renderer#onDrawFrame(javax.microedition.khronos.opengles.GL10)
 	 */
 	public void onDrawFrame(GL10 gl) {
+		GLHelper.setGL(gl);
+		
 		Time.update();
+		
 		if(!RokonActivity.engineLoaded) {
 			RokonActivity.engineLoaded = true;
 			System.gc();
 			rokonActivity.onLoadComplete();
+			rokonActivity.startThread();
 			return;
 		}
-		GLHelper.setGL(gl);
+		
 		FPSCounter.onFrame();
-		if(RokonActivity.currentScene != null) {
-			RokonActivity.currentScene.onDraw(gl);	
+
+		final Scene scene = RokonActivity.currentScene;
+		
+		if(scene == null) return;
+		
+		synchronized(drawLock) {
+			if(!drawQueueChanged) {
+				while(!drawQueueChanged) {
+					try {
+						drawLock.wait();
+					} catch (InterruptedException e) {
+						
+					}
+				}
+			}
+			drawQueueChanged = false;
+		}
+		
+		
+		synchronized(this) {
+			
+			if(scene.useNewClearColor) {
+				gl.glClearColor(scene.newClearColor[0], scene.newClearColor[1], scene.newClearColor[2], scene.newClearColor[3]);
+				scene.useNewClearColor = false;
+			}
+			
+			if(drawQueue != null && drawQueue.getObjects().getCount() > 0) {
+				
+				scene.onPreDraw(gl);
+				
+				final boolean hasWindow = scene.window != null;
+		        boolean isWindow = false;
+		        
+				gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+				
+				if(scene.background != null) {
+					scene.background.onDraw(gl);
+				}
+				
+				if(hasWindow) {
+					scene.window.onUpdate(gl);
+					isWindow = true;
+				}
+				
+				gl.glMatrixMode(GL10.GL_MODELVIEW);
+		        gl.glLoadIdentity();
+		        
+				
+				FixedSizeArray<BaseObject> objects = drawQueue.getObjects();
+				Object[] objectArray = objects.getArray();
+				final int count = drawQueue.getObjects().getCount();
+				for(int i = 0; i < count; i++) {
+					
+					RenderElement element = (RenderElement)objectArray[i];
+					final boolean useWindow = element.useWindow;
+					
+					if(hasWindow && !useWindow && isWindow) {
+						Window.setDefault(gl);
+						gl.glMatrixMode(GL10.GL_MODELVIEW);
+				        gl.glLoadIdentity();
+				        isWindow = false;
+					}
+					
+					if(hasWindow && useWindow && !isWindow) {
+						scene.window.onUpdate(gl);
+						gl.glMatrixMode(GL10.GL_MODELVIEW);
+				        gl.glLoadIdentity();
+				        isWindow = true;
+					}
+					
+					//element.drawable.onUpdate();
+					element.drawable.onDraw(gl);
+					
+				}
+				
+				scene.onPostDraw(gl);
+				
+				GLHelper.setGL(null);
+			} else {
+				gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+			}
+			
 		}
 	}
 
@@ -62,6 +164,7 @@ public class RokonRenderer implements GLSurfaceView.Renderer {
 		Debug.print("onSurfaceCreated()");
 		
 		GLHelper.reset();
+		GLHelper.setGL(gl);
 		
 		gl.glHint(GL10.GL_PERSPECTIVE_CORRECTION_HINT, GL10.GL_FASTEST);
 		
@@ -97,12 +200,10 @@ public class RokonRenderer implements GLSurfaceView.Renderer {
         
         TextureManager.reloadTextures(gl);
 
-       // Debug.print("Graphics Support - " + version + " - " + (Graphics.isSupportsVBO() ? "vbos" : ""));
         
-        //GLU.gluOrtho2D(gl, 0, RokonActivity.gameWidth, RokonActivity.gameHeight, 0);
 	}
 
-	@Override
+	//@Override
 	public void onSurfaceLost() {
 		Debug.print("onSurfaceLost");
 		GLHelper.reset();

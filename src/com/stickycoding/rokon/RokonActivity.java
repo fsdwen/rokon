@@ -4,7 +4,6 @@ import javax.microedition.khronos.opengles.GL10;
 
 import android.app.Activity;
 import android.content.pm.ActivityInfo;
-import android.graphics.Path.FillType;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -40,7 +39,24 @@ public class RokonActivity extends Activity {
 	protected static String toastMessage;
 	
 	protected static Toast lastToast;
-
+	
+	protected static Object runnableLock = new Object();
+	
+	protected Handler executeRunnable = new Handler() {
+		@Override
+		public void handleMessage(Message message) {
+			synchronized(runnableLock) {
+				if(currentScene == null) return;
+				int index = message.getData().getInt("runnable");
+				if(Scene.uiRunnable[index] != null) {
+					Runnable runnable = Scene.uiRunnable[index];
+					Scene.uiRunnable[index] = null;
+					runnable.run();
+					runnable = null;
+				}
+			}
+		}
+	};
 	
 	/**
 	 * Removes everyting from the memory, and resets statics.
@@ -60,6 +76,7 @@ public class RokonActivity extends Activity {
 		gameHeight = 0;
 		graphicsPath = "";
 		Rokon.currentActivity = null;
+		GameThread.stopThread();
 		System.gc();
 	}
 
@@ -90,11 +107,13 @@ public class RokonActivity extends Activity {
 	 */
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		if(currentScene != null) {
+		/*if(currentScene != null) {
 			if(currentScene.onKeyDown(keyCode, event)) {
 				return true;
 			}
-		}
+		}*/
+		GameThread.keyInput(true, keyCode, event);
+		if(disableBack && keyCode == KeyEvent.KEYCODE_BACK) return true;
 		return super.onKeyDown(keyCode, event);
 	}
 
@@ -103,10 +122,27 @@ public class RokonActivity extends Activity {
 	 */
 	@Override
 	public boolean onTrackballEvent(MotionEvent event) {
-		if(currentScene != null) {
-			return currentScene.onTrackballEvent(event);
-		}
+		//if(currentScene != null) {
+		//	return currentScene.onTrackballEvent(event);
+		//}
+		GameThread.motionInput(false, event);
 		return super.onTrackballEvent(event);
+	}
+	
+	private boolean disableBack;
+	
+	/**
+	 * Disables the Back button from exiting the Activity
+	 */
+	public void disableBack() {
+		disableBack = true;
+	}
+	
+	/**
+	 * Enables the Back button to exit the Activity (default state)
+	 */
+	public void enableBack() {
+		disableBack = false;
 	}
 	
 	/* (non-Javadoc)
@@ -114,11 +150,13 @@ public class RokonActivity extends Activity {
 	 */
 	@Override
 	public boolean onKeyUp(int keyCode, KeyEvent event) {
-		if(currentScene != null) {
+		/*if(currentScene != null) {
 			if(currentScene.onKeyUp(keyCode, event)) {
 				return true;
 			}
-		}
+		}*/
+		GameThread.keyInput(false, keyCode, event);
+		if(disableBack && keyCode == KeyEvent.KEYCODE_BACK) return true;
 		return super.onKeyUp(keyCode, event);
 	}
 	
@@ -131,6 +169,32 @@ public class RokonActivity extends Activity {
 	 * Called when the loading is completed, and OpenGL is ready to draw 
 	 */
 	public void onLoadComplete() { };
+	
+	/**
+	 * Starts the game thread, if necessary
+	 */
+	protected void startThread() {
+		Debug.print("startThread");
+		gameThread = new GameThread();
+		thread = new Thread(gameThread);
+		thread.start();
+	}
+	
+	private Thread thread;
+	private GameThread gameThread;
+	private boolean useThreading = false;
+	
+	public void useThreading() {
+		useThreading = true;
+	}
+	
+	public void noThreads() {
+		useThreading = false;
+	}
+	
+	public boolean isThreading() {
+		return useThreading;
+	}
 	
 	/* (non-Javadoc)
 	 * @see android.app.Activity#onCreate(android.os.Bundle)
@@ -189,6 +253,8 @@ public class RokonActivity extends Activity {
 		Rokon.rectangle = new Polygon(new float[] { 0, 0, 1, 0, 1, 1, 0, 1 });
 		Rokon.circle = new Polygon(new float[] { 0, 0, 1, 0, 1, 1, 0, 1 });
 		
+		renderQueueManager = new RenderQueueManager();
+		
 		OS.determineAPI();
 	}
 	
@@ -202,6 +268,7 @@ public class RokonActivity extends Activity {
 			currentScene.onPause();
 		}
 		//RokonMusic.onPause();
+		GameThread.pauseGame();
 		surfaceView.onPause();
 		super.onPause();
 	}
@@ -214,6 +281,7 @@ public class RokonActivity extends Activity {
 		Debug.print("onResume()");
 		Rokon.currentActivity = this;
 		surfaceView.onResume();
+		GameThread.resumeGame();
 		if(currentScene != null) {
 			currentScene.onResume();
 		}
@@ -226,9 +294,8 @@ public class RokonActivity extends Activity {
 	 */
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
-		if(currentScene == null)
-			return false;
-		currentScene.handleTouch(event);
+		GameThread.motionInput(true, event);
+		//currentScene.handleTouch(event);
 		return false;
 	}
 	
@@ -485,4 +552,8 @@ public class RokonActivity extends Activity {
 			lastToast.show();
 		}
 	};
+	
+	
+	
+	public static RenderQueueManager renderQueueManager;
 }

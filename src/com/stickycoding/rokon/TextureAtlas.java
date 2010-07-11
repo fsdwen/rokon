@@ -160,7 +160,7 @@ public class TextureAtlas extends Texture {
 			return;
 		}
 		
-		Debug.error("Loading TextureAtlas");
+		Debug.print("Loading TextureAtlas");
 		
 		int[] nameArray = new int[1];
 		GLHelper.enableTextures();
@@ -174,20 +174,32 @@ public class TextureAtlas extends Texture {
         gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S, GL10.GL_CLAMP_TO_EDGE);
         gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T, GL10.GL_CLAMP_TO_EDGE);
         gl.glTexEnvf(GL10.GL_TEXTURE_ENV, GL10.GL_TEXTURE_ENV_MODE, GL10.GL_MODULATE);
-
+        bmp.recycle();
+        bmp = null;
+        System.gc();
+        
 
 		for(int i = 0; i < maxTextureCount; i++) {
 			if(texture[i] != null) {
+				//Debug.print("adding " + i + " at " + textureIndex);
                 texture[i].textureIndex = textureIndex;
+                //Debug.print("#1");
 				texture[i].prepareBuffers();
+				//Debug.print("#2");
 				bmp = texture[i].getBitmap();
+				//Debug.print("#3 " + bmp.getWidth() + " " + bmp.getHeight());
                 GLUtils.texSubImage2D(GL10.GL_TEXTURE_2D, 0, texture[i].atlasX, texture[i].atlasY, bmp);
+				//Debug.print("#4");
                 texture[i].clearBitmap();
+				//Debug.print("#5");
                 bmp = null;
             }
 		}
+		Debug.print("done");
 		
 		TextureManager.addToActive(this);
+		
+		Debug.print("tmadd");
 
 	}
 	

@@ -1,3 +1,19 @@
+2.1.0
+	New Features
+		* The engine now uses a new multi-threaded system. Very similar (and partly stolen) from Replica Island. This introduces a lot more flexibility
+			and some performance boosts (it was never a good idea to have everything in the UI thread, hehe). However you now need to be a bit more
+			careful about handling your own threading issues. Hopefully I will bring in some helper stuff to simplify and reduce the coding. A tutorial
+			on the new system, and techniques on using it properly, will be written prior to the release of 2.1.0
+		* Time now has two timers, one for the game thread, (getLoopTicks) and one for the render thread (getDrawTicks)
+		* Scene.onFadeEnd(DrawableObject)
+		* Scene.onMoveEnd(DimensionalObject)
+		* DimensionalObject.scaleFromCentre - scales from the centre point, speed (setSpeedX, setSpeedY) also affects this central point
+	
+	Changes
+	
+	Bug Fixes
+		* Fixed bug with DrawableObject.fade
+
 09/07/2010 2.0.3
 	New Features
 		* Drawable now has onTouch events within itself

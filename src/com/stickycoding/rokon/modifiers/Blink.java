@@ -24,8 +24,8 @@ public class Blink extends Modifier {
 	 */
 	@Override
 	public void onStart(Sprite sprite) {
-		nextFlash = Time.getTicks() + 500;
-		end = Time.getTicks() + 10000;
+		nextFlash = Time.getLoopTicks() + 500;
+		end = Time.getLoopTicks() + 10000;
 	}
 	
 	/* (non-Javadoc)
@@ -33,19 +33,19 @@ public class Blink extends Modifier {
 	 */
 	@Override
 	public void onUpdate(Sprite sprite) {
-		if(Time.getTicks() > end) {
+		if(Time.getLoopTicks() > end) {
 			sprite.setAlpha(1);
 			end();
 			return;
 		}
-		if(Time.getTicks() > nextFlash) {
+		if(Time.getLoopTicks() > nextFlash) {
 			show = !show;
 			if(show) {
 				sprite.setAlpha(1);
 			} else {
 				sprite.setAlpha(0);
 			}
-			nextFlash = Time.getTicks() + 500;
+			nextFlash = Time.getLoopTicks() + 500;
 		}
 	}
 

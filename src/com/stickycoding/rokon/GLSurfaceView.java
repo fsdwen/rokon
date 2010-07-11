@@ -1,5 +1,21 @@
 package com.stickycoding.rokon;
 
+/*
+ * Copyright (C) 2010 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import java.io.Writer;
 import java.util.ArrayList;
 
@@ -19,10 +35,13 @@ import android.util.AttributeSet;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+/**
+ * This is a custom GLSurfaceView taken from Replica Island
+ * Chris built it because he wanted to switch more reliably between Activities
+ */
+
+
 public class GLSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
-    private final static boolean LOG_THREADS = false;
-    private final static boolean LOG_SURFACE = true;
-    private final static boolean LOG_RENDERER = false;
     // Work-around for bug 2263168
     private final static boolean DRAW_TWICE_AFTER_SIZE_CHANGED = true;
     /**

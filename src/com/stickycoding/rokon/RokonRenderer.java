@@ -166,6 +166,8 @@ public class RokonRenderer implements GLSurfaceView.Renderer {
 		GLHelper.reset();
 		GLHelper.setGL(gl);
 		
+		gl.glClearColor(0, 0, 0, 1);
+		
 		gl.glHint(GL10.GL_PERSPECTIVE_CORRECTION_HINT, GL10.GL_FASTEST);
 		
 		gl.glShadeModel(GL10.GL_FLAT);

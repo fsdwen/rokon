@@ -4,6 +4,9 @@ import javax.microedition.khronos.opengles.GL10;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.Rect;
 import android.opengl.GLUtils;
 
 import com.stickycoding.rokon.vbo.ArrayVBO;
@@ -186,9 +189,21 @@ public class Texture {
 	
 	protected Bitmap getBitmap() {
         try {
-        	bmp = BitmapFactory.decodeStream(Rokon.currentActivity.getAssets().open(path));
+        	BitmapFactory.Options opts = new BitmapFactory.Options();
+        	opts.inDither = true;
+        	if(bmp != null && !bmp.isRecycled()) {
+        		bmp.recycle();
+        	}
+        	Bitmap tBmp = BitmapFactory.decodeStream(Rokon.currentActivity.getAssets().open(path), new Rect(), opts );
+        	bmp = Bitmap.createBitmap(tBmp.getWidth(), tBmp.getHeight(), Bitmap.Config.ARGB_8888);
+        	Canvas canvas = new Canvas(bmp);
+        	canvas.drawBitmap(tBmp, 0, 0, new Paint());
+        	canvas.save();
+        	tBmp.recycle();
+        	tBmp = null;
         	return bmp;
         } catch (Exception e) {
+        	e.printStackTrace();
         	Debug.error("Texture.getBitmap() error, bad asset?");
         	return null;
         }
@@ -219,8 +234,7 @@ public class Texture {
 		        
 		        bigBuffer.free();
 		        bigBuffer = null;
-	        }*/
-	        bmp.recycle();
+	        }*/	        bmp.recycle();
 	        bmp = null;
 	        System.gc();
 	        bmp = getBitmap();

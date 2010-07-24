@@ -1099,7 +1099,6 @@ public class GLSurfaceView extends SurfaceView implements SurfaceHolder.Callback
                             if (createEglSurface) {
                                 gl = (GL10) mEglHelper.createSurface(getHolder());
                                 sGLThreadManager.checkGLDriver(gl);
-                                mGL = gl;
                                 mRenderer.onSurfaceCreated(gl, mEglHelper.mEglConfig);
                                 createEglSurface = false;
                                 framesSinceResetHack = 0;
@@ -1145,7 +1144,6 @@ public class GLSurfaceView extends SurfaceView implements SurfaceHolder.Callback
                 }
                 
             } finally {
-                mGL = null;
                 /*
                  * clean-up everything...
                  */
@@ -1319,7 +1317,6 @@ public class GLSurfaceView extends SurfaceView implements SurfaceHolder.Callback
         private boolean mRequestRender;
         private boolean mRenderComplete;
         private ArrayList<Runnable> mEventQueue = new ArrayList<Runnable>();
-        private GL10 mGL;
         private boolean mHasFocus;
         private boolean mSafeMode = false;
 
@@ -1412,7 +1409,6 @@ public class GLSurfaceView extends SurfaceView implements SurfaceHolder.Callback
             if (! mGLESDriverCheckComplete) {
                 checkGLESVersion();
                 if (mGLESVersion < kGLES_20) {
-                    String renderer = gl.glGetString(GL10.GL_RENDERER);
                     mMultipleGLESContextsAllowed = false;
                     notifyAll();
                 }
@@ -1435,7 +1431,6 @@ public class GLSurfaceView extends SurfaceView implements SurfaceHolder.Callback
         private int mGLESVersion;
         private boolean mGLESDriverCheckComplete;
         private boolean mMultipleGLESContextsAllowed;
-        private int mGLContextCount;
         private static final int kGLES_20 = 0x20000;
         private GLThread mEglOwner;
 

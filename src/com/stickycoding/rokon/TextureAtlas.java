@@ -115,10 +115,10 @@ public class TextureAtlas extends Texture {
 				Debug.error("Can't find a spot on TextureAtlas?!");
 				return;
 			}
-			int textureAt = textureAt(checkX, checkY, texture);
+			int textureAt = textureAt(checkX, checkY + 1, texture);
 			if(textureAt == -1) {
 				texture.atlasX = checkX;
-				texture.atlasY = checkY;
+				texture.atlasY = checkY + 1;
 				foundSpot = true;
 			} else {
 				checkX = this.texture[textureAt].atlasX + this.texture[textureAt].width + 1;
@@ -161,7 +161,7 @@ public class TextureAtlas extends Texture {
 		}
 		
 		Debug.print("Loading TextureAtlas");
-		
+		System.gc();
 		int[] nameArray = new int[1];
 		GLHelper.enableTextures();
 		gl.glGenTextures(1, nameArray, 0);

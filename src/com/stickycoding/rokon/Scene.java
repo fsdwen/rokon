@@ -378,6 +378,8 @@ public abstract class Scene {
 		int pointerCount = Rokon.motionEvent8.getPointerCount(event);
 		for(int idx = 0; idx < pointerCount; idx++) {
 			int id = Rokon.motionEvent8.getPointerId(event, idx);
+			final float _realX = Rokon.motionEvent8.getX(event, idx);
+			final float _realY = Rokon.motionEvent8.getY(event, idx);
 			final float realX = Rokon.motionEvent8.getX(event, idx) * (RokonActivity.gameWidth / Graphics.getWidthPixels());
 			final float realY = Rokon.motionEvent8.getY(event, idx) * (RokonActivity.gameHeight / Graphics.getHeightPixels());
 			float gameX = realX;
@@ -389,31 +391,31 @@ public abstract class Scene {
 				gameY = window.getY() + (window.height * yFraction);
 			}
 			onTouch(gameX, gameY, event, pointerCount, id);
-			onTouchReal(realX, realY, event, pointerCount, id);
+			onTouchReal(_realX, _realY, event, pointerCount, id);
 			final int action = event.getAction();
 			switch(action & MotionEventWrapper8.ACTION_MASK) {
 				case MotionEvent.ACTION_DOWN:
 					onTouchDown(gameX, gameY, event, pointerCount, id);
-					onTouchDownReal(realX, realY, event, pointerCount, id);
+					onTouchDownReal(_realX, _realY, event, pointerCount, id);
 					break;
 				case MotionEvent.ACTION_UP:
 					onTouchUp(gameX, gameY, event, pointerCount, id);
-					onTouchUpReal(realX, realY, event, pointerCount, id);
+					onTouchUpReal(_realX, _realY, event, pointerCount, id);
 					break;
 				case MotionEvent.ACTION_MOVE:
 					onTouchMove(gameX, gameY, event, pointerCount, id);
-					onTouchMoveReal(realX, realY, event, pointerCount, id);
+					onTouchMoveReal(_realX, _realY, event, pointerCount, id);
 					break;
 				case MotionEventWrapper8.ACTION_POINTER_DOWN:
 					if((action & MotionEventWrapper8.ACTION_POINTER_INDEX_MASK) >> MotionEventWrapper8.ACTION_POINTER_INDEX_SHIFT == idx) {
 						onTouchDown(gameX, gameY, event, pointerCount, id);
-						onTouchDownReal(realX, realY, event, pointerCount, id);
+						onTouchDownReal(_realX, _realY, event, pointerCount, id);
 					}
 					break;
 				case MotionEventWrapper8.ACTION_POINTER_UP:
 					if((action & MotionEventWrapper8.ACTION_POINTER_INDEX_MASK) >> MotionEventWrapper8.ACTION_POINTER_INDEX_SHIFT == idx) {
 						onTouchUp(gameX, gameY, event, pointerCount, id);
-						onTouchUpReal(realX, realY, event, pointerCount, id);
+						onTouchUpReal(_realX, _realY, event, pointerCount, id);
 					}
 					break;
 			}
@@ -492,6 +494,8 @@ public abstract class Scene {
 		final int pointerCount = Rokon.motionEvent5.getPointerCount(event);
 		for(int idx = 0; idx < Rokon.motionEvent5.getPointerCount(event); idx++) {
 			int id = Rokon.motionEvent5.getPointerId(event, idx);
+			final float _realX = Rokon.motionEvent5.getX(event, idx);
+			final float _realY = Rokon.motionEvent5.getY(event, idx);
 			final float realX = Rokon.motionEvent5.getX(event, idx) * (RokonActivity.gameWidth / Graphics.getWidthPixels());
 			final float realY = Rokon.motionEvent5.getY(event, idx) * (RokonActivity.gameHeight / Graphics.getHeightPixels());
 			float gameX = realX;
@@ -503,54 +507,54 @@ public abstract class Scene {
 				gameY = window.getY() + (window.height * yFraction);
 			}
 			onTouch(gameX, gameY, event, pointerCount, id);
-			onTouchReal(realX, realY, event, pointerCount, id);
+			onTouchReal(_realX, _realY, event, pointerCount, id);
 			switch(action) {
 				case MotionEvent.ACTION_DOWN:
 					onTouchDown(gameX, gameY, event, pointerCount, id);
-					onTouchDownReal(realX, realY, event, pointerCount, id);
+					onTouchDownReal(_realX, _realY, event, pointerCount, id);
 					break;
 				case MotionEvent.ACTION_UP:
 					onTouchUp(gameX, gameY, event, pointerCount, id);
-					onTouchUpReal(realX, realY, event, pointerCount, id);
+					onTouchUpReal(_realX, _realY, event, pointerCount, id);
 					break;
 				case MotionEvent.ACTION_MOVE:
 					onTouchMove(gameX, gameY, event, pointerCount, id);
-					onTouchMoveReal(realX, realY, event, pointerCount, id);
+					onTouchMoveReal(_realX, _realY, event, pointerCount, id);
 					break;
 				case MotionEventWrapper5.ACTION_POINTER_1_DOWN:
 					if(idx == 0) {
 						onTouchDown(gameX, gameY, event, pointerCount, id);
-						onTouchDownReal(realX, realY, event, pointerCount, id);
+						onTouchDownReal(_realX, _realY, event, pointerCount, id);
 					}
 					break;
 				case MotionEventWrapper5.ACTION_POINTER_1_UP:
 					if(idx == 0) {
 						onTouchUp(gameX, gameY, event, pointerCount, id);
-						onTouchUpReal(realX, realY, event, pointerCount, id);
+						onTouchUpReal(_realX, _realY, event, pointerCount, id);
 					}
 					break;
 				case MotionEventWrapper5.ACTION_POINTER_2_DOWN:
 					if(idx == 1) {
 						onTouchDown(gameX, gameY, event, pointerCount, id);
-						onTouchDownReal(realX, realY, event, pointerCount, id);
+						onTouchDownReal(_realX, _realY, event, pointerCount, id);
 					}
 					break;
 				case MotionEventWrapper5.ACTION_POINTER_2_UP:
 					if(idx == 1) {
 						onTouchUp(gameX, gameY, event, pointerCount, id);
-						onTouchUpReal(realX, realY, event, pointerCount, id);
+						onTouchUpReal(_realX, _realY, event, pointerCount, id);
 					}
 					break;
 				case MotionEventWrapper5.ACTION_POINTER_3_DOWN:
 					if(idx == 2) {
 						onTouchDown(gameX, gameY, event, pointerCount, id);
-						onTouchDownReal(realX, realY, event, pointerCount, id);
+						onTouchDownReal(_realX, _realY, event, pointerCount, id);
 					}
 					break;
 				case MotionEventWrapper5.ACTION_POINTER_3_UP:
 					if(idx == 2) {
 						onTouchUp(gameX, gameY, event, pointerCount, id);
-						onTouchUpReal(realX, realY, event, pointerCount, id);
+						onTouchUpReal(_realX, _realY, event, pointerCount, id);
 					}
 					break;
 			}
@@ -670,6 +674,8 @@ public abstract class Scene {
 			handleMultiTouch(event);
 			return;
 		}
+		final float _realX = event.getX();
+		final float _realY = event.getY();
 		final float realX = event.getX() * (RokonActivity.gameWidth / Graphics.getWidthPixels());
 		final float realY = event.getY() * (RokonActivity.gameHeight / Graphics.getHeightPixels());
 		float gameX = realX;
@@ -681,20 +687,20 @@ public abstract class Scene {
 			gameY = window.getY() + (window.height * yFraction);
 		}
 		onTouch(gameX, gameY, event, 1, 0);
-		onTouchReal(realX, realY, event, 1, 0);
+		onTouchReal(_realX, _realY, event, 1, 0);
 		final int action = event.getAction();
 		switch(action) {
 			case MotionEvent.ACTION_DOWN:
 				onTouchDown(gameX, gameY, event, 1, 0);
-				onTouchDownReal(realX, realY, event, 1, 0);
+				onTouchDownReal(_realX, _realY, event, 1, 0);
 				break;
 			case MotionEvent.ACTION_UP:
 				onTouchUp(gameX, gameY, event, 1, 0);
-				onTouchUpReal(realX, realY, event, 1, 0);
+				onTouchUpReal(_realX, _realY, event, 1, 0);
 				break;
 			case MotionEvent.ACTION_MOVE:
 				onTouchMove(gameX, gameY, event, 1, 0);
-				onTouchMoveReal(realX, realY, event, 1, 0);
+				onTouchMoveReal(_realX, _realY, event, 1, 0);
 				break;
 		}
 		for(int i = 0; i < layerCount; i++) {

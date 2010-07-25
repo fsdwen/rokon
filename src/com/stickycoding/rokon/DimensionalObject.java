@@ -334,6 +334,15 @@ public class DimensionalObject extends Point {
 		scaleFromCentre = true;
 		moving = true;
 	}
+	
+	/**
+	 * Determines whether the DimensionalObject is moving/scaling
+	 * 
+	 * @return TRUE if moving/scale, FALSE otherwise
+	 */
+	public boolean isMoving() {
+		return moving;
+	}
 
 	
 	public void stopMove() {

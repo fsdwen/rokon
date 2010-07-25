@@ -52,6 +52,15 @@ public class DrawableObject extends BasicGameObject implements Drawable, Updatea
 	}
 	
 	/**
+	 * Determines whether the DrawableObject is fading through fade()
+	 * 
+	 * @return TRUE if fading, FALSE otherwise
+	 */
+	public boolean isFading() {
+		return isFading;
+	}
+	
+	/**
 	 * Determines whether this DrawableObject is using VBOs
 	 * 
 	 * @return TRUE if using VBO, FALSE otherwise
@@ -403,9 +412,31 @@ public class DrawableObject extends BasicGameObject implements Drawable, Updatea
 				return true;
 			}
 		} else {
-			if (getX() - (maxSize / 2) < parentScene.window.getX() + parentScene.window.width && getX() + maxSize + (maxSize / 2) > parentScene.window.getX() && getY() - (maxSize / 2) < parentScene.window.height + parentScene.window.getY() && getY() + maxSize + (maxSize / 2) > parentScene.window.getY()) {
+			boolean validY = false;
+			boolean validX = false;
+			if(parentScene.window.height < 0) {
+				if(getY() - (maxSize / 2) < parentScene.window.getY() && getY() + maxSize + (maxSize / 2) > parentScene.window.height + parentScene.window.getY()) {
+					validY = true;
+				}
+			} else {
+				if(getY() - (maxSize / 2) < parentScene.window.height + parentScene.window.getY() && getY() + maxSize + (maxSize / 2) > parentScene.window.getY()) {
+					validY = true;
+				}
+			}
+			if(parentScene.window.width < 0) {
+				if(getX() - (maxSize / 2) < parentScene.window.getX() && getX() + maxSize + (maxSize / 2) > parentScene.window.width + parentScene.window.getX()) {
+					validX = true;
+				}
+			} else {
+				if(getX() - (maxSize / 2) < parentScene.window.getX() + parentScene.window.width && getX() + maxSize + (maxSize / 2) > parentScene.window.getX()) {
+					validX = true;
+				}
+			}
+				
+			if (validX && validY) {
 				return true;
 			}
+			return validX && validY;
 		}
 		return false;
 	}
@@ -557,6 +588,7 @@ public class DrawableObject extends BasicGameObject implements Drawable, Updatea
 		animationLastTicks = Time.loopTicks;
 		animationFrameTicks = frameTime;
 		customAnimationSequence = animationTiles;
+		animationCustomPosition = -1;
 		animated = true;
 	}
 	

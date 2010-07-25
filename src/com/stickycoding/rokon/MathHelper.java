@@ -79,7 +79,7 @@ public class MathHelper {
 	 */
 	public static boolean intersects(Sprite sprite1, Sprite sprite2) {
 		if(sprite1.polygon == Rokon.rectangle && sprite2.polygon == Rokon.rectangle && sprite1.rotation == 0 && sprite2.rotation == 0) {
-			return rectOverlap(sprite1.getX(), sprite1.getY(), sprite1.getX() + sprite1.getWidth(), sprite1.getX() + sprite1.getHeight(), sprite2.getX(), sprite2.getY(), sprite2.getX() + sprite2.getWidth(), sprite2.getY() + sprite2.getHeight());
+			return rectOverlap(sprite1.getX(), sprite1.getY(), sprite1.getX() + sprite1.getWidth(), sprite1.getY() + sprite1.getHeight(), sprite2.getX(), sprite2.getY(), sprite2.getX() + sprite2.getWidth(), sprite2.getY() + sprite2.getHeight());
 		}
 		
 		float dotProduct = 0;

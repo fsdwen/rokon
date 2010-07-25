@@ -115,13 +115,13 @@ public class TextureAtlas extends Texture {
 				Debug.error("Can't find a spot on TextureAtlas?!");
 				return;
 			}
-			int textureAt = textureAt(checkX, checkY + 1, texture);
+			int textureAt = textureAt(checkX, checkY, texture);
 			if(textureAt == -1) {
-				texture.atlasX = checkX;
+				texture.atlasX = checkX + 1;
 				texture.atlasY = checkY + 1;
 				foundSpot = true;
 			} else {
-				checkX = this.texture[textureAt].atlasX + this.texture[textureAt].width + 1;
+				checkX = this.texture[textureAt].atlasX + this.texture[textureAt].width;
 				if(checkX + texture.width > atlasWidth) {
 					checkX = 0;
 					checkY += 16;
@@ -133,7 +133,7 @@ public class TextureAtlas extends Texture {
 	private int textureAt(int x, int y, Texture skip) {
 		for(int i = 0; i < maxTextureCount; i++) {
 			if(this.texture[i] != null && this.texture[i] != skip) {
-				if(MathHelper.rectOverlap(x, y, x + skip.width, y + skip.width, texture[i].atlasX, texture[i].atlasY, texture[i].atlasX + texture[i].width, texture[i].atlasY + texture[i].height)) {
+				if(MathHelper.rectOverlap(x, y, x + skip.width + 2, y + skip.width + 2, texture[i].atlasX, texture[i].atlasY, texture[i].atlasX + texture[i].width, texture[i].atlasY + texture[i].height)) {
 					return i;
 				}
 			}

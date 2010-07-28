@@ -22,9 +22,9 @@ public class TextureManager {
 	public static void reloadTextures(GL10 gl) {
 		Debug.print("reloadTextures()");
 		for(int i = 0; i < MAX_TEXTURE_COUNT; i++) {
-			if(activeTexture[i] != null && activeTexture[i].textureIndex == -1) {
+			if(activeTexture[i] != null && activeTexture[i].getTextureIndex() == -1) {
 				activeTexture[i].onLoadTexture(gl);
-				Debug.print(" - Loading [" + i + "] to " + activeTexture[i].textureIndex);
+				Debug.print(" - Loading [" + i + "] to " + activeTexture[i].getTextureIndex());
 				//activeTexture[i] = null;
 				//activeTextureCount--;
 			}
@@ -51,7 +51,7 @@ public class TextureManager {
 		if(isActive(textureId)) {
 			return;
 		}
-		Debug.error("  addToActive(" + textureId.textureIndex + ")");
+		Debug.error("  addToActive(" + textureId.getTextureIndex() + ")");
 		for(int i = 0 ; i < MAX_TEXTURE_COUNT; i++) {
 			if(activeTexture[i] == null) {
 				activeTexture[i] = textureId;

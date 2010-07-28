@@ -16,7 +16,7 @@ public class MotionEventWrapper8 {
 		} catch (Exception e) {
 			Debug.print("MOTIONEVENT 8 NOT FOUND");
 			e.printStackTrace();
-			throw new RuntimeException(e);
+			//throw new RuntimeException(e);
 		}
 	}
 	

@@ -23,20 +23,41 @@ import com.stickycoding.rokon.vbo.VBO;
 public class Texture {
 	
 	protected TextureAtlas parentAtlas;
-	protected int atlasX, atlasY;
+	protected int atlasX, atlasY, atlasIndex;
 	protected Bitmap bmp;
 	
 	protected int textureWidth, textureHeight;
 	protected int width, height, columns, rows, tileCount;
 	protected String path;
 	protected BufferObject[] buffer;
-	protected int textureIndex = -1;
+	private int textureIndex = -1;
 	
 	protected ArrayVBO[] vbo;
 	
+	protected boolean reload = false;
+	
 	protected void setUnloaded() {
+		reload = false;
 		textureIndex = -1;
-		if(parentAtlas != null && parentAtlas.textureIndex != -1) parentAtlas.setUnloaded();
+		if(parentAtlas != null && parentAtlas.getTextureIndex() != -1) parentAtlas.setUnloaded();
+	}
+	
+	public void reload() {
+		this.reload = true;
+		if(parentAtlas != null) parentAtlas.reload = true;
+	}
+	
+	protected void setReloaded() {
+		this.reload = false;
+		if(parentAtlas != null) parentAtlas.setReloaded();
+	}
+	
+	public boolean isReload() {
+		return reload;
+	}
+	
+	protected void setTextureIndex(int index) {
+		textureIndex = index;
 	}
 	
 	/**
@@ -210,43 +231,56 @@ public class Texture {
 	}
 	
 	protected void onLoadTexture(GL10 gl) {
-		if(parentAtlas == null) {
-			prepareBuffers();
-			int[] nameArray = new int[1];
-			GLHelper.enableTextures();
-			gl.glGenTextures(1, nameArray, 0);
-			textureIndex = nameArray[0];
-			GLHelper.bindTexture(textureIndex);
-			Bitmap bmp = Bitmap.createBitmap(textureWidth, textureHeight, Bitmap.Config.ARGB_8888);
-			GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, bmp, 0);
-	        gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_LINEAR);
-	        gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER, GL10.GL_LINEAR);
-	        gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S, GL10.GL_CLAMP_TO_EDGE);
-	        gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T, GL10.GL_CLAMP_TO_EDGE);
-	        gl.glTexEnvf(GL10.GL_TEXTURE_ENV, GL10.GL_TEXTURE_ENV_MODE, GL10.GL_MODULATE);	
-	        /*if(tileCount == 1) {
-	            gl.glTexSubImage2D(GL10.GL_TEXTURE_2D, 0, 0, 0, width, height, GL10.GL_RGBA, GL10.GL_UNSIGNED_BYTE, buffer[0].get());
-	        } else {
-	            BufferObject bigBuffer;
-	            
-	        	bigBuffer = new BufferObject(new float[] { 0, 0, (float)(width / textureWidth), (float)(height / (float)textureHeight) });
-				gl.glTexImage2D(GL10.GL_TEXTURE_2D, 0, 0, 0, width, height, GL10.GL_RGBA, GL10.GL_UNSIGNED_BYTE, bigBuffer.get());
-		        
-		        bigBuffer.free();
-		        bigBuffer = null;
-	        }*/	        bmp.recycle();
-	        bmp = null;
-	        System.gc();
-	        bmp = getBitmap();
-	        GLUtils.texSubImage2D(GL10.GL_TEXTURE_2D, 0, 0, 0, bmp);
-	        clearBitmap();
-	        bmp = null;
-			TextureManager.addToActive(this);
+		if(!reload) {
+			if(parentAtlas == null) {
+				prepareBuffers();
+				int[] nameArray = new int[1];
+				GLHelper.enableTextures();
+				gl.glGenTextures(1, nameArray, 0);
+				textureIndex = nameArray[0];
+				GLHelper.bindTexture(textureIndex);
+				Bitmap bmp = Bitmap.createBitmap(textureWidth, textureHeight, Bitmap.Config.ARGB_8888);
+				GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, bmp, 0);
+		        gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_LINEAR);
+		        gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER, GL10.GL_LINEAR);
+		        gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S, GL10.GL_CLAMP_TO_EDGE);
+		        gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T, GL10.GL_CLAMP_TO_EDGE);
+		        gl.glTexEnvf(GL10.GL_TEXTURE_ENV, GL10.GL_TEXTURE_ENV_MODE, GL10.GL_MODULATE);
+		        bmp.recycle();
+		        bmp = null;
+		        System.gc();
+		        bmp = getBitmap();
+		        GLUtils.texSubImage2D(GL10.GL_TEXTURE_2D, 0, 0, 0, bmp);
+		        clearBitmap();
+		        bmp = null;
+				TextureManager.addToActive(this);
+			} else {
+				parentAtlas.onLoadTexture(gl);
+				TextureManager.addToActive(this);
+			}
 		} else {
-			parentAtlas.onLoadTexture(gl);
-			TextureManager.addToActive(this);
-		}
-		
+			if(parentAtlas == null) {
+				GLHelper.bindTexture(textureIndex);
+				Bitmap bmp = Bitmap.createBitmap(textureWidth, textureHeight, Bitmap.Config.ARGB_8888);
+				GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, bmp, 0);
+		        gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_LINEAR);
+		        gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER, GL10.GL_LINEAR);
+		        gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S, GL10.GL_CLAMP_TO_EDGE);
+		        gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T, GL10.GL_CLAMP_TO_EDGE);
+		        gl.glTexEnvf(GL10.GL_TEXTURE_ENV, GL10.GL_TEXTURE_ENV_MODE, GL10.GL_MODULATE);
+		        bmp.recycle();
+		        bmp = null;
+		        System.gc();
+		        bmp = getBitmap();
+		        GLUtils.texSubImage2D(GL10.GL_TEXTURE_2D, 0, 0, 0, bmp);
+		        clearBitmap();
+		        bmp = null;
+				TextureManager.addToActive(this);
+			} else {
+				parentAtlas.onLoadTexture(gl);
+				TextureManager.addToActive(this);
+			}
+		}		
 	}
 	
 	protected void clearBitmap() {

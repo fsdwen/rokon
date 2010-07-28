@@ -996,8 +996,13 @@ public abstract class Scene {
 	}
 	
 	protected void render() {
-		for(int i = 0; i < layerCount; i++) {
-			layer[i].render();
+		// TODO Very rare crashes, when modifying Body, for now we try/catch ...
+		try {
+			for(int i = 0; i < layerCount; i++) {
+				layer[i].render();
+			}
+		} catch (Exception e) { 
+			
 		}
 	}
 	

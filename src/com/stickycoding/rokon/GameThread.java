@@ -12,7 +12,7 @@ import android.view.MotionEvent;
  */
 public class GameThread implements Runnable {
 	
-	protected static final int MAX_TRIGGERS = 16; //This should be fine for now, any more and the game must be being very unresponsive anyway
+	protected static final int MAX_TRIGGERS = 32; //This should be fine for now, any more and the game must be being very unresponsive anyway
 	
 	private static boolean finished = false, pauseGame = false;
 	

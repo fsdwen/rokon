@@ -12,7 +12,7 @@ import android.util.Log;
 public class Debug {
 	
 	private static String tag = "Rokon";
-	protected static boolean debugMode = true;
+	protected static boolean debugMode = false;
 	
 	public static String getDebugTag() {
 		return tag;

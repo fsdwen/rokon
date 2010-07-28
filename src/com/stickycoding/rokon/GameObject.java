@@ -56,7 +56,7 @@ public class GameObject extends DrawableObject {
 		isOnScene = true;
 		parentScene = layer.parentScene;
 		parentLayer = layer;
-		if(texture != null && texture.textureIndex == -1) {
+		if(texture != null && texture.getTextureIndex() == -1) {
 			if(layer.parentScene != null) {
 				if(Rokon.verbose) Debug.verbose("DrawableObject.onAdd", "Scene does not already contain the this objects Texture, adding automatically.");
 			}

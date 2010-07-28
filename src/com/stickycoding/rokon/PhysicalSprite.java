@@ -349,7 +349,7 @@ public class PhysicalSprite extends Sprite implements Updateable {
 		if(usePhysics) {
 			setX(body.getPosition().x - width / 2);
 			setY(body.getPosition().y - height / 2);
-			rotation = body.getAngle() * MathHelper.RAD_TO_DEG;
+			rotation = (body.getAngle() * MathHelper.RAD_TO_DEG) % 360;
 		}
 	}
 	

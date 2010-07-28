@@ -28,7 +28,7 @@ package com.stickycoding.rokon;
 
 public class ObjectManager extends BaseObject {
 	
-    protected static final int DEFAULT_ARRAY_SIZE = 64;
+    protected static final int DEFAULT_ARRAY_SIZE = 128;
 
     private FixedSizeArray<BaseObject> mObjects;
     private FixedSizeArray<BaseObject> mPendingAdditions;

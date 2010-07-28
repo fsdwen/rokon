@@ -186,7 +186,7 @@ public class GLHelper {
 	 */
 	public static void bindTexture(Texture texture) {
 		checkTextureValid(texture);
-		bindTexture(texture.textureIndex);
+		bindTexture(texture.getTextureIndex());
 	}
 	
 	/**
@@ -196,16 +196,25 @@ public class GLHelper {
 	 * @param texture valid Texture object
 	 */
 	public static void checkTextureValid(Texture texture) {
-		if(texture.textureIndex == -1 && texture.parentAtlas == null) {
+		if(texture.getTextureIndex() == -1 && texture.parentAtlas == null) {
 			Debug.print("checkTextureValid - load self");
 			texture.onLoadTexture(gl);
-			Debug.print("we're at " + texture.textureIndex);
+			Debug.print("we're at " + texture.getTextureIndex());
 		} else {
-			if(texture.textureIndex == -1) {
+			if(texture.getTextureIndex() == -1) {
 				Debug.print("checkTextureValid - load parent");
 				texture.parentAtlas.onLoadTexture(gl);
-				Debug.print("we're at " + texture.textureIndex);
+				Debug.print("we're at " + texture.getTextureIndex());
 			}
+		}
+		if(texture.reload) {
+			if(texture.parentAtlas == null) {
+				texture.onLoadTexture(gl);
+			} else {
+				texture.parentAtlas.onLoadTexture(gl);
+			}
+			
+			texture.setReloaded();
 		}
 	}
 	
@@ -543,7 +552,7 @@ public class GLHelper {
     public static void removeTextures(Texture[] texture) {
     	for(int i = 0; i < texture.length; i++) {
     		if(texture[i] != null) {
-    			int[] textureId = new int[] { texture[i].textureIndex };
+    			int[] textureId = new int[] { texture[i].getTextureIndex() };
     	    	gl.glDeleteTextures(1, textureId, 0);
     		}
     	}

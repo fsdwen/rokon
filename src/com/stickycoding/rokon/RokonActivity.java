@@ -214,8 +214,8 @@ public class RokonActivity extends Activity {
 		} catch (VerifyError e) { }		
 		if(engineCreated) {
 			Debug.print("onCreate() when already started, creating new GLSurfaceView");
-			//surfaceView = new RokonSurfaceView(this);
-			//setContentView(surfaceView);
+			surfaceView = new RokonSurfaceView(this);
+			setContentView(surfaceView);
 			return;
 		}
 		Debug.print("Engine Activity created");

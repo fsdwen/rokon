@@ -1,5 +1,7 @@
 package com.stickycoding.rokon;
 
+import com.stickycoding.rokon.device.OS;
+
 import android.os.SystemClock;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -21,7 +23,8 @@ public class GameThread implements Runnable {
 	
 	private static MotionTrigger[] motionTrigger;
 	private static KeyTrigger[] keyTrigger;
-	protected static boolean hasMotionTrigger, hasKeyTrigger;
+	protected static int motionTriggerCount;
+	protected static boolean hasKeyTrigger;
 	
 	private long lastTime;
 	
@@ -30,24 +33,50 @@ public class GameThread implements Runnable {
 	public static Object runnableLock = new Object();
 	
 	protected class MotionTrigger {
-		protected boolean isNull;
-		protected MotionEvent motionEvent;
+		public static final int MAX_POINTERS = 3;
+		
 		protected boolean isTouch;
 		
+		protected float[] x, y;
+		protected int[] pointerId;
+		protected int action;
+		protected int pointerCount;
+		
 		protected MotionTrigger() {
-			isNull = true;
+			x = new float[MAX_POINTERS];
+			y = new float[MAX_POINTERS];
+			pointerId = new int[MAX_POINTERS];
 		}
 		
 		protected void set(MotionEvent event, boolean isTouch) {
-			this.motionEvent = event;
+			if(OS.API_LEVEL >= 5) {
+				if(OS.API_LEVEL >= 8) {
+					action = event.getAction();
+					pointerCount = Rokon.motionEvent8.getPointerCount(event);
+					for(int i = 0; i < pointerCount; i++) {
+						pointerId[i] = Rokon.motionEvent8.getPointerId(event, i);
+						x[i] = Rokon.motionEvent8.getX(event, i);
+						y[i] = Rokon.motionEvent8.getY(event, i);
+					}
+				} else {
+					action = event.getAction();
+					pointerCount = Rokon.motionEvent5.getPointerCount(event);
+					for(int i = 0; i < pointerCount; i++) {
+						pointerId[i] = Rokon.motionEvent5.getPointerId(event, i);
+						x[i] = Rokon.motionEvent5.getX(event, i);
+						y[i] = Rokon.motionEvent5.getY(event, i);
+					}
+				}
+			} else {
+				// No multitouch, life is simple
+				x[0] = event.getX();
+				y[0] = event.getY();
+				action = event.getAction();
+				pointerCount = motionTriggerCount++;
+			}
 			this.isTouch = isTouch;
-			isNull = false;
 		}
 		
-		protected void reset() {
-			isNull = true;
-			motionEvent = null;
-		}
 	}
 	
 	protected class KeyTrigger {
@@ -79,7 +108,6 @@ public class GameThread implements Runnable {
 		finished = false;
 		pauseGame = false;
 		hasRunnable = false;
-		hasMotionTrigger = false;
 		hasKeyTrigger = false;
 		motionTrigger = new MotionTrigger[MAX_TRIGGERS];
 		keyTrigger = new KeyTrigger[MAX_TRIGGERS];
@@ -119,18 +147,15 @@ public class GameThread implements Runnable {
 					
 					// Then see if there's any new input
 					synchronized (inputLock) {
-						if(hasMotionTrigger) {
-							for(int i = 0; i < MAX_TRIGGERS; i++) {
-								if(!motionTrigger[i].isNull) {
-									if(motionTrigger[i].isTouch) {
-										scene.handleTouch(motionTrigger[i].motionEvent);
-									} else {
-										scene.onTrackballEvent(motionTrigger[i].motionEvent);
-									}
-									motionTrigger[i].reset();
+						if(motionTriggerCount > 0) {
+							for(int i = 0; i < motionTriggerCount; i++) {
+								if(motionTrigger[i].isTouch) {
+									scene.handleTouch(motionTrigger[i].x, motionTrigger[i].y, motionTrigger[i].action, motionTrigger[i].pointerCount, motionTrigger[i].pointerId);
+								} else {
+									scene.onTrackballEvent(motionTrigger[i].x[0], motionTrigger[i].y[0], motionTrigger[i].action);
 								}
 							}
-							hasMotionTrigger = false;
+							motionTriggerCount = 0;
 						}
 						if(hasKeyTrigger) {
 							for(int i = 0; i < MAX_TRIGGERS; i++) {
@@ -222,14 +247,12 @@ public class GameThread implements Runnable {
 	
 	public static void motionInput(boolean touch, MotionEvent event) {
 		synchronized (inputLock) {
-			for(int i = 0; i < MAX_TRIGGERS; i++) {
-				if(motionTrigger[i].isNull) {
-					motionTrigger[i].set(event, touch);
-					hasMotionTrigger = true;
-					return;
-				}
+			if(motionTriggerCount < MAX_TRIGGERS) {
+				motionTrigger[motionTriggerCount].set(event, touch);
+				motionTriggerCount++;
+			} else {
+				Debug.warning("MotionInput queue is full, what's going on? Either I'm broken, or you need to buy a new phone");
 			}
-			Debug.warning("Motion queue is full, what's going on?");
 		}
 	}
 	

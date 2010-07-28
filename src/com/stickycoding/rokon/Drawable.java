@@ -98,40 +98,40 @@ public abstract interface Drawable {
 	 * 
 	 * @param x x coordinate (in game terms)
 	 * @param y y coordinate (in game terms)
-	 * @param event the MotionEvent associated with the touch
+	 * @param action the MotionEvents getAction() associated with the touch
 	 * @param pointerId id of the pointer, always 0 if no multitouch present
 	 */
-	void onTouchDown(float x, float y, MotionEvent event, int pointerCount, int pointerId);
+	void onTouchDown(float x, float y, int action, int pointerCount, int pointerId);
 
 	/**
 	 * Triggered when a touch is released on this Drawable
 	 * 
 	 * @param x x coordinate (in game terms)
 	 * @param y y coordinate (in game terms)
-	 * @param event the MotionEvent associated with the touch
+	 * @param action the MotionEvents getAction() associated with the touch
 	 * @param pointerId id of the pointer, always 0 if no multitouch present
 	 */
-	void onTouchUp(float x, float y, MotionEvent event, int pointerCount, int pointerId);
+	void onTouchUp(float x, float y, int action, int pointerCount, int pointerId);
 
 	/**
 	 * Triggered on all touch events on the Drawable
 	 * 
 	 * @param x x coordinate (in game terms)
 	 * @param y y coordinate (in game terms)
-	 * @param event the MotionEvent associated with the touch
+	 * @param action the MotionEvents getAction() associated with the touch
 	 * @param pointerId id of the pointer, always 0 if no multitouch present
 	 */
-	void onTouch(float x, float y, MotionEvent event, int pointerCount, int pointerId);
+	void onTouch(float x, float y, int action, int pointerCount, int pointerId);
 	
 	/**
 	 * Triggered when a touch is moved on this Drawable
 	 * 
 	 * @param x x coordinate (in game terms)
 	 * @param y y coordinate (in game terms)
-	 * @param event the MotionEvent associated with the touch
+	 * @param action the MotionEvents getAction() associated with the touch
 	 * @param pointerId id of the pointer, always 0 if no multitouch present
 	 */
-	void onTouchMove(float x, float y, MotionEvent event, int pointerCount, int pointerId);
+	void onTouchMove(float x, float y, int action, int pointerCount, int pointerId);
 	
 	/**
 	 * Fetches the Z order of the Drawable

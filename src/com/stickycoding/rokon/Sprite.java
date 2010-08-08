@@ -221,13 +221,13 @@ public class Sprite extends GameObject implements Updateable {
 	 * Sets the velocity of the DynamicObject
 	 * 
 	 * @param velocity positive or negative floating point
-	 * @param angle relative to north, in radians
+	 * @param angle relative to north, in degrees
 	 */
 	public void setVelocity(float velocity, float angle) {
 		this.velocity = velocity;
 		this.velocityAngle = angle;
-		this.velocityXFactor = (float)Math.sin(angle);
-		this.velocityYFactor = (float)Math.cos(angle);
+		this.velocityXFactor = (float)Math.sin(angle * MathHelper.DEG_TO_RAD);
+		this.velocityYFactor = (float)Math.cos(angle * MathHelper.DEG_TO_RAD);
 	}
 	
 	/**
@@ -270,13 +270,13 @@ public class Sprite extends GameObject implements Updateable {
 	 * Accelerates along a given angle
 	 * 
 	 * @param acceleration magnitude of acceleration
-	 * @param angle relative to north, in radians
+	 * @param angle relative to north, in degrees
 	 */
 	public void accelerate(float acceleration, float angle) {
 		this.acceleration = acceleration;
 		this.velocityAngle = angle;
-		this.velocityXFactor = (float)Math.sin(angle);
-		this.velocityYFactor = (float)Math.cos(angle);
+		this.velocityXFactor = (float)Math.sin(angle * MathHelper.DEG_TO_RAD);
+		this.velocityYFactor = (float)Math.cos(angle * MathHelper.DEG_TO_RAD);
 	}
 	
 	/**

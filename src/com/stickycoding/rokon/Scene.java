@@ -391,34 +391,6 @@ public abstract class Scene {
 				gameX = window.getX() + (window.width * xFraction);
 				gameY = window.getY() + (window.height * yFraction);
 			}
-			onTouch(gameX, gameY, action, pointerCount, id);
-			onTouchReal(_realX, _realY, action, pointerCount, id);
-			switch(action & MotionEventWrapper8.ACTION_MASK) {
-				case MotionEvent.ACTION_DOWN:
-					onTouchDown(gameX, gameY, action, pointerCount, id);
-					onTouchDownReal(_realX, _realY, action, pointerCount, id);
-					break;
-				case MotionEvent.ACTION_UP:
-					onTouchUp(gameX, gameY, action, pointerCount, id);
-					onTouchUpReal(_realX, _realY, action, pointerCount, id);
-					break;
-				case MotionEvent.ACTION_MOVE:
-					onTouchMove(gameX, gameY, action, pointerCount, id);
-					onTouchMoveReal(_realX, _realY, action, pointerCount, id);
-					break;
-				case MotionEventWrapper8.ACTION_POINTER_DOWN:
-					if((action & MotionEventWrapper8.ACTION_POINTER_INDEX_MASK) >> MotionEventWrapper8.ACTION_POINTER_INDEX_SHIFT == idx) {
-						onTouchDown(gameX, gameY, action, pointerCount, id);
-						onTouchDownReal(_realX, _realY, action, pointerCount, id);
-					}
-					break;
-				case MotionEventWrapper8.ACTION_POINTER_UP:
-					if((action & MotionEventWrapper8.ACTION_POINTER_INDEX_MASK) >> MotionEventWrapper8.ACTION_POINTER_INDEX_SHIFT == idx) {
-						onTouchUp(gameX, gameY, action, pointerCount, id);
-						onTouchUpReal(_realX, _realY, action, pointerCount, id);
-					}
-					break;
-			}
 			for(int i = 0; i < layerCount; i++) {
 				for(int j = 0; j < layer[i].maximumDrawableObjects; j++) {
 					float checkX, checkY;
@@ -486,6 +458,35 @@ public abstract class Scene {
 					}
 				}
 			}
+			onTouch(gameX, gameY, action, pointerCount, id);
+			onTouchReal(_realX, _realY, action, pointerCount, id);
+			switch(action & MotionEventWrapper8.ACTION_MASK) {
+				case MotionEvent.ACTION_DOWN:
+					onTouchDown(gameX, gameY, action, pointerCount, id);
+					onTouchDownReal(_realX, _realY, action, pointerCount, id);
+					break;
+				case MotionEvent.ACTION_UP:
+					onTouchUp(gameX, gameY, action, pointerCount, id);
+					onTouchUpReal(_realX, _realY, action, pointerCount, id);
+					break;
+				case MotionEvent.ACTION_MOVE:
+					onTouchMove(gameX, gameY, action, pointerCount, id);
+					onTouchMoveReal(_realX, _realY, action, pointerCount, id);
+					break;
+				case MotionEventWrapper8.ACTION_POINTER_DOWN:
+					if((action & MotionEventWrapper8.ACTION_POINTER_INDEX_MASK) >> MotionEventWrapper8.ACTION_POINTER_INDEX_SHIFT == idx) {
+						onTouchDown(gameX, gameY, action, pointerCount, id);
+						onTouchDownReal(_realX, _realY, action, pointerCount, id);
+					}
+					break;
+				case MotionEventWrapper8.ACTION_POINTER_UP:
+					if((action & MotionEventWrapper8.ACTION_POINTER_INDEX_MASK) >> MotionEventWrapper8.ACTION_POINTER_INDEX_SHIFT == idx) {
+						onTouchUp(gameX, gameY, action, pointerCount, id);
+						onTouchUpReal(_realX, _realY, action, pointerCount, id);
+					}
+					break;
+			}
+			
 		}
 	}
 	
@@ -503,58 +504,6 @@ public abstract class Scene {
 				float yFraction = y[idx] / Graphics.getHeightPixels();
 				gameX = window.getX() + (window.width * xFraction);
 				gameY = window.getY() + (window.height * yFraction);
-			}
-			onTouch(gameX, gameY, action, pointerCount, id);
-			onTouchReal(_realX, _realY, action, pointerCount, id);
-			switch(action) {
-				case MotionEvent.ACTION_DOWN:
-					onTouchDown(gameX, gameY, action, pointerCount, id);
-					onTouchDownReal(_realX, _realY, action, pointerCount, id);
-					break;
-				case MotionEvent.ACTION_UP:
-					onTouchUp(gameX, gameY, action, pointerCount, id);
-					onTouchUpReal(_realX, _realY, action, pointerCount, id);
-					break;
-				case MotionEvent.ACTION_MOVE:
-					onTouchMove(gameX, gameY, action, pointerCount, id);
-					onTouchMoveReal(_realX, _realY, action, pointerCount, id);
-					break;
-				case MotionEventWrapper5.ACTION_POINTER_1_DOWN:
-					if(idx == 0) {
-						onTouchDown(gameX, gameY, action, pointerCount, id);
-						onTouchDownReal(_realX, _realY, action, pointerCount, id);
-					}
-					break;
-				case MotionEventWrapper5.ACTION_POINTER_1_UP:
-					if(idx == 0) {
-						onTouchUp(gameX, gameY, action, pointerCount, id);
-						onTouchUpReal(_realX, _realY, action, pointerCount, id);
-					}
-					break;
-				case MotionEventWrapper5.ACTION_POINTER_2_DOWN:
-					if(idx == 1) {
-						onTouchDown(gameX, gameY, action, pointerCount, id);
-						onTouchDownReal(_realX, _realY, action, pointerCount, id);
-					}
-					break;
-				case MotionEventWrapper5.ACTION_POINTER_2_UP:
-					if(idx == 1) {
-						onTouchUp(gameX, gameY, action, pointerCount, id);
-						onTouchUpReal(_realX, _realY, action, pointerCount, id);
-					}
-					break;
-				case MotionEventWrapper5.ACTION_POINTER_3_DOWN:
-					if(idx == 2) {
-						onTouchDown(gameX, gameY, action, pointerCount, id);
-						onTouchDownReal(_realX, _realY, action, pointerCount, id);
-					}
-					break;
-				case MotionEventWrapper5.ACTION_POINTER_3_UP:
-					if(idx == 2) {
-						onTouchUp(gameX, gameY, action, pointerCount, id);
-						onTouchUpReal(_realX, _realY, action, pointerCount, id);
-					}
-					break;
 			}
 			for(int i = 0; i < layerCount; i++) {
 				for(int j = 0; j < layer[i].maximumDrawableObjects; j++) {
@@ -660,6 +609,60 @@ public abstract class Scene {
 					}
 				}
 			}
+			
+			onTouch(gameX, gameY, action, pointerCount, id);
+			onTouchReal(_realX, _realY, action, pointerCount, id);
+			switch(action) {
+				case MotionEvent.ACTION_DOWN:
+					onTouchDown(gameX, gameY, action, pointerCount, id);
+					onTouchDownReal(_realX, _realY, action, pointerCount, id);
+					break;
+				case MotionEvent.ACTION_UP:
+					onTouchUp(gameX, gameY, action, pointerCount, id);
+					onTouchUpReal(_realX, _realY, action, pointerCount, id);
+					break;
+				case MotionEvent.ACTION_MOVE:
+					onTouchMove(gameX, gameY, action, pointerCount, id);
+					onTouchMoveReal(_realX, _realY, action, pointerCount, id);
+					break;
+				case MotionEventWrapper5.ACTION_POINTER_1_DOWN:
+					if(idx == 0) {
+						onTouchDown(gameX, gameY, action, pointerCount, id);
+						onTouchDownReal(_realX, _realY, action, pointerCount, id);
+					}
+					break;
+				case MotionEventWrapper5.ACTION_POINTER_1_UP:
+					if(idx == 0) {
+						onTouchUp(gameX, gameY, action, pointerCount, id);
+						onTouchUpReal(_realX, _realY, action, pointerCount, id);
+					}
+					break;
+				case MotionEventWrapper5.ACTION_POINTER_2_DOWN:
+					if(idx == 1) {
+						onTouchDown(gameX, gameY, action, pointerCount, id);
+						onTouchDownReal(_realX, _realY, action, pointerCount, id);
+					}
+					break;
+				case MotionEventWrapper5.ACTION_POINTER_2_UP:
+					if(idx == 1) {
+						onTouchUp(gameX, gameY, action, pointerCount, id);
+						onTouchUpReal(_realX, _realY, action, pointerCount, id);
+					}
+					break;
+				case MotionEventWrapper5.ACTION_POINTER_3_DOWN:
+					if(idx == 2) {
+						onTouchDown(gameX, gameY, action, pointerCount, id);
+						onTouchDownReal(_realX, _realY, action, pointerCount, id);
+					}
+					break;
+				case MotionEventWrapper5.ACTION_POINTER_3_UP:
+					if(idx == 2) {
+						onTouchUp(gameX, gameY, action, pointerCount, id);
+						onTouchUpReal(_realX, _realY, action, pointerCount, id);
+					}
+					break;
+			}
+			
 		}
 	}
 
@@ -684,22 +687,7 @@ public abstract class Scene {
 			gameX = window.getX() + (window.width * xFraction);
 			gameY = window.getY() + (window.height * yFraction);
 		}
-		onTouch(gameX, gameY, action, 1, 0);
-		onTouchReal(x[0], y[0], action, 1, 0);
-		switch(action) {
-			case MotionEvent.ACTION_DOWN:
-				onTouchDown(gameX, gameY, action, 1, 0);
-				onTouchDownReal(x[0], y[0], action, 1, 0);
-				break;
-			case MotionEvent.ACTION_UP:
-				onTouchUp(gameX, gameY, action, 1, 0);
-				onTouchUpReal(x[0], y[0], action, 1, 0);
-				break;
-			case MotionEvent.ACTION_MOVE:
-				onTouchMove(gameX, gameY, action, 1, 0);
-				onTouchMoveReal(x[0], y[0], action, 1, 0);
-				break;
-		}
+
 		for(int i = 0; i < layerCount; i++) {
 			for(int j = 0; j < layer[i].maximumDrawableObjects; j++) {
 				float checkX, checkY;
@@ -749,6 +737,23 @@ public abstract class Scene {
 					}
 				}
 			}
+		}
+		
+		onTouch(gameX, gameY, action, 1, 0);
+		onTouchReal(x[0], y[0], action, 1, 0);
+		switch(action) {
+			case MotionEvent.ACTION_DOWN:
+				onTouchDown(gameX, gameY, action, 1, 0);
+				onTouchDownReal(x[0], y[0], action, 1, 0);
+				break;
+			case MotionEvent.ACTION_UP:
+				onTouchUp(gameX, gameY, action, 1, 0);
+				onTouchUpReal(x[0], y[0], action, 1, 0);
+				break;
+			case MotionEvent.ACTION_MOVE:
+				onTouchMove(gameX, gameY, action, 1, 0);
+				onTouchMoveReal(x[0], y[0], action, 1, 0);
+				break;
 		}
 	}
 	

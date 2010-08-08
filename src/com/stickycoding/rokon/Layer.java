@@ -88,6 +88,11 @@ public class Layer {
 	 * Clears all the DrawableObjects off this Layer
 	 */
 	public void clear() {
+		for(int i = 0; i < gameObjects.getCount(); i++) {
+			while(gameObjects.get(i) != null) {
+				gameObjects.remove(i);
+			}
+		}
 		gameObjects.clear();
 	}
 	

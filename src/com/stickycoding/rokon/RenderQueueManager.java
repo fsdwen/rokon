@@ -6,7 +6,7 @@ package com.stickycoding.rokon;
  * This class manages the two RenderQueue buffers, should not be accessed from outside the engine.
  * The ideas behind this are taken from Replica Islands RenderSystem.java, along with (most of) the code.
  * 
- * Using this class imposes a fixed limit (256) on the total number of Drawables visible onscreen
+ * Using this class imposes a fixed limit (300) on the total number of Drawables visible onscreen
  * 
  * @author Richard
  */

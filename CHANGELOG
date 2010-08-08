@@ -2,20 +2,20 @@
 	New Features
 		* The engine now uses a new multi-threaded system. Very similar (and partly stolen) from Replica Island. This introduces a lot more flexibility
 			and some performance boosts (it was never a good idea to have everything in the UI thread, hehe). However you now need to be a bit more
-			careful about handling your own threading issues. Hopefully I will bring in some helper stuff to simplify and reduce the coding. A tutorial
-			on the new system, and techniques on using it properly, will be written prior to the release of 2.1.0
+			careful about handling your own threading issues. Hopefully I will bring in some helper stuff to simplify and reduce the coding.
 		* Time now has two timers, one for the game thread, (getLoopTicks) and one for the render thread (getDrawTicks)
 		* Scene.onFadeEnd(DrawableObject)
 		* Scene.onMoveEnd(DimensionalObject)
 		* DimensionalObject.scaleFromCentre - scales from the centre point, speed (setSpeedX, setSpeedY) also affects this central point
 		* Scene.onTouchCustom override and return true to implement your own touch handling routines (return true to ignore Rokon internals)
+		* DrawableObject.stopAnimation()
 		
 	Changes
 		* The MotionEvent stuff has changed, again. An issue arose with using the threading system, and queuing up MotionEvents to be processed.
 			When a second MotionEvent was added to the queue, Android uses the same MotionEvent object - so essentially destroys the first. This
 			means holding on to MotionEvent's is pointless, and to prevent creating garbage, we're just using floats and ints and things again
 			now. This might be a pain for some people who wanted to use the pressure stuff, but, this is for the greater good. I'm sure you'll
-			be able to find a workaround if you really need that feature.
+			be able to find a workaround if you really need that feature :P
 	
 	Bug Fixes
 		* Fixed bug with DrawableObject.fade

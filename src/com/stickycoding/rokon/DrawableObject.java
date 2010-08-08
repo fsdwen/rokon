@@ -700,6 +700,23 @@ public class DrawableObject extends BasicGameObject implements Drawable, Updatea
 	}
 	
 	/**
+	 * Stops any animation
+	 */
+	public void stopAnimation() {
+		animated = false;
+	}
+	
+	/**
+	 * Stops any animation, and jumps to a given tile
+	 * 
+	 * @param index tile index
+	 */
+	public void stopAnimation(int index) {
+		animated = false;
+		setTextureTile(index);
+	}
+	
+	/**
 	 * Sets a ColourBuffer object to this DrawableObject
 	 * 
 	 * @param colourBuffer valid ColourBuffer

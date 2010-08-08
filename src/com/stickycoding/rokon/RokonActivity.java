@@ -254,6 +254,8 @@ public class RokonActivity extends Activity {
 		Rokon.circle = new Polygon(new float[] { 0, 0, 1, 0, 1, 1, 0, 1 });
 		
 		renderQueueManager = new RenderQueueManager();
+
+		Rokon.currentActivity = this;
 		
 		OS.determineAPI();
 	}
@@ -263,13 +265,15 @@ public class RokonActivity extends Activity {
 	 */
 	@Override
 	public void onPause() {
-		Debug.print("onPause()");
-		if(currentScene != null) {
-			currentScene.onPause();
-		}
-		//RokonMusic.onPause();
-		GameThread.pauseGame();
-		surfaceView.onPause();
+		try {
+			Debug.print("onPause()");
+			if(currentScene != null) {
+				currentScene.onPause();
+			}
+			//RokonMusic.onPause();
+			GameThread.pauseGame();
+			surfaceView.onPause();
+		} catch (Exception e) { }
 		super.onPause();
 	}
 	

@@ -49,7 +49,6 @@ public class RokonMusic {
 	 */
 	public static void play(String file, boolean loop) {
 		prepareMediaPlayer();
-		mediaPlayer.setLooping(loop);
 		AssetFileDescriptor afd = null;
 		try {
 			afd = Rokon.getActivity().getAssets().openFd(file);
@@ -61,6 +60,7 @@ public class RokonMusic {
 		}
 		try {
 			mediaPlayer.reset();
+			mediaPlayer.setLooping(loop);
 			mediaPlayer.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
 			mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 			afd.close();

@@ -1,5 +1,7 @@
 package com.stickycoding.rokon;
 
+import java.util.Queue;
+
 import javax.microedition.khronos.opengles.GL10;
 
 import android.app.Activity;
@@ -42,6 +44,8 @@ public class RokonActivity extends Activity {
 	
 	protected static Object runnableLock = new Object();
 	
+	protected static Object killLock = new Object();
+	
 	protected Handler executeRunnable = new Handler() {
 		@Override
 		public void handleMessage(Message message) {
@@ -57,6 +61,21 @@ public class RokonActivity extends Activity {
 			}
 		}
 	};
+	
+	private Handler killEngine = new Handler() {
+		@Override
+		public void handleMessage(Message message) {
+			synchronized(killLock) {
+				dispose();
+				RokonActivity.super.finish();
+			}
+		}
+	};
+	
+	@Override
+	public void finish() {
+		killEngine.sendEmptyMessage(0);
+	}
 	
 	/**
 	 * Removes everyting from the memory, and resets statics.
@@ -235,7 +254,7 @@ public class RokonActivity extends Activity {
 	public void onDestroy() {
 		Debug.print("onDestroy()");
 		if(isFinishing()) {
-			dispose();
+			//dispose();
 		}
 		super.onDestroy();
 	}

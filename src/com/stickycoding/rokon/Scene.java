@@ -1003,7 +1003,8 @@ public abstract class Scene {
 				layer[i].render();
 			}
 		} catch (Exception e) { 
-			
+			Debug.error("ERROR IN SCENE RENDER");
+			e.printStackTrace();
 		}
 	}
 	
@@ -1089,6 +1090,53 @@ public abstract class Scene {
 		RokonActivity.toastMessage = message;
 		RokonActivity.toastType = Toast.LENGTH_LONG;
 		RokonActivity.toastHandler.sendEmptyMessage(0);
+	}
+	
+	public float getRealX(float gameX) {
+		if(window != null) {
+			return ((gameX - window.getX()) / (float)window.width) * Graphics.getWidthPixels();
+		} else {
+			return gameX / ((float)RokonActivity.gameWidth / Graphics.getWidthPixels());
+		}
+	}
+	
+	public float getRealY(float gameY) {
+		if(window != null) {
+			return ((gameY - window.getY()) / (float)window.height) * Graphics.getHeightPixels();
+		} else {
+			return gameY / ((float)RokonActivity.gameHeight / Graphics.getHeightPixels());
+		}
+	}
+
+	
+	/**
+	 * Fetches the screen X coordinate of a position in game-space
+	 * 
+	 * @param gameX X coordinate in game-space
+	 * @param ignoreWindow TRUE if the Window (if there is one) should be ignored
+	 * @return X coordinate on device screen (in pixels)
+	 */
+	public float getRealX(float gameX, boolean ignoreWindow) {
+		if(window != null) {
+			return ((gameX - window.getX()) / (float)window.width) * Graphics.getWidthPixels();
+		} else {
+			return gameX / ((float)RokonActivity.gameWidth / Graphics.getWidthPixels());
+		}
+	}
+	
+	/**
+	 * Fetches the screen Y coordinate of a position in game-space
+	 * 
+	 * @param gameY Y coordinate in game-space
+	 * @param ignoreWindow TRUE if the Window (if there is one) should be ignored
+	 * @return Y coordinate on device screen (in pixels)
+	 */
+	public float getRealY(float gameY, boolean ignoreWindow) {
+		if(window != null) {
+			return ((gameY - window.getY()) / (float)window.height) * Graphics.getHeightPixels();
+		} else {
+			return gameY / ((float)RokonActivity.gameHeight / Graphics.getHeightPixels());
+		}
 	}
 	
 	

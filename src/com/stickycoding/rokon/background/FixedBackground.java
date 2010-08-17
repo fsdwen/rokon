@@ -25,5 +25,9 @@ public class FixedBackground extends Background {
 		super.onDraw(gl);
 		bg.onDraw(gl);
 	}
+	
+	public void setTexture(Texture texture) {
+		bg.setTexture(texture);
+	}
 
 }

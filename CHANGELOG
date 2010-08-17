@@ -10,17 +10,30 @@
 		* Scene.onTouchCustom override and return true to implement your own touch handling routines (return true to ignore Rokon internals)
 		* DrawableObject.stopAnimation()
 		* Texture.minFilter, magFilter, wrapS, wrapT & envMode - allow modification of parameters when loading textures, change only if you know how
+		* Scene.getRealX, getRealY - fetch device screen pixel coordinates from game-space positions (with and without Windows)
 		
 	Changes
 		* The MotionEvent stuff has changed, again. An issue arose with using the threading system, and queuing up MotionEvents to be processed.
-			When a second MotionEvent was added to the queue, Android uses the same MotionEvent object - so essentially destroys the first. This
-			means holding on to MotionEvent's is pointless, and to prevent creating garbage, we're just using floats and ints and things again
-			now. This might be a pain for some people who wanted to use the pressure stuff, but, this is for the greater good. I'm sure you'll
-			be able to find a workaround if you really need that feature :P
+			Now the MotionEvent class is not passed. An extra argument (int action) replaces it. This is required for threading, and should be fine for most uses.
 		* Sprite.accelerate(acceleration, angle) and setVelocity(velocity, angle) now take degrees, not radians
+		* RenderQueueManager now has a larger default queue size (400), to avoid 'flashing' noticed in high-sprite-count games
+		
 	
 	Bug Fixes
 		* Fixed bug with DrawableObject.fade
+		* Fixed a problem with Activity lifecycle, onDestroy would be called seconds after finish(). If a new RokonActivity was created quickly, then
+			the original would wipe everything in garbage collection. This has been remedied - objects are disposed of in finish()
+		* Looping in RokonMusic is fixed, thanks to malphigian (#135)
+		* Scene.clear and clearLayer are fixed, thanks to rayjun128 (#134)
+		* isOnScreen wasn't catching things properly with rotated windows/objects, thanks to tw@3d4x.de (#125)
+		* Bug in animate method, thanks to necroticist (#124)
+		* Box2D joint bug, thanks to dirk.lueth (#121)
+		* Multitouch works properly, and backwards compatability is working from 1.5 above, thanks to sresch2009 (#114)
+		* Engine was spewing out debug info, thanks to Jorenm (#108)
+		* MathHelper.interects wasn't functioning correctly, thanks to necroticist (#105)
+		* onTouchReal functions were not giving the correct numbers, thanks to necroticist (#109)
+		
+		
 
 09/07/2010 2.0.3
 	New Features

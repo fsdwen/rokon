@@ -183,11 +183,15 @@ public class GameThread implements Runnable {
 						}
 					}		
 					
-					// Run your game loop
-					scene.onGameLoop();	
-					
-					// Stick everything onto the rendering buffer
-					scene.render();					
+					synchronized(RokonActivity.killLock) {
+						if(!finished) { 
+							// Run your game loop
+							scene.onGameLoop();	
+							
+							// Stick everything onto the rendering buffer
+							scene.render();		
+						}
+					}
 				}
 				final long endTime = SystemClock.uptimeMillis();
 				finalDelta = endTime - startTime;

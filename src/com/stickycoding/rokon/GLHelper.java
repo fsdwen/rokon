@@ -2,6 +2,9 @@ package com.stickycoding.rokon;
 
 import javax.microedition.khronos.opengles.GL10;
 import javax.microedition.khronos.opengles.GL11;
+import javax.microedition.khronos.opengles.GL11Ext;
+
+import android.opengl.GLUtils;
 
 import com.stickycoding.rokon.vbo.ArrayVBO;
 
@@ -40,7 +43,7 @@ public class GLHelper {
     
     public static void colourPointer(ColourBuffer colourBuffer) {
     	if(lastColourBufferObject != colourBuffer) {
-    		gl.glColorPointer(4, GL10.GL_FLOAT, 0, colourBuffer.get());
+   		gl.glColorPointer(4, GL10.GL_FLOAT, 0, colourBuffer.get());
             lastColourBufferObject = colourBuffer;
     	}
     }
@@ -197,14 +200,10 @@ public class GLHelper {
 	 */
 	public static void checkTextureValid(Texture texture) {
 		if(texture.getTextureIndex() == -1 && texture.parentAtlas == null) {
-			Debug.print("checkTextureValid - load self");
 			texture.onLoadTexture(gl);
-			Debug.print("we're at " + texture.getTextureIndex());
 		} else {
 			if(texture.getTextureIndex() == -1) {
-				Debug.print("checkTextureValid - load parent");
 				texture.parentAtlas.onLoadTexture(gl);
-				Debug.print("we're at " + texture.getTextureIndex());
 			}
 		}
 		if(texture.reload) {
@@ -213,7 +212,6 @@ public class GLHelper {
 			} else {
 				texture.parentAtlas.onLoadTexture(gl);
 			}
-			
 			texture.setReloaded();
 		}
 	}
@@ -270,7 +268,7 @@ public class GLHelper {
      * @param type coordinate type, eg GL_FLOAT
      */
     public static void texCoordPointer(BufferObject buffer, int type) {
-        if(lastTexCoordPointerBuffer != buffer) {
+        if(!buffer.equals(lastTexCoordPointerBuffer)) {
         	gl.glTexCoordPointer(2, type, 0, buffer.get());
             lastTexCoordPointerBuffer = buffer;
         }
@@ -303,7 +301,7 @@ public class GLHelper {
      * @param type coordinate type, eg GL_FLOAT
      */
     public static void vertexPointer(BufferObject buffer, int type) {
-        if(lastVertexPointerBuffer != buffer) {
+        if(!buffer.equals(lastVertexPointerBuffer)) {
         	gl.glVertexPointer(2, type, 0, buffer.get());
             lastVertexPointerBuffer = buffer;
         }
@@ -350,19 +348,18 @@ public class GLHelper {
 		gl.glPushMatrix();
 		enableVertexArray();
 		bindBuffer(0, false);
-		if(x != 0 || y != 0) {
-			gl.glTranslatef(x, y, 0);
-		}
 		if(rotation != 0) {
 			if(!rotateAboutPivot) {
-				gl.glTranslatef(width / 2, height / 2, 0);
+				gl.glTranslatef(x + width / 2, y + height / 2, 0);
 				gl.glRotatef(rotation, 0, 0, 1);
-				gl.glTranslatef(-width / 2, -height / 2, 0);
+				gl.glTranslatef(-width / 2, - height / 2, 0);
 			} else {
-				gl.glTranslatef(rotationPivotX, rotationPivotY, 0);
+				gl.glTranslatef(x + rotationPivotX, y + rotationPivotY, 0);
 				gl.glRotatef(rotation, 0, 0, 1);
 				gl.glTranslatef(-rotationPivotX, -rotationPivotY, 0);
 			}
+		} else {
+			gl.glTranslatef(x, y, 0);
 		}
 		if(width != 1 || height != 1) {
 			gl.glScalef(width, height, 0);
@@ -379,7 +376,14 @@ public class GLHelper {
 				} else {
 					disableColourArray();
 				}
-				texCoordPointer(texture.buffer[textureTile], GL10.GL_FLOAT);
+				try {
+					texCoordPointer(texture.buffer[textureTile], GL10.GL_FLOAT);					
+				} catch (ArrayIndexOutOfBoundsException e) {
+					Debug.error("ARRAY INDEX OUT OF BOUNDS");
+					Debug.print("textureTile=" + textureTile);
+					Debug.print("texture=" + texture.path + " tiles=" + texture.tileCount);
+					System.exit(0);
+				}
 				vertexPointer(vertexBuffer, GL10.GL_FLOAT);
 				gl.glDrawArrays(vertexMode, 0, vertexBuffer.getSize() / 2);
 			}
@@ -556,6 +560,16 @@ public class GLHelper {
     	    	gl.glDeleteTextures(1, textureId, 0);
     		}
     	}
+    }
+    
+    public static void drawTex(Texture texture, float screenX, float screenY, float screenWidth, float screenHeight) {
+    	//GL11Ext gl11 = (GL11Ext)gl;
+    	//gl11.glDrawTexfOES(screenX, screenY, 0, screenWidth, screenHeight);
+    }
+    
+    public static void refreshTexture(Texture texture) {
+    	bindTexture(texture);
+        GLUtils.texSubImage2D(GL10.GL_TEXTURE_2D, 0, 0, 0, texture.getBitmap());
     }
 
 }

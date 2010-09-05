@@ -18,7 +18,7 @@ import com.stickycoding.rokon.Rokon;
 public class RokonAudio {
 
         public static final int MAX_SOUNDS = 50;
-        public static final int MAX_STREAMS = 5;
+        public static final int MAX_STREAMS = 8;
         
         public static RokonAudio singleton;
         private int i, j;

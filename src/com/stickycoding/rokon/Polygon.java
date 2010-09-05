@@ -85,7 +85,7 @@ public class Polygon {
 			buffer = new BufferObject(vertexCount * 2);
 			float[] vertices = new float[vertexCount * 2];
 			int c = 0;
-			for(int i = 0; i < vertex.length; i++) {
+			for(int i = 0; i < vertexCount; i++) {
 				vertices[c++] = vertex[i].getX();
 				vertices[c++] = vertex[i].getY();
 			}

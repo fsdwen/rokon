@@ -51,7 +51,7 @@ public class RokonActivity extends Activity {
 		public void handleMessage(Message message) {
 			synchronized(runnableLock) {
 				if(currentScene == null) return;
-				int index = message.getData().getInt("runnable");
+				int index = message.getData().getInt("index");
 				if(Scene.uiRunnable[index] != null) {
 					Runnable runnable = Scene.uiRunnable[index];
 					Scene.uiRunnable[index] = null;
@@ -65,7 +65,7 @@ public class RokonActivity extends Activity {
 	private Handler killEngine = new Handler() {
 		@Override
 		public void handleMessage(Message message) {
-			synchronized(killLock) {
+			synchronized(surfaceView.renderer) {
 				dispose();
 				RokonActivity.super.finish();
 			}
@@ -84,6 +84,12 @@ public class RokonActivity extends Activity {
 	 */
 	public void dispose() {
 		Debug.print("dispose()");
+		if(currentScene != null) {
+			for(int i = 0; i < Scene.MAX_RUNNABLE; i++) {
+				Scene.uiRunnable[i] = null;
+				Scene.gameRunnable[i] = null;
+			}
+		}
 		engineCreated = false;
 		currentScene = null;
 		forceLandscape = false;
@@ -126,13 +132,8 @@ public class RokonActivity extends Activity {
 	 */
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		/*if(currentScene != null) {
-			if(currentScene.onKeyDown(keyCode, event)) {
-				return true;
-			}
-		}*/
 		GameThread.keyInput(true, keyCode, event);
-		if(disableBack && keyCode == KeyEvent.KEYCODE_BACK) return true;
+		if(keyCode == KeyEvent.KEYCODE_BACK) return true;
 		return super.onKeyDown(keyCode, event);
 	}
 
@@ -141,27 +142,8 @@ public class RokonActivity extends Activity {
 	 */
 	@Override
 	public boolean onTrackballEvent(MotionEvent event) {
-		//if(currentScene != null) {
-		//	return currentScene.onTrackballEvent(event);
-		//}
 		GameThread.motionInput(false, event);
 		return super.onTrackballEvent(event);
-	}
-	
-	private boolean disableBack;
-	
-	/**
-	 * Disables the Back button from exiting the Activity
-	 */
-	public void disableBack() {
-		disableBack = true;
-	}
-	
-	/**
-	 * Enables the Back button to exit the Activity (default state)
-	 */
-	public void enableBack() {
-		disableBack = false;
 	}
 	
 	/* (non-Javadoc)
@@ -169,13 +151,8 @@ public class RokonActivity extends Activity {
 	 */
 	@Override
 	public boolean onKeyUp(int keyCode, KeyEvent event) {
-		/*if(currentScene != null) {
-			if(currentScene.onKeyUp(keyCode, event)) {
-				return true;
-			}
-		}*/
 		GameThread.keyInput(false, keyCode, event);
-		if(disableBack && keyCode == KeyEvent.KEYCODE_BACK) return true;
+		if(keyCode == KeyEvent.KEYCODE_BACK) return true;
 		return super.onKeyUp(keyCode, event);
 	}
 	
@@ -193,7 +170,7 @@ public class RokonActivity extends Activity {
 	 * Starts the game thread, if necessary
 	 */
 	protected void startThread() {
-		Debug.print("startThread");
+		//Debug.error("startThread");
 		gameThread = new GameThread();
 		thread = new Thread(gameThread);
 		thread.start();

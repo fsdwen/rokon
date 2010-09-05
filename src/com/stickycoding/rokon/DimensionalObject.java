@@ -200,6 +200,10 @@ public class DimensionalObject extends Point {
 	
 	protected void onUpdate() {
 		super.onUpdate();
+		updateMove();
+	}
+	
+	protected void updateMove() {
 		if(moving) {
 			float position = (float)(Time.loopTicks - startTime) / (float)moveTime;
 			float factor = Movement.getPosition(position, moveType);

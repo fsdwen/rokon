@@ -25,13 +25,13 @@ public class Window extends DimensionalObject {
 		super(x, y, width, height);
 	}
 	
-	protected static void setDefault(GL10 gl) {
+	public static void setDefault(GL10 gl) {
 		gl.glMatrixMode(GL10.GL_PROJECTION);
 		gl.glLoadIdentity();
         GLU.gluOrtho2D(gl, 0, RokonActivity.gameWidth, RokonActivity.gameHeight, 0);
 	}
 	
-	protected void onUpdate(GL10 gl) {
+	public void onUpdate(GL10 gl) {
 		super.onUpdate();
 		gl.glMatrixMode(GL10.GL_PROJECTION);
 		gl.glLoadIdentity();

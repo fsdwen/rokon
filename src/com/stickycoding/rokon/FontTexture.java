@@ -68,7 +68,7 @@ public class FontTexture extends Texture {
 				return i;
 			}
 		}
-		Debug.error("Character not found! " + ch);
+		Debug.error("Pacman not found! " + ch);
 		return -1;
 	}
 

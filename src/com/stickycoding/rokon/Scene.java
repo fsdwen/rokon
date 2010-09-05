@@ -23,12 +23,16 @@ import com.stickycoding.rokon.device.OS;
  * 
  * @author Richard
  */
+/**
+ * @author Richard
+ *
+ */
 public abstract class Scene {
 	
 	/**
 	 * The maximum number of Runnables that can be queued at one time, shouldn't ever need to be more than a couple
 	 */
-	public static final int MAX_RUNNABLE = 10;
+	public static final int MAX_RUNNABLE = 24;
 	
 	/**
 	 * The default number of layers if no number is passed
@@ -58,8 +62,40 @@ public abstract class Scene {
 	
 	protected static Runnable[] uiRunnable = new Runnable[MAX_RUNNABLE];
 	protected static Runnable[] gameRunnable = new Runnable[MAX_RUNNABLE];
+	protected static long[] uiRunnableTime = new long[MAX_RUNNABLE];
+	protected static long[] gameRunnableTime = new long[MAX_RUNNABLE];
+	
+	protected Texture[] forceTexture = new Texture[128];
+	protected boolean hasForcedTexture = false;
 	
 	public RokonActivity activity;
+	
+	/**
+	 * Forces a Texture to be loaded onto the hardware
+	 * 
+	 * @param texture
+	 */
+	public void forceTexture(Texture texture) {
+		for(int i = 0; i < forceTexture.length; i++) {
+			if(forceTexture[i] == null) {
+				forceTexture[i] = texture;
+				hasForcedTexture = true;
+				break;
+			}
+		}
+	}
+	
+	protected void checkForcedTextures() {
+		if(hasForcedTexture) {
+			for(int i = 0; i < forceTexture.length; i++) {
+				if(forceTexture[i] != null) {
+					GLHelper.checkTextureValid(forceTexture[i]);
+					forceTexture[i] = null;
+				}
+			}
+			hasForcedTexture = false;
+		}
+	}
 	
 	/**
 	 * Queues a Runnable to be executed at the start of the next UI thread
@@ -71,17 +107,48 @@ public abstract class Scene {
 			for(int i = 0; i < MAX_RUNNABLE; i++) {
 				if(Scene.uiRunnable[i] == null) {
 					Scene.uiRunnable[i] = runnable;
-					Message message = new Message();
-					Bundle bundle = new Bundle();
-					bundle.putInt("index", i);
-					message.setData(bundle);
-					activity.executeRunnable.sendMessage(message);
+					uiRunnableTime[i] = 0;
 					return true;
 				}
 			}
 			return false;
 		}
 	}
+	
+	protected void onUIRunnables() {
+		synchronized(RokonActivity.runnableLock) {
+			for(int i = 0; i < MAX_RUNNABLE; i++) {
+				if(Scene.uiRunnable[i] != null && Time.getDrawTicks() > Scene.uiRunnableTime[i]) {
+					Message message = new Message();
+					Bundle bundle = new Bundle();
+					bundle.putInt("index", i);
+					message.setData(bundle);
+					activity.executeRunnable.sendMessage(message);
+				}
+			}
+		}
+	}
+
+	/**
+	 * Queues a Runnable to be executed after a given delay
+	 * 
+	 * @param delay in milliseconds
+	 * @param runnable
+	 */
+	public boolean queueUI(long delay, Runnable runnable) {
+		synchronized(RokonActivity.runnableLock) {
+			for(int i = 0; i < MAX_RUNNABLE; i++) {
+				if(Scene.uiRunnable[i] == null) {
+					Scene.uiRunnable[i] = runnable;
+					uiRunnableTime[i] = delay + Time.getDrawTicks();;
+					return true;
+				}
+			}
+			return false;
+		}
+	}
+	
+	
 	
 	/**
 	 * Queues a Runnable to be executed at the start of the next game loop
@@ -91,8 +158,29 @@ public abstract class Scene {
 	public boolean queueGame(Runnable runnable) {
 		synchronized(GameThread.runnableLock) {
 			for(int i = 0; i < MAX_RUNNABLE; i++) {
-				if(Scene.gameRunnable[i] == null) {
-					Scene.gameRunnable[i] = runnable;
+				if(gameRunnable[i] == null) {
+					gameRunnable[i] = runnable;
+					gameRunnableTime[i] = 0;
+					GameThread.hasRunnable = true;
+					return true;
+				}
+			}
+			return false;
+		}
+	}
+
+	/**
+	 * Queues a Runnable to be executed after a given delay
+	 * 
+	 * @param delay time, in milliseconds
+	 * @param runnable
+	 */
+	public boolean queueGame(long delay, Runnable runnable) {
+		synchronized(GameThread.runnableLock) {
+			for(int i = 0; i < MAX_RUNNABLE; i++) {
+				if(gameRunnable[i] == null) {
+					gameRunnable[i] = runnable;
+					gameRunnableTime[i] = delay + Time.getLoopTicks();
 					GameThread.hasRunnable = true;
 					return true;
 				}
@@ -161,6 +249,13 @@ public abstract class Scene {
 	 */
 	public void onMoveEnd(DimensionalObject object) { }
 	
+	/**
+	 * Triggered when a DrawableObject's animate() is completed
+	 * 
+	 * @param drawableObject
+	 */
+	public void onAnimationEnd(DrawableObject drawableObject) { }
+	
 	public void onTouchDown(Drawable object, float x, float y, int action, int pointerCount, int pointerId) { }
 	public void onTouchUp(Drawable object, float x, float y, int action, int pointerCount, int pointerId) { }
 	public void onTouchMove(Drawable object, float x, float y, int action, int pointerCount, int pointerId) { }
@@ -177,8 +272,8 @@ public abstract class Scene {
 	public void onTouchUpReal(float x, float y, int action, int pointerCount, int pointerId) { }
 	public void onTouchReal(float x, float y, int action, int pointerCount, int pointerId) { }
 
-	public boolean onKeyDown(int keyCode, KeyEvent event) { return false; }
-	public boolean onKeyUp(int keyCode, KeyEvent event) { return false; }
+	public abstract void onKeyDown(int keyCode);
+	public abstract void onKeyUp(int keyCode);
 	public boolean onTrackballEvent(float x, float y, int action) { return false; }
 	
 	/**

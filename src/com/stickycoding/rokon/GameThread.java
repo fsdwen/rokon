@@ -80,7 +80,6 @@ public class GameThread implements Runnable {
 	}
 	
 	protected class KeyTrigger {
-		protected KeyEvent keyEvent;
 		protected boolean isDown;
 		protected int keyCode;
 		protected boolean isNull;
@@ -89,16 +88,14 @@ public class GameThread implements Runnable {
 			isNull = true;
 		}
 		
-		protected void set(int keyCode, KeyEvent event, boolean isDown) {
+		protected void set(int keyCode, boolean isDown) {
 			this.keyCode = keyCode;
-			this.keyEvent = event;
 			this.isDown = isDown;
 			isNull = false;
 		}
 		
 		protected void reset() {
 			isNull = true;
-			keyEvent = null;
 		}
 	}
 	
@@ -135,15 +132,22 @@ public class GameThread implements Runnable {
 					// First, see if there are any Runnables in the queue that you want me tod o
 					synchronized(runnableLock) {
 						if(hasRunnable) {
+							hasRunnable = false;
 							for(int i = 0; i < Scene.MAX_RUNNABLE; i++) {
 								if(Scene.gameRunnable[i] != null) {
-									Scene.gameRunnable[i].run();
-									Scene.gameRunnable[i] = null;
+									if(Time.getLoopTicks() > Scene.gameRunnableTime[i]) {
+										Scene.gameRunnable[i].run();
+										Scene.gameRunnable[i] = null;
+									} else {
+										hasRunnable = true;
+									}
 								}
 							}
 						}
-						hasRunnable = false;
 					}
+					
+					// Check UI queue
+					scene.onUIRunnables();
 					
 					// Then see if there's any new input
 					synchronized (inputLock) {
@@ -161,9 +165,9 @@ public class GameThread implements Runnable {
 							for(int i = 0; i < MAX_TRIGGERS; i++) {
 								if(!keyTrigger[i].isNull) {
 									if(keyTrigger[i].isDown) {
-										scene.onKeyDown(keyTrigger[i].keyCode, keyTrigger[i].keyEvent);
+										scene.onKeyDown(keyTrigger[i].keyCode);
 									} else {
-										scene.onKeyUp(keyTrigger[i].keyCode, keyTrigger[i].keyEvent);
+										scene.onKeyUp(keyTrigger[i].keyCode);
 									}
 									keyTrigger[i].reset();
 								}
@@ -264,7 +268,7 @@ public class GameThread implements Runnable {
 		synchronized (inputLock) {
 			for(int i = 0; i < MAX_TRIGGERS; i++) {
 				if(keyTrigger[i].isNull) {
-					keyTrigger[i].set(keyCode, event, down);
+					keyTrigger[i].set(keyCode, down);
 					hasKeyTrigger = true;
 					return;
 				}

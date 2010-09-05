@@ -116,14 +116,8 @@ public class Sprite extends GameObject implements Updateable {
 		terminalAngularVelocity = 0;
 	}
 	
-	public void onUpdate() {
-		super.onUpdate();
-		if(isMoveTo) {
-			onUpdateMoveTo();
-		}
-		if(isRotateTo) {
-			onUpdateRotateTo();
-		}
+	protected void updatePosition() {
+		if(accelerationX == 0 && accelerationY == 0 && speedX == 0 && speedY == 0 && velocity == 0 && angularVelocity == 0 && angularAcceleration == 0) return;
 		if(accelerationX != 0) {
 			speedX += accelerationX * Time.loopTicksFraction;
 			if(useTerminalSpeedX && ((accelerationX > 0 && speedX > terminalSpeedX) || (accelerationX < 0 && speedY < terminalSpeedX))) {
@@ -169,6 +163,21 @@ public class Sprite extends GameObject implements Updateable {
 		if(angularVelocity != 0) {
 			rotation += angularVelocity * Time.loopTicksFraction;
 		}
+	}
+	
+	public void onUpdate() {
+		super.onUpdate();
+		if(isMoveTo) {
+			onUpdateMoveTo();
+		}
+		if(isRotateTo) {
+			onUpdateRotateTo();
+		}
+		updatePosition();
+		updateModifiers();
+	}
+	
+	protected void updateModifiers() {
 		if(modifierCount > 0) {
 			for(int i = 0; i < MAX_MODIFIERS; i++) {
 				if(modifier[i] != null) {

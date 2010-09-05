@@ -4,6 +4,7 @@
 			and some performance boosts (it was never a good idea to have everything in the UI thread, hehe). However you now need to be a bit more
 			careful about handling your own threading issues. Hopefully I will bring in some helper stuff to simplify and reduce the coding.
 		* Time now has two timers, one for the game thread, (getLoopTicks) and one for the render thread (getDrawTicks)
+		* Scene.onAnimationEnd(DrawableObject)
 		* Scene.onFadeEnd(DrawableObject)
 		* Scene.onMoveEnd(DimensionalObject)
 		* DimensionalObject.scaleFromCentre - scales from the centre point, speed (setSpeedX, setSpeedY) also affects this central point
@@ -11,13 +12,20 @@
 		* DrawableObject.stopAnimation()
 		* Texture.minFilter, magFilter, wrapS, wrapT & envMode - allow modification of parameters when loading textures, change only if you know how
 		* Scene.getRealX, getRealY - fetch device screen pixel coordinates from game-space positions (with and without Windows)
+		* Scene.queueUI(delay, Runnable) and queueGame(delay, Runnable) - allows to queue a Runnable with a given delay before executing, in milliseconds
+		* Texture.getRatio()
+		* Physics.fromFile and physicsDefToBody() - allows creation and storage of multi-fixture Bodies, whose definitions are loaded from a .json file
+		
 		
 	Changes
 		* The MotionEvent stuff has changed, again. An issue arose with using the threading system, and queuing up MotionEvents to be processed.
 			Now the MotionEvent class is not passed. An extra argument (int action) replaces it. This is required for threading, and should be fine for most uses.
 		* Sprite.accelerate(acceleration, angle) and setVelocity(velocity, angle) now take degrees, not radians
 		* RenderQueueManager now has a larger default queue size (400), to avoid 'flashing' noticed in high-sprite-count games
-		
+		* onTouch(x,y) events are now called before onTouch(Drawable) events. Depending on how you use them, this might cause "unexpected" results,
+			but this way around allows easy monitoring of whether an object was touched or not.
+		* disableBack has been removed, and now the back button MUST be handled yourself, and you MUST call finish() to exit
+		* onKeyDown and onKeyUp are now abstract, and have only 1 parameter; int keyCode 
 	
 	Bug Fixes
 		* Fixed bug with DrawableObject.fade
@@ -32,7 +40,10 @@
 		* Engine was spewing out debug info, thanks to Jorenm (#108)
 		* MathHelper.interects wasn't functioning correctly, thanks to necroticist (#105)
 		* onTouchReal functions were not giving the correct numbers, thanks to necroticist (#109)
-		
+		* DynamicTexture, use .refresh() to force the refreshed canvas through
+		* The UI and Game Runnables weren't being cleared on dispose(), lead to weird bugs if restarting quickly
+		* queueUI wouldn't work with more than one item in the queue, thanks to lehovecjakub (#155)
+		* DrawableObject.animate caused problems when using returnToTart, thanks to Joshb86 (#110)
 		
 
 09/07/2010 2.0.3

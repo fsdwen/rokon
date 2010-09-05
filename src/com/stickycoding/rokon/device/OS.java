@@ -22,9 +22,9 @@ public class OS {
 	}
 	
 	public static void hackBrokenDevices() {
-       if (Build.PRODUCT.contains("morrison") || Build.PRODUCT.contains("voles") || Build.PRODUCT.contains("umts_sholes") || Build.PRODUCT.contains("sdk")) {
-    	   Graphics.setSupportsVBO(false);
-       }
+       //if (Build.PRODUCT.contains("morrison") || Build.PRODUCT.contains("voles") || Build.PRODUCT.contains("umts_sholes") || Build.PRODUCT.contains("sdk")) {
+    	 //  Graphics.setSupportsVBO(false);
+       //}
    }
 
 }

@@ -16,10 +16,41 @@ public class TextureManager {
 	 */
 	public static final int MAX_TEXTURE_COUNT = 256;
 	
+	protected static Texture[] refreshTexture = new Texture[MAX_TEXTURE_COUNT];
+	protected static int refreshTextureCount = 0;
+	
 	protected static Texture[] activeTexture = new Texture[MAX_TEXTURE_COUNT];
 	protected static int activeTextureCount = 0;
 	
-	public static void reloadTextures(GL10 gl) {
+	protected static Object refreshLock = new Object();
+	
+	public static void refreshTexture(Texture texture) {
+		synchronized(refreshLock) {
+			for(int i = 0; i < MAX_TEXTURE_COUNT; i++) {
+				if(refreshTexture[i] == null) {
+					refreshTexture[i] = texture;
+					refreshTextureCount++;
+					return;
+				}
+			}
+		}
+	}
+	
+	public static void checkRefreshTextures() {
+		synchronized(refreshLock) {
+			if(refreshTextureCount > 0) {
+				for(int i = 0; i < MAX_TEXTURE_COUNT; i++) {
+					if(refreshTexture[i] != null) {
+						GLHelper.refreshTexture(refreshTexture[i]);
+						refreshTexture[i] = null;
+						refreshTextureCount--;
+					}
+				}
+			}
+		}
+	}
+	
+	public static void reloadActiveTextures(GL10 gl) {
 		Debug.print("reloadTextures()");
 		for(int i = 0; i < MAX_TEXTURE_COUNT; i++) {
 			if(activeTexture[i] != null && activeTexture[i].getTextureIndex() == -1) {
@@ -51,7 +82,7 @@ public class TextureManager {
 		if(isActive(textureId)) {
 			return;
 		}
-		Debug.error("  addToActive(" + textureId.getTextureIndex() + ")");
+		//Debug.error("  addToActive(" + textureId.getTextureIndex() + ")");
 		for(int i = 0 ; i < MAX_TEXTURE_COUNT; i++) {
 			if(activeTexture[i] == null) {
 				activeTexture[i] = textureId;

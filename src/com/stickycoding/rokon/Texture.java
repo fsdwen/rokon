@@ -75,6 +75,18 @@ public class Texture {
 		return textureIndex;
 	}
 	
+	public int getTileCols() {
+		return columns;
+	}
+	
+	public int getTileRows() {
+		return rows;
+	}
+	
+	public int getTileCount() {
+		return tileCount;
+	}
+	
 	/**
 	 * Returns an array of BufferObjects relating to each tile on the Texture
 	 * 
@@ -337,7 +349,7 @@ public class Texture {
 	 * @return Texture aspect ratio
 	 */
 	public float getRatio() {
-		return (float)height / (float)width / columns;
+		return (float)width / columns / (float)height;
 	}
 	
 	/**
@@ -346,7 +358,7 @@ public class Texture {
 	 * @return Texture tile aspect ratio
 	 */
 	public float getTileRatio() {
-		return ((float)height / rows) / ((float)width / columns);
+		return ((float)width / columns) / ((float)height / rows);
 	}
 	
 	/**

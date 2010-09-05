@@ -22,11 +22,12 @@ public class VBOManager {
 	 * @param vbo valid VBO object
 	 */
 	public static void add(VBO vbo) {
+		Debug.print("VBO loaded");
 		list.add(vbo);
 	}
 	
 	protected static void removeVBOs() {
-		//Debug.warning("Reloading VBOs");
+		Debug.warning("Removing VBOs");
 		for(int i = 0; i < list.size(); i++) {
 			((VBO)list.get(i)).setUnloaded();
 		}

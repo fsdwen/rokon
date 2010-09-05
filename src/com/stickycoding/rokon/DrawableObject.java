@@ -39,6 +39,8 @@ public class DrawableObject extends BasicGameObject implements Drawable, Updatea
 	
 	protected boolean border;
 	
+	protected boolean freezeAnimation;
+	
 	
 	protected ColourBuffer colourBuffer;
 	
@@ -183,7 +185,7 @@ public class DrawableObject extends BasicGameObject implements Drawable, Updatea
 		
 	}
 	
-	private void updateFadeTo() {
+	protected void updateFadeTo() {
 		if(!isFading) return;
 		float position = (float)(Time.loopTicks - fadeStartTime) / (float)fadeTime;
 		float factor = Movement.getPosition(position, fadeType);
@@ -202,11 +204,21 @@ public class DrawableObject extends BasicGameObject implements Drawable, Updatea
 	
 	public DrawableObject(float x, float y, float width, float height) {
 		super(x, y, width, height);
+		doBuffer();
 	}
 	
 	public DrawableObject(float x, float y, float width, float height, Texture texture) {
 		super(x, y, width, height);
 		setTexture(texture);
+		doBuffer();
+	}
+	
+	protected void doBuffer() {
+		if(isVBO()) {
+			
+		} else {
+			buffer = Rokon.triangleStripBoxBuffer;
+		}
 	}
 	
 	/**
@@ -266,9 +278,9 @@ public class DrawableObject extends BasicGameObject implements Drawable, Updatea
 	/**
 	 * Sets the red value
 	 * 
-	 * @param red fixed point integer, 0 to ONE
+	 * @param red floating point, 0 to 1f
 	 */
-	public void setRed(int red) {
+	public void setRed(float red) {
 		this.red = red;
 	}
 	
@@ -387,12 +399,15 @@ public class DrawableObject extends BasicGameObject implements Drawable, Updatea
 	}
 	
 	protected void onDrawNormal(GL10 gl) {
-		GLHelper.drawNormal(fill, red, green, blue, alpha, blendFunction, Rokon.triangleStripBoxBuffer, GL10.GL_TRIANGLE_STRIP, getX(), getY(), width, height, rotation, rotateAboutPoint, rotationPivotX, rotationPivotY, border, Rokon.lineLoopBoxBuffer, borderRed, borderGreen, borderBlue, borderAlpha, lineWidth, texture != null, texture, textureTile, colourBuffer);
+		GLHelper.drawNormal(fill, red, green, blue, alpha, blendFunction, buffer, GL10.GL_TRIANGLE_STRIP, getX(), getY(), width, height, rotation, rotateAboutPoint, rotationPivotX, rotationPivotY, border, Rokon.lineLoopBoxBuffer, borderRed, borderGreen, borderBlue, borderAlpha, lineWidth, texture != null, texture, textureTile, colourBuffer);
 	}
 	
 	protected void onDrawVBO(GL10 gl) {
 		GLHelper.drawVBO(fill, red, green, blue, alpha, blendFunction, Rokon.arrayVBO, GL10.GL_TRIANGLE_STRIP, getX(), getY(), width, height, rotation, rotateAboutPoint, rotationPivotX, rotationPivotY, border, Rokon.boxArrayVBO, borderRed, borderGreen, borderBlue, borderAlpha, lineWidth, texture != null, texture, textureTile, colourBuffer);
 	}
+	
+	private boolean isOnScreen = false;
+	private long lastOnScreen = 0;
 	
 	/**
 	 * Determines whether this object is actually visible on screen
@@ -400,14 +415,20 @@ public class DrawableObject extends BasicGameObject implements Drawable, Updatea
 	 * @return TRUE if on screen, FALSE otherwise
 	 */
 	public boolean isOnScreen() {
-		if(parentLayer == null) {
+		if(Time.drawTicks <= lastOnScreen) return isOnScreen;
+		lastOnScreen = Time.drawTicks;
+		if(invisible) {
+			isOnScreen = false;
 			return false;
 		}
-		float maxSize = width;
-		if(height > width) maxSize = height;
+		float maxSize = width > height ? width : height;
+		if(parentLayer == null || parentScene == null) {
+			isOnScreen = false;
+			return false;
+		}
 		if(parentLayer.ignoreWindow || parentScene.window == null) {
 			if (getX() - (maxSize / 2) < RokonActivity.gameWidth && getX() + maxSize + (maxSize / 2) > 0 && getY() - (maxSize / 2) < RokonActivity.gameHeight && getY() + maxSize + (maxSize / 2) > 0) {
-				return true;
+				isOnScreen = true;
 			}
 		} else {
 			boolean validY = false;
@@ -430,13 +451,9 @@ public class DrawableObject extends BasicGameObject implements Drawable, Updatea
 					validX = true;
 				}
 			}
-				
-			if (validX && validY) {
-				return true;
-			}
-			return validX && validY;
+			isOnScreen = validX && validY;
 		}
-		return false;
+		return isOnScreen;
 	}
 	
 	/**
@@ -557,6 +574,7 @@ public class DrawableObject extends BasicGameObject implements Drawable, Updatea
 		hasCustomAnimation = false;
 		animationReturnToStart = returnToStart;
 		animated = true;
+		freezeAnimation = false;
 	}
 	
 	/**
@@ -588,6 +606,15 @@ public class DrawableObject extends BasicGameObject implements Drawable, Updatea
 		customAnimationSequence = animationTiles;
 		animationCustomPosition = -1;
 		animated = true;
+		freezeAnimation = false;
+	}
+	
+	public boolean isAnimation() {
+		return animated;
+	}
+	
+	public boolean isFreezeAnimation() {
+		return freezeAnimation;
 	}
 	
 	/**
@@ -600,8 +627,8 @@ public class DrawableObject extends BasicGameObject implements Drawable, Updatea
 		animate(animationTiles, frameTime, -1, false);
 	}
 	
-	private void updateAnimation() {
-		if(!animated) return;
+	protected void updateAnimation() {
+		if(!animated || freezeAnimation) return;
 		long tickDifference = Time.loopTicks - animationLastTicks - animationFrameTicks;
 		if(tickDifference > 0) {
 			int frameSkip = 0;
@@ -612,15 +639,21 @@ public class DrawableObject extends BasicGameObject implements Drawable, Updatea
 			if(hasCustomAnimation) {
 				while(frameSkip > 0) {
 					animationCustomPosition++;
-					if(animationCustomPosition == customAnimationSequence.length) {
+					if(animationCustomPosition >= customAnimationSequence.length) {
 						animationCustomPosition = 0;
 						if(animationLoops > 0) {
 							animationLoops--;
-							if(animationReturnToStart) {
-								textureTile = customAnimationSequence[0];
-							} else {
-								animated = false;
-								return;
+							if(animationLoops == 0) {
+								if(animationReturnToStart) {
+									textureTile = animationStartTile;
+									animated = false;
+									parentScene.onAnimationEnd(this);
+								} else {
+									animationCustomPosition--;
+									animated = false;
+									parentScene.onAnimationEnd(this);
+									break;
+								}
 							}
 						}
 					}
@@ -636,10 +669,13 @@ public class DrawableObject extends BasicGameObject implements Drawable, Updatea
 							if(animationLoops == 0) {
 								if(animationReturnToStart) {
 									textureTile = animationStartTile;
+									animated = false;
+									parentScene.onAnimationEnd(this);
 								} else {
 									textureTile--;
 									animated = false;
-									return;
+									parentScene.onAnimationEnd(this);
+									break;
 								}
 							}
 						}
@@ -748,6 +784,14 @@ public class DrawableObject extends BasicGameObject implements Drawable, Updatea
 	 */
 	public void removeColourBuffer() {
 		colourBuffer = null;
+	}
+	
+	public void freezeAnimation() {
+		freezeAnimation = true;
+	}
+	
+	public void unfreezeAnimation() {
+		freezeAnimation = false;
 	}
 	
 }

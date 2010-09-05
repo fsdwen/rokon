@@ -49,7 +49,7 @@ public class RokonRenderer implements GLSurfaceView.Renderer {
 		
 		Time.update();
 		
-		if(!RokonActivity.engineLoaded) {
+		if(!RokonActivity.engineLoaded && RokonActivity.engineCreated) {
 			RokonActivity.engineLoaded = true;
 			System.gc();
 			rokonActivity.onLoadComplete();
@@ -75,6 +75,9 @@ public class RokonRenderer implements GLSurfaceView.Renderer {
 			}
 			drawQueueChanged = false;
 		}
+		
+		TextureManager.checkRefreshTextures();
+		scene.checkForcedTextures();
 		
 		
 		synchronized(this) {
@@ -105,7 +108,6 @@ public class RokonRenderer implements GLSurfaceView.Renderer {
 				gl.glMatrixMode(GL10.GL_MODELVIEW);
 		        gl.glLoadIdentity();
 		        
-				
 				FixedSizeArray<BaseObject> objects = drawQueue.getObjects();
 				Object[] objectArray = objects.getArray();
 				final int count = drawQueue.getObjects().getCount();
@@ -147,7 +149,7 @@ public class RokonRenderer implements GLSurfaceView.Renderer {
 	 * @see android.opengl.GLSurfaceView.Renderer#onSurfaceChanged(javax.microedition.khronos.opengles.GL10, int, int)
 	 */
 	public void onSurfaceChanged(GL10 gl, int w, int h) {
-		Debug.print("onSurfaceChanged()");
+		Debug.print("onSurfaceChanged() w=" + w + " h=" + h);
 		//Debug.print("Surface Size Changed: " + w + " " + h);
 		gl.glViewport(0, 0, w, h);
         gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
@@ -193,14 +195,16 @@ public class RokonRenderer implements GLSurfaceView.Renderer {
 
 		if(DrawPriority.drawPriority == DrawPriority.PRIORITY_VBO) {
 			if(!Graphics.isSupportsVBO()) {
-				//Debug.warning("Device does not support VBO's, defaulting back to normal");
+				Debug.warning("Device does not support VBO's, defaulting back to normal");
 				DrawPriority.drawPriority = DrawPriority.PRIORITY_NORMAL;
+			} else {
+				Debug.print("## Device supports VBOs");
 			}
 		}
 
         OS.hackBrokenDevices();
         
-        TextureManager.reloadTextures(gl);
+        TextureManager.reloadActiveTextures(gl);
 
         
 	}

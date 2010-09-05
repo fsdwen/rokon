@@ -69,14 +69,16 @@ public class DynamicTexture extends Texture {
 	 */
 	public Canvas getCanvas() {
 		if(canvas == null) {
+			if(bmp == null) {
+				bmp = getBitmap();
+			}
 			canvas = new Canvas(bmp);
 		}
 		return canvas;
 	}
-	
-	protected void onRefreshTexture(GL10 gl) {
-		GLHelper.removeTextures(new Texture[] { this });
-		onLoadTexture(gl);
+
+	public void refresh() {
+		TextureManager.refreshTexture(this);
 	}
 
 }

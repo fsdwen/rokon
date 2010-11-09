@@ -10,7 +10,9 @@ Examples, tutorials and documentation will be ongoing.
 Please submit your bug reports through the Issues tab here, put any feature suggestions forward on the forums over at the website.
 
 [http://rokonandroid.com/](http://rokonandroid.com)
+
 [StickyCoding (Author)](https://twitter.com/stickycoding)
+
 [chris_saunders (Documentation)](https://twitter.com/chris_saunders)
 
 ## box2d ##

@@ -1,0 +1,7 @@
+
+demo/
+
+* Create a meta-project that contains all the demos that can be launched from a single
+apk
+* Get a build script to remove dependency on eclipse
+* More examples of rokon in action
